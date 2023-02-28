@@ -2,5 +2,8 @@ The first issue faced is getting a picture to load in the background.
   The Notebook.css file lists a background image: url"TC10.jpg".
   Putting the image at the same level as the .css file using the name does not show an image when the website is loaded.
   A number of paths were tried: file:///TC10.jpg, etc., but none have worked so far.
+  After going to dinner the url on the second line above now appears in the background! I guess the commit is slow to actually propagate.
 The second issue is pictures for each of the project webpages. I would like to put the images in a folder named to coincide with the page name.
   I have not figured out how to add a folder. There are thousands of pictures so I need some way to organize them by project.
+  I added a new directory by giving a new text file the name: "brassWhistle/test.txt" This created a new directory that I added pictures to.
+  The image/picture.jpg names were changed to brassWhistle/picture.jpg and they loaded.
