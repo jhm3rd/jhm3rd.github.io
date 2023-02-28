@@ -68,7 +68,7 @@
 		float: left;
 	}
 	div.bkgnd {
-		background-image: url("jhm3rd.github.io/TC10.jpg");
+		background-image: url("file:///TC10.jpg");
 		background-repeat: no-repeat;
 		background-position: left center;
 		height: 450px;
