@@ -1,0 +1,305 @@
+
+	body {
+		font-family: "Gill Sans", Tahoma, Arial, Geneva, sans-serif;
+		margin-left: 40px;
+		background: rgb(249,243,215);
+		background: linear-gradient(90deg, rgba(249,243,215,1) 54%, rgba(208,245,202,1) 100%);
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: right;
+		color: #511306;
+		padding-top: 20px;
+		font-size: 36px;
+	}
+	.aright{
+		text-align: right;
+	}
+	h2 {
+		text-align: center;
+		color: #511306;
+	}
+	h3.minor {
+		font-variant: small-caps;
+		color: #78716C;
+		text-align: center;
+	}
+	h4 {
+		font-variant: small-caps;
+		color: #511306;
+		text-align: center;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		margin: 0 auto;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	p.first {
+		padding-top: 35px;
+	}
+	
+	p.didot {
+		font-family: "Didot";
+		font-size: 24px;
+		font-style: italic;
+	}
+
+	div p {
+		margin-left: 20px;
+	}
+	div.tools {
+		display: inline-block;
+		width: 300px;
+		padding: 20px 50px 20px 20px;
+		float: left;
+	}
+	div.bkgnd {
+		background-image: url("images/TC10.jpg");
+		background-repeat: no-repeat;
+		background-position: left center;
+		height: 450px;
+		width: 900px;
+		}
+	div.introtext {
+		display: block;
+		width: 600px;
+		padding: 40px;
+	}
+	div.contentTable {
+		display: inline-block;
+		width: 400px;
+		height: 1025px;
+		padding: 20px;
+		overflow: auto;
+	}
+	div.flip {
+		border: 1px solid #BFBFBF;
+		font-family: 'Savoye LET';
+		transform:rotateY(180deg);
+	}
+	figcaption {
+		font-style: italic;
+	}
+	img.inline {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 45%;
+		width: 45%;
+	}
+	img.scsht {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 25%;
+		width: 25%;
+	}
+	img.inlinePrint {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 100%;
+		width: 100%;
+	}
+	video {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 45%;
+		width: 45%;
+	}
+	img.inlineLarge {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 45%;
+		width: 45%;
+		-webkit-transform: rotate(90deg);
+	}
+	a {
+		color: #423E3B;
+	}
+	li.indent {
+		margin-left: 20px;
+		color: #AF9164;
+		font-size: 150%;
+		list-style-type: circle;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 11px;
+		text-align: center;
+		padding: 50px;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 1;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table caption {
+  		font-size: 20px;
+  		padding: 20px;
+  		text-align: left;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table td.bold{
+  		font-weight: bold;
+  	}
+  	table th {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	/* The following column widths are specifically for the planetary table data */
+  	/* in Orrery Overview.html */
+  	
+  	#planets {
+  		width: 90px;
+  	}
+  	
+  	#sunDistAU {
+  		width: 80px;
+  	}
+  	
+  	#sunDistMi {
+  		width: 120px;
+  	}
+
+  	#diam {
+  		width: 80px;
+  	}
+  	
+  	#orbitalPer {
+  		width: 80px;
+  	}
+
+  	#orbitalInc {
+  		width: 100px;
+  	}
+
+  	#planAxisTilt {
+  		width: 80px;
+  	}
+  	
+  	#rotatPer {
+  		width: 100px;
+  	}
+  	
+  	#moons {
+  		width: 100px;
+  	}
+  	
+  	/* End of planetary data column widths */
+
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	table.medium {
+  		width: 55%;
+  	}
+
+	tr.highlight {
+		background-color: LightGray;
+	}
+	  	
+  	td.hilite {
+  		background-color: #C7F0E5;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+  	
+  	
+
