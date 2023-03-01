@@ -7,3 +7,6 @@ The second issue is pictures for each of the project webpages. I would like to p
   I have not figured out how to add a folder. There are thousands of pictures so I need some way to organize them by project.
   I added a new directory by giving a new text file the name: "brassWhistle/test.txt" This created a new directory that I added pictures to.
   The image/picture.jpg names were changed to brassWhistle/picture.jpg and they loaded.
+With the above two issues at least partly solved, another issue has appeared.
+  One html file was uploaded, Die Holder.html. For some reason this file won't appear when the link is clicked in Workshop Notebook.html, 
+  the index for the site. Other files loaded later appear. I can't find any problems with naming.
