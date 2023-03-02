@@ -1,0 +1,1 @@
+Create folder for image in Triangle setup tool.html
