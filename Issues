@@ -10,3 +10,4 @@ The second issue is pictures for each of the project webpages. I would like to p
 With the above two issues at least partly solved, another issue has appeared.
   One html file was uploaded, Die Holder.html. For some reason this file won't appear when the link is clicked in Workshop Notebook.html, 
   the index for the site. Other files loaded later appear. I can't find any problems with naming.
+  I clearly didn't look very hard as the file name has "holder", while the link had "Holder"!
