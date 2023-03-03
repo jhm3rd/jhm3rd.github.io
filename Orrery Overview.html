@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Orrery Overview</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="metalworking,orrery,overview"/>
+	<meta name="description" content="Overview of the planned orrery"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<script type="text/javascript">
+<!--
+	
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>Overview of the Four Planet Orrery</h2>
+<h3 class='minor'>January 26, 2017</h3>
+
+<div class=tools>
+	<h2>Calculation Tools</h2>
+	<ul>
+		<li class=indent><a href="Tools/Bolt Hole Circles.html">Bolt Hole Circles</a></li>
+		<li class=indent><a href="Tools/Circle Calculations.html">Circle Calculations</a></li>
+		<li class=indent><a href="Tools/Compound Miter.html">Compound Miter</a></li>
+		<li class=indent><a href="Tools/Countersink Depth.html">Countersink Depth</a></li>
+		<li class=indent><a href="Tools/Ball Cutting.html">Cutting Hemispheres</a></li>
+		<li class=indent><a href="Tools/Keyway.html">Cutting Keyways</a></li>
+		<li class=indent><a href="Tools/Density Data.html">Density Data</a></li>
+		<li class=indent><a href="Tools/Drills and Threads.html">Drills & Threads</a></li>
+		<li class=indent><a href="Tools/Files.html">Files</a></li>
+		<li class=indent><a href="Tools/Flywheel.html">Flywheel</a></li>
+		<li class=indent><a href="Tools/Gear.html">Gears</a></li>
+		<li class=indent><a href="Tools/Gear Cutter Buttons.html">Gear Cutter Buttons</a></li>
+		<li class=indent><a href="Tools/Gearspur.html">Spur Gears</a></li>
+		<li class=indent><a href="Tools/Calc Hex Dimensions.html">Hexagon Dimensions</a></li>
+		<li class=indent><a href="Tools/Hints.html">Hints</a></li>
+		<li class=indent><a href="Tools/Diameter - Speed Calculator.html">Lathe Speeds</a></li>
+		<li class=indent><a href="Tools/Lathe and Mill Speeds.html">Lathe & Mill Speeds</a></li>
+		<li class=indent><a href="Tools/Links.html">Making Links</a></li>
+		<li class=indent><a href="Tools/Osborne.html">Osborne</a></li>
+		<li class=indent><a href="Tools/Protractor.html">Protractor</a></li>
+		<li class=indent><a href="Tools/Polycone.html">Pyramids</a></li>
+		<li class=indent><a href="Tools/Radius.html">Radius</a></li>
+		<li class=indent><a href="Tools/Railroad Gage.html">Railroad Gage</a></li>
+		<li class=indent><a href="Tools/Rattle.html">Rattle</a></li>
+		<li class=indent><a href="Tools/Sun.html">Sun</a></li>
+		<li class=indent><a href="Tools/Tapers.html">Tapers</a></li>
+		<li class=indent><a href="Tools/Taper pins.html">Taper Pins</a></li>
+		<li class=indent><a href="Tools/Temper.html">Temper</a></li>
+		<li class=indent><a href="Tools/Vernier.html">Vernier</a></li>
+		<li class=indent><a href="Tools/Wire Gage.html">Wire Gage</a></li>
+		<li class=indent><a href="Tools/Round groove cutting.html">Lathe Cutting Round Grooves</a></li>
+		<li class=indent><a href="Tools/Bezier groove cutting.html">Lathe Cutting Bezier Grooves</a></li>
+		<li class=indent><a href="Tools/Measuring dovetails.html">Measuring Dovetails</a></li>
+	</ul>
+</div>
+
+
+<p class=first>
+	At long last constructing a four planet orrery is about to begin. This page covers 
+	the plan for the orrery as well as some key specifications. An orrery is a scale 
+	model of the solar system. There are many types available and they have been 
+	constructed for almost 2000 years. The oldest known example is the very complex 
+	and still to be completely understood Antikythera Device. The orrery whose 
+	construction is discussed herein is a four planet orrery: Sun, Mercury, Venus, 
+	Earth, and Mars. It is designed to accurately reflect the relative positions and 
+	motions of these planets. It is also a fairly simple example, using a simple gear 
+	stack and does not include moving moons of either Earth or Mars. This orrery uses 
+	rings holding a planet ‘ball’ to represent the planets in their orbits as opposed to 
+	‘balls on wires’ which is another common orrery type.
+</p>
+
+<p class=note>
+	Thank goodness for the Sun centered solar system. Designing an Earth centered 
+	orrery to reproduce the observed motions of the planets would be quite the 
+	nightmare.
+</p>
+
+<img class=inline src="images/Orbital patterns.png" alt="Observed planetary motion" width="2042" height="582">
+
+<p>
+	The first challenge in designing an orrery is selecting a scale for the planetary 
+	orbits and designing a gear train that will accurately reproduce the relative time 
+	required for each planet to circle the sun. Relative in this case means relative to 
+	the Earth. Table 1 contains some pertinent facts about the eight currently approved 
+	planets. These numbers served as constraints in the design process.
+</p>
+
+<p class=note>
+	The numbers highlighted are particularly pertinent to this orrery.
+</p>
+
+<p>
+	This orrery includes only the first four planets. Including Jupiter or other 
+	planets challenges the scale required to keep things to a reasonable size. 
+	For example, if Earth’s orbit is represented by a 5” ring then Mercury’s ring is 2” 
+	and Jupiter would require a 26” ring. Including the outer planets in an orrery 
+	requires either very small inner planetary rings or incorrectly representing the 
+	orbital scales. Orbital inclination is not represented in this orrery and Mercury's 
+	much more elliptical orbit is not represented either. The planetary specifications 
+	reproduced relatively and accurately here are: the distance from the sun, the orbital 
+	period, and the size of each planet, all relative to the Earth. (The sun’s size is 
+	not represented to scale as it is approximately 110 times the size of the Earth. 
+	Earth's moon is also represented. It's diameter is 0.27 times the Earth's. Mars's 
+	two moons, Phobos and Deimos, are too small (0.002 & 0.001 X) to represent other 
+	than with dots.(The planet's sizes relative to their orbital sizes are also not to 
+	scale for obvious reasons.) A simplified diagram of the orrery is depicted in Figure 
+	1. Of further note is the lack of movement of Earth's moon. Including this movement 
+	would have led to a much more ornery orrery.
+</p>
+
+<table>
+
+<colgroup>
+	<col id="planets">
+	<col id="diam">
+	<col id="sunDistAU">
+	<col id="sunDistMi">
+	<col id="orbitalPer">
+	<col id="orbitalInc">
+	<col id="planAxisTilt">
+	<col id="rotatPer">
+	<col id="moons">
+</colgroup>
+
+<tr>
+<th rowspan="2">Planet</th>
+<th>Diameter</th>
+<th>Sun Distance</th>
+<th>Sun Distance</th>
+<th>Orbital Period</th>
+<th>Orbital Inclination</th>
+<th>Planetary Axis Tilt</th>
+<th>Rotational Period</th>
+<th>Number of Moons</th>
+</tr>
+<tr>
+<th>(relative)</th>
+<th>(A.U.)</th>
+<th>(miles)</th>
+<th>(years)</th>
+<th>(&deg;)</th>
+<th>(&deg;)</th>
+<th>(hours)</th>
+<th>(confirmed)</th>
+</tr>
+<tr>
+ 	<td>Mercury &#9791;</td> <!--<img class=inline src="Planet Symbols/Mercury.jpeg" alt="Mercury" width="52" height="64"> -->
+	<td class=hilite>0.38</td>
+	<td class=hilite>0.39</td>
+	<td>36,253,000</td>
+	<td class=hilite>0.24</td>
+	<td>7.0</td>
+	<td>0</td>
+	<td>59 (days)</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>Venus &#9792;</td>
+	<td class=hilite>0.95</td>
+	<td class=hilite>0.72</td>
+	<td>66,928,000</td>
+	<td class=hilite>0.62</td>
+	<td>3.9</td>
+	<td>177</td>
+	<td>-243 (days)</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>Earth &#9793;</td>
+	<td class=hilite>1.00</td>
+	<td class=hilite>1.00</td>
+	<td>92,956,000</td>
+	<td class=hilite>1.00</td>
+	<td>0</td>
+	<td>23</td>
+	<td>23.9</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>Mars &#9794;</td>
+	<td class=hilite>0.53</td>
+	<td class=hilite>1.52</td>
+	<td>141,634,900</td>
+	<td class=hilite>1.88</td>
+	<td>1.9</td>
+	<td>25</td>
+	<td>24.6</td>
+	<td>2</td>
+</tr>
+<tr><td>Jupiter &#9795;</td>
+	<td>11.21</td>
+	<td>5.20</td>
+	<td>1,106,200,000</td>	
+	<td>11.9</td>
+	<td>1.3</td>
+	<td>3</td>
+	<td>10</td>
+	<td>79</td>
+</tr>
+<tr><td>Saturn &#9796;</td>
+	<td>9.45</td>
+	<td>9.54</td>
+	<td>2,742,200,000</td>	
+	<td>29</td>
+	<td>2.5</td>
+	<td>27</td>
+	<td>11</td>
+	<td>62</td>
+</tr>
+<tr>
+	<td>Uranus &#9797;</td>	
+	<td>4.01</td>
+	<td>19.2</td>
+	<td>7,808,300,000</td>	
+	<td>84</td>
+	<td>0.8</td>
+	<td>98</td>
+	<td>-17</td>
+	<td>27</td>
+</tr>
+<tr>
+	<td>Neptune &#9798;</td>		 
+	<td>3.88</td> 
+	<td>30.1</td>
+	<td>15,337,700,000</td>	 
+	<td>165</td>
+	<td>1.8</td>
+	<td>28</td>
+	<td>16</td>
+	<td>14</td>
+</tr>
+
+</table> 
+
+<p class=note>
+	Note Venus's backward planetary axial rotation and almost 180&deg; tilt. 
+	i.e. Something must have hit it and knocked it over at some point in its formation 
+	similar to Earth's collision with a Mars sized object producing its oversized moon 
+	(about 0.27 times the Earth's radius).
+</p>
+
+<img class=inline src="Images/Frames Rings Gears.jpeg" alt="Orrery Skeleton" width="2062" height="1282">
+
+<p>
+	Discussion of some of the design considerations is in order. The base, rings, and 
+	gears are made of brass. The outermost or Mars ring may require support at its 
+	periphery as it is only mounted on the tube through its center. It was envisioned that 
+	this support could be provided with minimal friction by placing small steel balls in 
+	the upper support below the Mars ring. Initially I planned to use three or four bars 
+	as spokes to connect the outer planet holding ring to the inner axle holding ring. 
+	After seeing Weston Bye's magnetic clock with its delicate circles connecting the 
+	inner and outer rings a change was made. 
+</p>
+
+<p>
+	Figure 2 shows a schematic representation of the tubes which will connect the gears 
+	to the planetary rings. The topmost gear is soldered to and will drive the largest 
+	or Mars tube, which is affixed to the lowest planetary ring. The next smaller tube 
+	is soldered to the next gear down the driven stack and affixed to the Earth ring. 
+	Next comes the Venus tube and finally Mercury's tube. The sun will be mounted on a 
+	1/8" rod running through the center of the Mercury tube.
+</p>
+
+<img class=inline src="Images/Tubes.jpeg" alt="Planetary Tubes" width="1456" height="1222">
+
+<p>
+	The next consideration is the gear train required for driving the motions of the 
+	planets. Since this is my first orrery I decided to keep the gear train as simple as 
+	possible. Using two gears per planet in a pair of gear stacks seemed to be the 
+	simplest solution. The way gear stack pairs work is one stack has all of the gears 
+	fixed together so they all rotate in sync. In the second stack the gears are not 
+	fixed one to the other and rotate independently at speed ratios set by the number of 
+	gear teeth. One question remained: how accurately can the rotational periods be 
+	reproduced using only two gears. The two gear stacks are denoted throughout this 
+	construction as “driver” and “driven”. The driver stack is the fixed stack and will be 
+	turned by a worm, thus all rotating with the same period as the worm wheel. The worm gear 
+	and wheel combination is not shown in Figure 1 but will be the driving mechanism when 
+	connected to a shaft and handle. The worm gear axle’s handle will sit outside of the 
+	main support structure. The driver gear stack consists of the worm wheel and four 
+	gears; one for each planet ring. These gears are all fixed relative to one another 
+	by attachment to the same shared shaft or as implemented here with a "key". The driven 
+	gear stack has four gears, one for each planet ring, and they all rotate independently 
+	on the concentric tubes.
+</p>
+
+<p>
+	The gear train is the source of any accuracy in the representation of the planetary 
+	orbital periods. In order to model the various gear ratios possible and how 
+	accurately they represent the orbital periods (shown above in Table 1) a spreadsheet 
+	was constructed. For all four gear pairs to mesh between the two stacks, the total 
+	number of teeth must be the same across each gear pair. The spreadsheet looked at 
+	the impact of varying this total versus the accuracy of the resultant orbital period. 
+	Over one hundred teeth totals were explored. Two examples from this spreadsheet are 
+	given in Table 2. Of all of the possibilities considered these two were the best 
+	representations of the orbital periods. Higher accuracy would require more complex 
+	gear trains. The 78-tooth set seemed perfectly adequate for my first attempt at 
+	building an orrery with an orbital period error of less than 1% relative to Earth’s 
+	orbital period. This orrery will not be able to accurately predict relative planetary 
+	positions over time spans of centuries! Another limitation to consider when selecting 
+	a gear train is the gear size (and corresponding number of teeth). I wanted to keep 
+	the number of teeth between 12 and 75 just for practicality. Gears smaller than 12 
+	teeth are difficult to make and the larger the gear the longer it takes to make by 
+	the methods available in my shop. A total of 78 teeth was the perfect choice.
+</p>
+
+<table>
+	<tr>
+		<th>Planet</th>
+		<th>Driver Gear Teeth</th>
+		<th>Driven Gear Teeth</th>
+		<th>Error</th>
+	</tr>
+	<tr>
+		<th colspan="4">Total Teeth = 78</th>
+	</tr>
+	<tr>
+		<td>Mercury</td>
+		<td>15</td>
+		<td>63</td>
+		<td>0.72%</td>
+	</tr>
+	<tr>
+		<td>Venus</td>
+		<td>30</td>
+		<td>48</td>
+		<td>0.62%</td>
+	</tr>
+	<tr>
+		<td>Earth</td>
+		<td>39</td>
+		<td>39</td>
+		<td>0.00%</td>
+	</tr>
+	<tr>
+		<td>Mars</td>
+		<td>51</td>
+		<td>27</td>
+		<td>0.11%</td>
+	</tr>
+	<tr>
+		<th colspan="4">Total Teeth = 110</th>
+	</tr>
+	<tr>
+		<td>Mercury</td>
+		<td>21</td>
+		<td>89</td>
+		<td>1.63%</td>
+	</tr>
+	<tr>
+		<td>Venus</td>
+		<td>42</td>
+		<td>68</td>
+		<td>0.56%</td>
+	</tr>
+	<tr>
+		<td>Earth</td>
+		<td>55</td>
+		<td>55</td>
+		<td>0.00%</td>
+	</tr>
+	<tr>
+		<td>Mars</td>
+		<td>72</td>
+		<td>38</td>
+		<td>0.42%</td>
+	</tr>
+</table>
+
+<p>
+	The frame presented yet another challenge. It needed to be made from reasonably 
+	sturdy brass stock, so I chose 3/16”. Brass is too expensive for me to purchase 
+	sufficient stock to cut out two circles (top and bottom) from sheet stock. This meant 
+	making the frame from bar stock. For a couple of reasons I chose to make the frame 
+	in the shape of a dodecagon (12-sides). First, this would correspond to the months 
+	of the year, though not exactly. Secondly, it would be closer to a circle and less 
+	noticeably polygonal than an octagon or a decagon. So how does one make a polygon 
+	from bar stock? Making some kind of lap joint and either screwing, soldering, or 
+	riveting the pieces together is incredibly challenging as it requires angled pockets, 
+	difficult to make accurately. That leaves butt joints. These would also need to be cut 
+	quite accurately or the accumulation of error as they were joined around the loop 
+	would leave one with a poor fit for the closing joint. A few calculations showed that 
+	using a sine bar should be sufficiently accurate. Each leg of the dodecahedron would 
+	need to have both ends cut to a 15&deg; angle. Assuming a 5” sine bar is used then 
+	the vertical displacement is about 1.3”. Consequently, 0.1&deg; is approximately 
+	0.009” and 0.01&deg; is about 0.001”. So if my setup is accurate to 0.01&deg;, then 
+	the last joint error (assuming maximal error for each leg) is about 0.12 degrees. 
+	The butt joints will be soldered so 2-4 thou gaps are left for capillary action at 
+	each joint and these gaps should provide allowance for this cumulative error.
+</p>
+
+<p>
+	Making the worm gear and worm wheel are very similar to turning a screw and creating 
+	a regular gear. There are two key features of the worm gear system that are 
+	important to the design of the orrery. First, the number of degrees of turn of the 
+	wheel upon a full revolution of the worm is fixed by the number of teeth on the 
+	wheel. 52 teeth on the wheel gives one 52nd of a full turn per turn of the worm 
+	gear’s handle or very close to one week of time. Thus, it will take 52 turns of the 
+	handle for the earth to make one complete revolution around the sun. An alternative 
+	is using a 26 tooth wheel, so one complete worm revolution is equivalent to two weeks. 
+	Second, rotating the worm gear clockwise as seen from a handle will rotate the wheel 
+	clockwise if the worm is on the front side of the wheel as seen from above. With the 
+	driving gear stack rotating clockwise, the driven gear stack and the planet rings 
+	will rotate counterclockwise. The planets rotate around the sun in a counterclockwise 
+	direction as seen from above the earth’s north pole, so the worm gear needs to be 
+	mounted to the front side of the wheel as seen from above (assuming the shaft handle 
+	is on the side of the gear stacks as shown.)
+</p>
+
+<p class=note>
+	A builder living south of the equator might want to flip this around!
+</p>
+
+<img class=inline src="Images/Worm & gear rotation.jpg" alt="Worm & gear rotation" width="530" height="609">
+
+<p class=note>
+	In the picture above the bottom driven gear is shown incorrectly as "driven" by the 
+	worm wheel. This is not the case, but it makes the picture a little easier to 
+	understand.
+</p>
+
+<p>
+	Aligning the worm, driven stack and worm shaft brackets took some thought. A depthing 
+	tool was made to find the optimum distance between the two gear stacks vs. just 
+	using the theoretical 1.300". The worm and wheel separation could not be determined 
+	with the depthing tool and trial and error was the alternative. The two brackets 
+	spanning the worm gear needed to be far enough apart to avoid the wheel. Finally, 
+	these brackets needed to be carefully aligned so the correct worm/wheel distance 
+	could be set. The following thought process helped determine the best alignment for 
+	all of these moving parts. Since everything is confined to the 2" width of the 
+	supporting span, the worm wheel needed to be offset above this center location of 
+	the driven gear stack. Setting the wheel about 5/16" above center seemed adequate. 
+	The worm-wheel center-to-center distance is about 11/16". The worm is set slightly 
+	below center, about 5/16". In order for the two brackets to miss the 26-tooth wheel 
+	they need to be set about 1/8" from the end of the worm. Consequently some bronze 
+	spacers would need to be made. With the brackets spaced appropriately this left 
+	about 7/16" between the end of the bracket and the center of the driven gear. This 
+	was plenty of room for the 1/2" diameter spacer at the bottom of the driven gear 
+	stack.
+</p>
+
+<p>
+	A piece of plywood 1/4" X 2" X 8" was chosen to serve the role of the eventual brass 
+	supporting span. A center hole was marked. The two earth gears were place on the 
+	depthing tool, which was adjusted so the gears meshed nicely. This distance was 
+	transferred to the plywood base by marking an arc with the depthing tool. This arc 
+	was marked 5/16" above center for the driver gear stack hole. A mark was also made 
+	for one hole in the right bracket. Once the worm wheel was in place the worm in the 
+	bracket could be rotated to achieve best fit and the other holes marked and drilled. 
+</p>
+
+<p>
+	The last major design consideration was dealing with setting the planets to their 
+	proper positions around the sun in a relative sense and with respect to the 
+	zodiacal constellations that I planned as decoration for the frame. In other words a 
+	method of planetary ring adjustment needed to be built into the system. After 
+	considering a variety of ideas the best seemed to be some means of fixing the rings 
+	to the tubes via a rotatable hub. So a hub must be designed that is screwed to the 
+	ring and uses a set screw to hold the hub to the planet's tube. The hub design 
+	chosen is depicted below. The Radius = 3/16" dimension of the center hole, as shown 
+	for the Mars ring hub, needs to be reduced to fit the tubes of the other three 
+	planets.
+</p>
+
+<img class=inline src="Images/Ring Hubs.tiff" alt="Ring Hubs" width="530" height="609">
+
+<p>
+	Finally, a few thoughts about decorating the orrery are in order. The frame rings 
+	are like the heavens above and fixed relative to the solar system. So two things 
+	are planned for the frames. They need to show the months and maybe even the weeks 
+	of the year. (Days might be overkill.) In addition it would be great to depict the 
+	constellations of the zodiac in some form. Using text for months and constellations 
+	requires some means of engraving on the brass. Consequently, a course in metal 
+	engraving was planned and taken. Engraving would also allow for using the 
+	astronomical symbols for the planets and the constellations. Other text can also 
+	be imagined that would be appropriate for the planetary rings. The final idea was 
+	to not only label the approximate positions of the zodiacal constellations, but to 
+	also show the constellations. This could be as simple as drilling holes for each 
+	of the stars or filling the holes with a contrasting metal plug or inserting some 
+	other material in the hole. Since this orrery is to be a portrayal of reality, the 
+	thirteen zodiacal constellations (including Ophiuchus) and their dates of arrival as 
+	recognized by astronomers was selected over the usual 12 constellations and dates 
+	used by astrologers. The following table displays some key facts about these 13 
+	constellations. 
+</p>
+
+<table>
+	<tr>
+		<th>Constellation</th>
+		<th>Translation</th>
+		<th>Symbol</th>
+		<th>Brightest Star</th>
+		<th>Ptolemaic Dates</th>
+		<th>IAU Dates</th>
+	</tr>
+	<tr>
+		<td>Aries</td>
+		<td>Ram</td>
+		<td>&#9800;</td>
+		<td>Hamal</td>
+		<td>21 Mar - 20 Apr</td>
+		<td>19 Apr - 13 May</td>
+	<tr>
+	<tr>
+		<td>Taurus</td>
+		<td>Bull</td>
+		<td>&#9801;</td>
+		<td>Aldebaran</td>
+		<td>21 Apr - 21 May</td>
+		<td>14 May - 19 Jun</td>
+	<tr>
+	<tr>
+		<td>Gemini</td>
+		<td>Twins</td>
+		<td>&#9802;</td>
+		<td>Pollux</td>
+		<td>22 May - 21 Jun</td>
+		<td>20 Jun - 20 Jul</td>
+	<tr>
+	<tr>
+		<td>Cancer</td>
+		<td>Crab</td>
+		<td>&#9803;</td>
+		<td>Al Tarf</td>
+		<td>22 Jun - 22 Jul</td>
+		<td>21 Jul - 9 Aug</td>
+	<tr>
+	<tr>
+		<td>Leo</td>
+		<td>Lion</td>
+		<td>&#9804;</td>
+		<td>Regulus</td>
+		<td>23 Jul - 22 Aug</td>
+		<td>10 Aug - 15 Sep</td>
+	<tr>
+	<tr>
+		<td>Virgo</td>
+		<td>Maiden</td>
+		<td>&#9805;</td>
+		<td>Spica</td>
+		<td>23 Aug - 23 Sep</td>
+		<td>16 Sep - 30 Oct</td>
+	<tr>
+	<tr>
+		<td>Libra</td>
+		<td>Scales</td>
+		<td>&#9806;</td>
+		<td>Zubeneschamali</td>
+		<td>24 Sep - 23 Oct</td>
+		<td>31 Oct - 22 Nov</td>
+	<tr>
+	<tr>
+		<td>Scorpius</td>
+		<td>Scorpion</td>
+		<td>&#9807;</td>
+		<td>Antares</td>
+		<td>24 Oct - 22 Nov</td>
+		<td>23 Nov - 29 Nov</td>
+	<tr>
+	<tr>
+		<td class=hilite>Ophiuchus</td>
+		<td class=hilite>Serpent Bearer</td>
+		<td class=hilite>&#x26CE;</td>
+		<td class=hilite>Rasalhague</td>
+		<td class=hilite></td>
+		<td class=hilite>30 Nov - 17 Dec</td>
+	<tr>
+	<tr>
+		<td>Sagittarius</td>
+		<td>Centaur (Archer)</td>
+		<td>&#9808;</td>
+		<td>Kaus Australis</td>
+		<td>23 Nov - 21 Dec</td>
+		<td>18 Dec - 18 Jan</td>
+	<tr>
+	<tr>
+		<td>Capricornus</td>
+		<td>Horned Goat</td>
+		<td>&#9809;</td>
+		<td>Deneb Algedi</td>
+		<td>22 Dec - 20 Jan</td>
+		<td>19 Jan - 15 Feb</td>
+	<tr>
+	<tr>
+		<td>Aquarius</td>
+		<td>Water Bearer</td>
+		<td>&#9810;</td>
+		<td>Sadalsuud</td>
+		<td>21 Jan - 19 Feb</td>
+		<td>16 Feb - 11 Mar</td>
+	<tr>
+	<tr>
+		<td>Pisces</td>
+		<td>Fish</td>
+		<td>&#9811;</td>
+		<td>Eta Piscium</td>
+		<td>20 Feb - 20 Mar</td>
+		<td>12 Mar - 18 Apr</td>
+	<tr>
+</table>
+
+<p>
+	A star chart for each of the usual 12 constellations is shown below. A night sky 
+	representation below depicts Ophiuchus.
+</p>
+
+<img class=inline src="Images/Constellations II.png" alt="12 Constellations of the Zodiac" width="1050" height="525">
+<img class=inline src="Images/Constellations III.jpg" alt="Ophiuchus" width="450" height="470">
+
+<p>
+	The planetary alignment needs to be set eventually. A good site to see the 
+	current planetary alignment is <a href="http://www.fourmilab.ch/cgi-bin/Solar">
+	fourmilab</a>. The size of the display can be altered and the view can be set to 
+	show only the inner four planets. Other data is available for your specific 
+	longitude/latitude.
+</p>
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>April 16, 2017</p>
+</footer>
+
+</body>
+</html>
