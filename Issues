@@ -15,4 +15,6 @@ An incorrect picture was uploaded into a folder. I can find no easy way to delet
 A new issue popped up. Two photos are not appearing in the web page. The titles and the html match perfectly, case and all. They were the 
   last two photos added to the folder for this page. They are not the last to load. I have waited over two hours and still no change. The 
   only thing I can imagine might be a problem is that a web page has an upper limit on the number of photos allowed. This page with the two 
-  nonloading photos has 56. 54 seems like a strange limit to set, so maybe that is not the problem.
+  nonloading photos has 56. 54 seems like a strange limit to set, so maybe that is not the problem. I went to the last message and reran the 
+  deployment. I watched while the process proceeded. All green arrows! Sure enough the two missing pictures now load. Unfortunately, the 
+  did not load!
