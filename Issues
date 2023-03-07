@@ -12,3 +12,7 @@ RESOLVED: With the above two issues at least partly solved, another issue has ap
   the index for the site. Other files loaded later appear. I can't find any problems with naming.
   I clearly didn't look very hard as the file name has "holder", while the link had "Holder"!
 An incorrect picture was uploaded into a folder. I can find no easy way to delete this photo.
+A new issue popped up. Two photos are not appearing in the web page. The titles and the html match perfectly, case and all. They were the 
+  last two photos added to the folder for this page. They are not the last to load. I have waited over two hours and still no change. The 
+  only thing I can imagine might be a problem is that a web page has an upper limit on the number of photos allowed. This page with the two 
+  nonloading photos has 56. 54 seems like a strange limit to set, so maybe that is not the problem.
