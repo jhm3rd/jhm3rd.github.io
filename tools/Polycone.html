@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Polycone</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="polycone, pyramid, calculation, metalwork"/>
+	<meta name="description" content="Determine measurements for pyramidal polycones."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+// Get user input
+
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function sind(num) {
+	return Math.sin(rpd * num);
+}
+
+function cosd(num) {
+	return Math.cos(rpd * num);
+}
+
+function rss2(a,b) {
+	return Math.sqrt(a*a + b*b);
+}
+
+function acsd(num) {
+	// DPR*acos((ABS(a)<1) ? (a) : SGN(a))
+	if (num<1) {
+		return dpr * Math.acos(abs(num));
+	}
+	else {
+		return drp * Math.acos(sgn(num));
+	}
+}
+
+function vang(arr1,arr2) {
+	// cos(theta) = dot product / product of the vector lengths
+	// cos(theta) = (u1v1 + u2v2 + ...)/(sqrt(u1^2 + u2^2 + ...) * sqrt(v1^2 + v2^2 + ...))
+	var i;
+	var dp = 0;
+	var sqSide1 = 0;
+	var sqSide2 = 0;
+	var theta;
+	for (i in arr1) {
+		dp = dp + arr1[i] * arr2[i];
+		sqSide1 = sqSide1 + arr1[i] * arr1[i];
+		sqSide2 = sqSide2 + arr2[i] * arr2[i];
+	}
+	theta = acsd(dp/(Math.sqrt(sqSide1) * Math.sqrt(sqSide2)));
+	return theta;
+}
+
+function getInput() {
+	var hLen;															// hc fm Klotz
+	var phi;
+	var ccRad;															// r fm Klotz
+	var ccDiam;															// d fm Klotz
+	var radSag;															// a fm Klotz
+	var bArea;
+	var ns = parseFloat(document.getElementById("numSides").value); 			
+	var len = parseFloat(document.getElementById("length").value);		// c fm Klotz
+	var ht = parseFloat(document.getElementById("height").value);		// h fm Klotz
+	
+	var facHt;															// b fm Klotz
+	var edgLen;															// e fm Klotz
+	var gamma;
+	var delta;
+	var faceAng;														// thetab fm Klotz
+	var edgAng;															// thetae fm Klotz
+	var fArea;															// thetae fm Klotz
+	var st;
+	var ct;
+	var v1 = new Array();
+	var v2 = new Array();
+	var sp;
+	var cp;
+	var beta;
+	var intAng;
+	var totArea;
+
+	hLen = 0.5 * len;
+	phi = 180/ns;
+	ccRad = hLen/sind(phi);
+	ccDiam = 2 * ccRad;
+	radSag = ccRad * cosd(phi);
+	sag = ccRad - radSag;
+	bArea = ns * radSag * hLen;
+	
+	document.getElementById("ccDiam").value = ccDiam.toFixed(4);
+	document.getElementById("ccRad").value = ccRad.toFixed(4);
+	document.getElementById("lenPerp").value = radSag.toFixed(4);
+	document.getElementById("baseArea").value = bArea.toFixed(4);
+	
+	facHt = rss2(ht,radSag);
+	edgLen = rss2(ht,ccRad);
+	gamma = acsd(hLen/edgLen);
+	delta = 2 * (90 - gamma);
+	faceAng = acsd(radSag/facHt);
+	edgAng = acsd(ccRad/edgLen);
+	fArea = 0.5 * facHt * hLen;
+	
+	document.getElementById("facetHt").value = facHt.toFixed(4);
+	document.getElementById("edgeLen").value = edgLen.toFixed(4);
+	document.getElementById("baseAng").value = gamma.toFixed(4) + '\xB0';
+	document.getElementById("tipAng").value = delta.toFixed(4) + '\xB0';
+	document.getElementById("faceAng").value = faceAng.toFixed(4) + '\xB0';
+	document.getElementById("edgeAng").value = edgAng.toFixed(4) + '\xB0';
+	
+	// calculation of external angle between two faces
+	st = sind(faceAng);
+	ct = cosd(faceAng);
+	v1[0] = radSag * st * st;
+	v1[1] = 0;
+	v1[2] = radSag * st * ct;
+	sp = sind(2 * phi);
+	cp = cosd(2 * phi);
+	v2[0] = cp * v1[0] - sp * v1[1];
+	v2[1] = sp * v1[0] + cp * v1[1];
+	v2[2] = v1[2];
+	beta = vang(v1,v2);
+	intAng = 180 - beta;
+	
+	document.getElementById("extAng").value = beta.toFixed(4) + '\xB0';
+	document.getElementById("intAng").value = intAng.toFixed(4) + '\xB0';
+	document.getElementById("facetArea").value = fArea.toFixed(4);
+	
+	volume = bArea * ht/3;
+	totArea = bArea + ns * fArea;
+	document.getElementById("areaTot").value = totArea.toFixed(4);
+	document.getElementById("volume").value = volume.toFixed(4);
+	
+
+	
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Polycone Dimensions</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">People keep asking 
+me questions about the geometry of 'polycone' shapes.  The
+name is my own invention since I don't know of any generic mathematical name
+for such shapes.  I'm referring to three dimensional figures whose
+base is a regular polygon and whose sides are equilateral triangles all of
+which meet at a point.  A tetrahedron is a three-sided polycone.  A pyramid is
+a four-sided polycone.  Frequently stained glass lampshades are frustrums of
+polycones.</blockquote>
+
+<blockquote>This program will calculate most of the relevant lengths and angles associated
+with such figures if given:</blockquote>
+
+<ul>
+	<li class="indent">the number of sides</li>
+	<li class="indent">the length of one side of the polygonal base</li>
+	<li class="indent">the perpendicular height of the polycone, i.e., the height
+		  measured from the center of the base to the cone tip</li>
+</ul>
+
+<blockquote>If I've left out some dimension you need to know, contact me and I'll add 
+	it. mklotz@alum.mit.edu.</blockquote>
+
+<fieldset>
+	<legend>Input the following parameters (in):</legend>
+		<label for="numSides">Number of polygon sides</label>
+		<input type="text" id="numSides" placeholder="4" autofocus><br/>
+		<label for="length">Length of polygon sides</label>
+		<input type="text" id="length" placeholder="6"><br/>
+		<label for="height">Vertical height</label>
+		<input type="text" id="height" placeholder="10"><br/>
+		<input type="button" value="Calculate Polycone Parameters" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+<h3>Calculations For the Polycone</h3>
+<fieldset>
+	<legend>Dimensions for Base</legend>
+		<label for="ccDiam">Diameter of circumscribed circle</label>
+		<input type="text" id="ccDiam" readOnly = "True"><br/>
+		<label for="ccRad">Radius of circumscribed circle</label>
+		<input type="text" id="ccRad" readOnly = "True"><br/>
+		<label for="lenPerp">Length of perpendicular to side from center</label>
+		<input type="text" id="lenPerp" readOnly = "True"><br/>
+		<label for="baseArea">Area of base</label>
+		<input type="text" id="baseArea" readOnly = "True"><br/>
+</fieldset>
+<fieldset>
+	<legend>Dimensions for triangular facets</legend>
+		<label for="facetHt">Facet height</label>
+		<input type="text" id="facetHt" readOnly = "True"><br/>
+		<label for="edgeLen">Edge length</label>
+		<input type="text" id="edgeLen" readOnly = "True"><br/>
+		<label for="baseAng">Base angle</label>
+		<input type="text" id="baseAng" readOnly = "True"><br/>
+		<label for="tipAng">Tip angle</label>
+		<input type="text" id="tipAng" readOnly = "True"><br/>
+		<label for="faceAng">Angle of face with respect to horizontal</label>
+		<input type="text" id="faceAng" readOnly = "True"><br/>
+		<label for="edgeAng">Angle of edge with respect to horizontal</label>
+		<input type="text" id="edgeAng" readOnly = "True"><br/>
+		<label for="extAng">Exterior angle between perpendiculars to two adjacent faces</label>
+		<input type="text" id="extAng" readOnly = "True"><br/>
+		<label for="intAng">Interior angle between two adjacent faces</label>
+		<input type="text" id="intAng" readOnly = "True"><br/>
+		<label for="facetArea">Area of single facet</label>
+		<input type="text" id="facetArea" readOnly = "True"><br/>
+</fieldset>
+<fieldset>
+	<legend>Complete polycone</legend>
+		<label for="areaTot">Total area</label>
+		<input type="text" id="areaTot" readOnly = "True"><br/>
+		<label for="volume">Total volume</label>
+		<input type="text" id="volume" readOnly = "True"><br/>
+</fieldset>
+<br/>
+<hr />
+<footer>
+<p>Based on POLYCONE.C at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

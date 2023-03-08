@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Links</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="links, tapered, calculation, metalwork"/>
+	<meta name="description" content="Determine correct angles and distances to cut links."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+// Get user input
+
+window.onload = function() {
+	var canvas = document.getElementById("drawingCanvas");
+	var context = canvas.getContext("2d");
+	
+	var bigRadX = 250;
+	var bigRadY = 300;
+	var smRadX = 275;
+	var smRadY = 200;
+	var bigRad = 50;
+	var smRad = 40;
+	var smHoleRad = 25;
+	var bigHoleRad = 35;
+	var startingAngleHole = 1.01 * Math.PI;
+	var endingAngleHole = 1.00 * Math.PI;
+	
+	context.lineWidth = 2;
+		
+	// Drill hole centers arcs
+	context.beginPath();
+	context.arc(bigRadX, bigRadY, bigHoleRad, startingAngleHole, endingAngleHole);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(smRadX, smRadY, smHoleRad, startingAngleHole, endingAngleHole);
+	context.stroke();
+	
+	// Radius arcs
+	
+	context.beginPath();
+	context.arc(bigRadX, bigRadY, bigRad, 2.05 * Math.PI, 1.05 * Math.PI);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(smRadX, smRadY, smRad, 1.05 * Math.PI, 2.0 * Math.PI);
+	context.stroke();
+	
+	// External lines
+	
+	context.lineWidth = 2;
+	
+	context.beginPath();
+	context.moveTo(200,295);
+	context.lineTo(236,192);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(300,308);
+	context.lineTo(315,200);
+	context.stroke();
+
+
+// Dimension lines
+
+	context.lineWidth = 0.5
+	context.strokeStyle = "green";
+
+	// Radius centerline
+	context.beginPath();
+	context.moveTo(bigRadX, bigRadY);
+	context.lineTo(smRadX, smRadY);
+	context.stroke();
+		
+	context.beginPath();
+	context.moveTo(smRadX,smRadY);
+	context.lineTo(297,190);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(smRadX,smRadY);
+	context.lineTo(236,190);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(bigRadX,bigRadY);
+	context.lineTo(217,338);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(bigRadX,bigRadY);
+	context.lineTo(275,325);
+	context.stroke();
+	
+// Dimension labels
+
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+
+	context.beginPath();
+	context.fillText("r", 285, 195);
+	context.beginPath();
+	context.fillText("1", 289, 198);
+	
+	context.beginPath();
+	context.fillText("r", 260, 195);
+	context.beginPath();
+	context.fillText("2", 264, 201);
+	
+	context.beginPath();
+	context.fillText("R", 260, 298);
+	context.beginPath();
+	context.fillText("1", 268, 303);
+	
+	context.beginPath();
+	context.fillText("R", 220, 300);
+	context.beginPath();
+	context.fillText("2", 228, 305);
+	
+	context.beginPath();
+	context.fillText("D", 265, 250);
+	
+} //end of drawing
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function getInput() {
+	var i;
+	var j;
+	var k;
+	var smRad = parseFloat(document.getElementById("smRad").value); 			// r1 fm Klotz
+	var smHDiam = parseFloat(document.getElementById("smHDiam").value);		// d1 fm Klotz
+	var bgRad = parseFloat(document.getElementById("bgRad").value);			// r2 fm Klotz
+	var bgHDiam = parseFloat(document.getElementById("bgHDiam").value);		// d2 fm Klotz
+	var holeDist = parseFloat(document.getElementById("holeDist").value);		// d fm Klotz
+	var theta1;
+	var theta2;
+	var theta3;
+	var smShimHt;
+
+	theta1 = asnd((bgRad-smRad)/holeDist);
+	theta2 = 180 - 2 * theta1;
+	theta3 = 180 + 2 * theta1;
+	smShimHt = bgRad - smRad + 0.5 * (bgHDiam-smHDiam);
+	
+	document.getElementById("angT").value = theta1.toFixed(2);
+	document.getElementById("incAngSm").value = theta2.toFixed(2);
+	document.getElementById("incAngBg").value = theta3.toFixed(2);
+	document.getElementById("shimHt").value = smShimHt.toFixed(4);	
+	
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Making Links</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">Many of the engines and models I make require links - basically a flat
+piece of metal that holds two holes apart at a specified distance.  In most
+cases, each end of the strip of metal is radiused and the link is tapered such
+that the tapered sides blend nicely into the radii at each end.</blockquote>
+
+<blockquote>I generally make these as follows.  Drill the two holes at the
+specified separation in a rectangular strip of metal.  Put close-fitting pins
+in each hole and place in milling machine vise so pins sit horizontally on the
+vise jaws and support the metal strip between the two vise jaws.  Put a shim
+under the small end pin so a horizontal pass with the mill will produce the
+required angle.  Repeat for other side of link so link is properly tapered.  I
+then use a radiusing tool of my own design to form the required radii on each
+end.</blockquote>
+
+<blockquote>I got tired of rederiving the equations needed to make the calculations
+associated with this procedure so I wrote the included program.  Given the
+description above, the program should be self-explanatory.  If not, email me
+at mklotz@alum.mit.edu.</blockquote>
+
+<h3>Link Sketch</h3>
+
+<canvas id="drawingCanvas" width="500" height="410"></canvas>
+
+
+<fieldset>
+	<legend>Input the following parameters (in):</legend>
+		<label for="smRad">Small end radius (r<sub>2</sub>)</label>
+		<input id="smRad" placeholder="0.0625" autofocus><br/>
+		<label for="smHDiam">Small end hole diameter (r<sub>1</sub>)</label>
+		<input id="smHDiam" placeholder="0.0625"><br/>
+		<label for="bgRad">Big end radius (R<sub>2</sub>)</label>
+		<input id="bgRad" placeholder="0.09375"><br/>
+		<label for="bgHDiam">Big end hole diameter (R<sub>1</sub>)</label>
+		<input id="bgHDiam" placeholder="0.1875"><br/>
+		<label for="holeDist">Distance between hole centers (D)</label>
+		<input id="holeDist" placeholder="1.0"><br/>
+		<input type="button" value="Calculate Link Parameters" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+<h3>Calculations For Tapered, Radiused-End Links</h3>
+<fieldset>
+	<legend>Dimensions for Tapered, Radiused-End Links</legend>
+		<label for="angT">Angle of tapered side = </label>
+		<input id="angT"><br/>
+		<label for="incAngSm">Included angle of small end = </label>
+		<input id="incAngSm"><br/>
+		<label for="incAngBg">Included angle of big end = </label>
+		<input id="incAngBg"><br/>
+		<label for="shimHt">Small end shim height = </label>
+		<input id="shimHt"><br/>
+</fieldset>
+<br/>
+<hr />
+<footer>
+<p>Based on LINKS.c at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

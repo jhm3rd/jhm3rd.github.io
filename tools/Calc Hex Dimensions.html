@@ -1,0 +1,239 @@
+<html>
+<head>
+<title> Cut Depth to Make Polygons from Round Stock</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 0 3px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 250px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+</style>
+<script type="text/javascript">
+<!--
+
+window.onload = function() {
+	var canvas = document.getElementById("drawingCanvas");
+	var context = canvas.getContext("2d");
+	
+	var centerX = 150;
+	var centerY = 150;
+	var radius = 100;
+	var startingAngle = 1.56 * Math.PI;
+	var endingAngle = 1.559 * Math.PI;
+	var horizOffset = Math.sin(Math.PI/6)*radius;
+	var vertOffset = Math.cos(Math.PI/6)*radius;
+	
+	context.lineWidth = 2;
+	
+	// Shaft
+	context.arc(centerX, centerY, radius, startingAngle, endingAngle);
+	context.stroke();
+	
+	context.lineWidth = 1;
+	context.strokeStyle = "black";
+		
+	// Diameter = D
+	context.beginPath();
+	context.moveTo(50,255);
+	context.lineTo(250,255);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(50,265);
+	context.lineTo(50,245);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(250,245);
+	context.lineTo(250,265);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("Diam", 130, 265);
+	
+	// First line of hexagon
+	context.beginPath();
+	context.moveTo(centerX + horizOffset,centerY - vertOffset);
+	context.lineTo(centerX + radius,centerY);
+	context.stroke();
+	
+	// Second line of hexagon
+	context.beginPath();
+	context.moveTo(centerX + radius,centerY);
+	context.lineTo(centerX + horizOffset,centerY + vertOffset);
+	context.stroke();
+	
+	// Third line of hexagon
+	context.beginPath();
+	context.moveTo(centerX + horizOffset,centerY + vertOffset);
+	context.lineTo(centerX - horizOffset,centerY + vertOffset);
+	context.stroke();
+	
+	// Fourth line of hexagon
+	context.beginPath();
+	context.moveTo(centerX - horizOffset,centerY + vertOffset);
+	context.lineTo(centerX - radius,centerY);
+	context.stroke();
+	
+	// Fifth line of hexagon
+	context.beginPath();
+	context.moveTo(centerX - radius,centerY);
+	context.lineTo(centerX - horizOffset,centerY - vertOffset);
+	context.stroke();
+	
+	// Sixth line of hexagon
+	context.beginPath();
+	context.moveTo(centerX - horizOffset,centerY - vertOffset);
+	context.lineTo(centerX + horizOffset,centerY - vertOffset);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("F2F", 130, 155);
+	
+	// Face to face dimension line
+	context.beginPath();
+	context.moveTo(centerX - (100+horizOffset)/2,centerY - vertOffset/2);
+	context.lineTo(centerX + (100+horizOffset)/2,centerY + vertOffset/2);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "red";
+	context.fillText("DofC", 135, 30);
+
+	// Height below arc = Q
+	context.beginPath();
+	context.moveTo(centerX,centerY - vertOffset);
+	context.lineTo(centerX,centerY - radius);
+	context.strokeStyle = "red";
+	context.stroke();
+	
+	
+	//context.moveTo(10,10);
+	//context.lineTo(400,40);
+	//context.stroke();
+} //end of drawing
+
+function findBoth() {
+
+// Consider a triangle with the radius of the circumscribed circle as the hypotenuse, half of the polygonal side as a side 
+// and a line from the center of the circle/polygon to the center of the side as the final side of the triangle. Then the radius 
+// of the circle and the distance from the center of the circle to the midpoint of a side are related by the cosine of theta.
+// Where theta is half of the angle subtended by a side of the polygon or 360/n: theta = 180/n.
+
+	var diam = document.getElementById("diameter").value;
+	var f2f = document.getElementById("f2f").value;
+	var n = document.getElementById("numSides").value;
+	var doc = 0;
+	
+	if (n && n > 2) {
+		var theta = Math.PI/n;
+		if (diam && ! (f2f)) {
+			f2f = (diam)*Math.cos(theta);
+			document.getElementById("f2f").value = f2f.toFixed(4);
+			doc = (diam - f2f)/2;
+			document.getElementById("doc").value = doc.toFixed(4);
+			} // end if
+		else if (f2f && ! (diam)) {
+			diam = f2f/Math.cos(theta);
+			document.getElementById("diameter").value = diam.toFixed(4);
+			doc = (diam - f2f)/2;
+			document.getElementById("doc").value = doc.toFixed(4);
+			} // end else if
+		else {
+			// enter either circle diameter or face to face dimension, but not both
+			alert("Enter either circle diameter or face-to-face dimension, but not both.");
+			} // end else
+	} // end if (n)
+	else {
+		// must enter number of sides
+		alert("Enter the number of sides: n > 2");
+	}
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>Depth of cut calculator</h1>
+<h2>Turning round stock into regular polygons</h2><br />
+
+<canvas id="drawingCanvas" width="300" height="300"></canvas>
+
+<p>This calculator is useful when making, for instance, a special hex bit. The implementation assumes that either the <em>diameter</em> of the round stock is known or 
+	the desired <em>face to face</em> distance across the regular polygon is known. Enter whichever information you have available. (If you have both dimensions 
+	you are done!!) In either instance it will also provide the missing dimension. Input the <em>number of sides</em> of the 
+	regular polygonal cross section needed, if different than the default hexagon. All regular polygons can be calculated, including triangle, square and n-gon: sides 3 - 
+	<math><mi mathsize='1.8em'>&#x221e;<!--INFINITY--></mi></math> (or thereabouts).  <em>Depth of cut</em> is computed to the nearest ten-thousandth of an inch.</p>
+<p> This calculator uses the simple relationship between the diameter and the face-to-face dimension: 
+	<math display='block'><mi>F2F</mi><mo>=</mo><mrow><mi>Diam</mi><mo>&#x2062;<!--INVISIBLE TIMES--></mo><mo>(</mo><mrow><mi>cos</mi><mrow><mo>(</mo><mfrac><mrow><mn>360</mn></mrow><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><mo>)</mo></mrow><mo>)</mo></mrow></mrow></math> 
+	where <math><mi>n</mi></math><math><mo>=</mo></math>number of polygon sides. This relationship is a result of the triangle formed 
+	by a line from the center of the circle to the corner of the polygon, a line from this corner to half-way along the side of the polygon, and the 
+	line from this half-way point back to the center of the circle. (This is really the radius and half of F2F, but we can eliminate the factor of two 
+	from both sides of the equation.)</p>
+
+<hr />
+<br />
+<form name="CutDepth">
+<label>Diameter of Round Stock = </label>
+<input type="text" name="diameter" id="diameter" size="12" /><br />
+<br />
+<label>Face to Face Dimension = </label>
+<input type="text" name="f2f" id="f2f" value="" size="12"/><br />
+<br />
+<label>Number of Sides = </label>
+<input type="text" name="numSides" id="numSides" value="6" size="12"/><br />
+<br /><input type="button" value="Calculate Depth of Cut" onclick="findBoth()"/><br />
+<br />
+<label>Depth of Cut = </label>
+<input type="text" name="doc" id="doc" value="" size="12"/><br />
+<br>
+</form>
+<hr />
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>August 13, 2016</p>
+</footer>
+</html>

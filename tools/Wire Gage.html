@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Standard Wire Gage</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="wire, gage, imperial"/>
+	<meta name="description" content="Specifications for different imperial wire gages."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word;}
+  	
+  	td.right {
+  		text-align: right;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Summary of Standard Wire Gage</h1>
+<br/>
+<p>Imperial Standard Wire Gauge (swg) as used for sheet metal and wire giving
+thickness in both imperial and metric.</p>
+
+<br/>
+<table cellspacing="5" border="2" cellpadding="5">
+
+<tr>
+<th>swg</th>
+<th>Inches</th>
+<th>Millimeters</th>
+</tr>
+<tr><td>7/0</td><td>.500</td><td>12.700</tr>
+<tr><td>6/0</td><td>     .464</td><td>11.786</tr> 
+<tr><td>5/0</td><td>     .432</td><td>10.973 </tr>
+<tr><td>4/0</td><td>     .400</td><td>10.160 </tr>
+<tr><td>3/0</td><td>     .372</td><td>9.449  </tr>
+<tr><td>2/0</td><td>     .348</td><td>8.839  </tr>
+<tr><td>1/0</td><td>     .324</td><td>8.236  </tr>
+<tr><td>1</td><td>       .300</td><td>7.620  </tr>
+<tr><td>2</td><td>       .276</td><td>7.010  </tr>
+<tr><td>3</td><td>       .252</td><td>6.401  </tr>
+<tr><td>4</td><td>       .232</td><td>5.893  </tr>
+<tr><td>5</td><td>       .212</td><td>5.385  </tr>
+<tr><td>6</td><td>       .192</td><td>4.877  </tr>
+<tr><td>7</td><td>       .176</td><td>4.470  </tr>
+<tr><td>8</td><td>       .160</td><td>4.064  </tr>
+<tr><td>9</td><td>       .144</td><td>3.658  </tr>
+<tr><td>10</td><td>      .128</td><td>3.251  </tr>
+<tr><td>11</td><td>      .116</td><td>2.946  </tr>
+<tr><td>12</td><td>      .104</td><td>2.642  </tr>
+<tr><td>13</td><td>      .092</td><td>2.337  </tr>
+<tr><td>14</td><td>      .080</td><td>2.032</tr>
+<tr><td>15</td><td>      .072</td><td>1.829</tr>
+<tr><td>16</td><td>      .064</td><td>1.626</tr>
+<tr><td>17</td><td>      .056</td><td>1.422</tr>
+<tr><td>18</td><td>      .048</td><td>1.219</tr>
+<tr><td>19</td><td>      .040</td><td>1.016</tr>
+<tr><td>20</td><td>      .036</td><td>.914 </tr>
+<tr><td>21</td><td>      .032</td><td>.813 </tr>
+<tr><td>22</td><td>      .028</td><td>.711 </tr>
+<tr><td>23</td><td>      .024</td><td>.610 </tr>
+<tr><td>24</td><td>      .022</td><td>.559 </tr>
+<tr><td>25</td><td>      .020</td><td>.508 </tr>
+<tr><td>26</td><td>      .018</td><td>.457 </tr>
+<tr><td>27</td><td>      .0164</td><td>.417 </tr>
+<tr><td>28</td><td>      .0148</td><td>.376 </tr>
+<tr><td>29</td><td>      .0136</td><td>.345 </tr>
+<tr><td>30</td><td>      .0124</td><td>.315 </tr>
+<tr><td>31</td><td>      .0116</td><td>.295</tr>
+<tr><td>32</td><td>      .0108</td><td>.274</tr>
+<tr><td>33</td><td>      .0100</td><td>.254</tr>
+<tr><td>34</td><td>      .0092</td><td>.234</tr>
+<tr><td>35</td><td>      .0084</td><td>.213</tr>
+<tr><td>36</td><td>      .0076</td><td>.193</tr>
+<tr><td>37</td><td>      .0068</td><td>.173</tr>
+<tr><td>38</td><td>      .006</td><td>.152</tr>
+<tr><td>39</td><td>      .0052</td><td>.132</tr>
+<tr><td>40</td><td>      .0048</td><td>.122</tr>
+<tr><td>41</td><td>      .0044</td><td>.112</tr>
+<tr><td>42</td><td>      .004</td><td>.102</tr>
+<tr><td>43</td><td>      .0036</td><td>.091</tr>
+<tr><td>44</td><td>      .0032</td><td>.081</tr>
+<tr><td>45</td><td>      .0028</td><td>.071</tr>
+<tr><td>46</td><td>      .0024</td><td>.061</tr>
+<tr><td>47</td><td>      .002</td><td>.051</tr>
+<tr><td>48</td><td>      .0016</td><td>.041</tr>
+<tr><td>49</td><td>      .0012</td><td>.030</tr>
+<tr><td>50</td><td>      .001</td><td>.025</tr>
+
+</table>
+
+</form>
+<hr />
+<footer>
+<p>Based on data at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Bolt Hole Circle</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="bolt, circle, pentagon, square, triangle, hexagon"/>
+	<meta name="description" content="Calculation of drilling locations for bolt hole circles."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+// Get user input
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+var offsetArray = new Array(); //  global array to hold the data from "Machinery's Handbook"
+
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function sind(num) {
+	return Math.sin(rpd * num);
+}
+
+function cosd(num) {
+	return Math.cos(rpd * num);
+}
+
+function rss2(a,b) {
+	return Math.sqrt(a*a + b*b);
+}
+
+function rss3(a,b,c) {
+	return Math.sqrt(a * a + b * b + c * c);
+}
+
+function acsd(num) {
+	// DPR*acos((ABS(a)<1) ? (a) : SGN(a))
+	if (num<1) {
+		return dpr * Math.acos(num);
+	}
+	else {
+		return dpr * Math.acos(sgn(num));
+	}
+}
+
+function tand(num) {
+	return Math.tan(num * rpd);
+}
+
+function atand(num) {
+	return dpr * Math.atan(num);
+}
+
+function frac(a) {
+	return (a - Math.floor(a));
+}
+
+function vang(arr1,arr2) {
+	// cos(theta) = dot product / product of the vector lengths
+	// cos(theta) = (u1v1 + u2v2 + ...)/(sqrt(u1^2 + u2^2 + ...) * sqrt(v1^2 + v2^2 + ...))
+	var i;
+	var dp = 0;
+	var sqSide1 = 0;
+	var sqSide2 = 0;
+	var theta;
+	for (i in arr1) {
+		dp = dp + arr1[i] * arr2[i];
+		sqSide1 = sqSide1 + arr1[i] * arr1[i];
+		sqSide2 = sqSide2 + arr2[i] * arr2[i];
+	}
+	theta = acsd(dp/(Math.sqrt(sqSide1) * Math.sqrt(sqSide2)));
+	return theta;
+}
+
+
+function calcOffsets(n,diam,holeLoc) {
+	var i;
+	
+	// need if/then for type of calculation inradius vs. circumradius
+	
+	if (!holeLoc) {
+		diam = 2 * diam / Math.sqrt(3);		// inradius = 2 * circumradius / sqrt3
+	}	// end if
+
+	for (var i=0; i<n; i++) {
+		offsetArray[i][0] = offsetArray[i][0]*diam;
+		offsetArray[i][1] = offsetArray[i][1]*diam;
+	}	// end for i
+}	// end calcOffsets()
+
+function tablePrint(n,diam) {
+	var div = document.getElementsByTagName("div")[0];
+	var tablI, rowI;
+	
+	tablI = document.createElement("table");
+	tablI.createTHead();
+	rowI = tablI.tHead.insertRow();
+	var headCell = rowI.insertCell(0);
+	headCell.setAttribute('colSpan', '3');
+	headCell.innerHTML = 'Bolt Hole Circle with ' + n + " holes and a diameter of " + diam;
+
+	tablI.appendChild(document.createElement('tbody'));
+	rowI = tablI.tBodies[0].insertRow();
+	var brkCell = rowI.insertCell(0);
+	brkCell.setAttribute('colSpan', '3');
+	brkCell.innerHTML = ' ';
+	
+	rowI = tablI.tBodies[0].insertRow();
+	var cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "Hole Number";
+	var cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "X Offset";
+	var cell2 = rowI.insertCell(2);
+	cell2.innerHTML = "Y Offset";
+	
+	for (var counter = 0; counter < n; counter++) {
+		rowI = tablI.tBodies[0].insertRow();
+		cell0 = rowI.insertCell(0);
+		cell0.innerHTML = counter + 1;			// put the hole number in first cell
+		cell1 = rowI.insertCell(1);
+		cell1.innerHTML = offsetArray[counter][0];	// put the x-offset in second cell
+		cell2 = rowI.insertCell(2);
+		cell2.innerHTML = offsetArray[counter][1];	// put the y-offset in third cell
+	}	// end for i
+	
+	div.appendChild(tablI);
+}
+
+function getInput() {
+
+	var n;												// integer number of sides
+	var diam;											// real diameter
+	var holeLoc = true;									// boolean: true if holes on circle
+	var div = document.getElementsByTagName("div")[0];	// determine the place to put the output
+
+	
+	n = parseInt(document.getElementById("polySides").value);
+	diam = parseFloat(document.getElementById("diameter").value);
+	
+
+	var numOfElements = document.forms[0].elements.length - 2;
+	if (document.forms[0].elements[numOfElements].selectedIndex = 1) {
+		holeLoc = true;
+	}
+	
+	switch(n) {
+		case 3:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0;		// x offsets in first 
+			offsetArray[0][1] = -0.43301;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = 0.43301;
+			offsetArray[1][1] = -0.5;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = 0.25;
+			offsetArray[2][1] = 0.25;
+			break;
+		case 4:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0;		// x offsets in first 
+			offsetArray[0][1] = -0.5;		// y offsets in second	
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = 0.0;
+			offsetArray[1][1] = 0.5;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = -0.5;
+			offsetArray[2][1] = 0.0;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = 0.5;
+			offsetArray[3][1] = 0.0;
+			break;
+		case 5:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0;		// x offsets in first 
+			offsetArray[0][1] = -0.47553;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.29389;
+			offsetArray[1][1] = 0.29389;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = 0.47553;
+			offsetArray[2][1] = -0.5;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.15451;
+			offsetArray[3][1] = 0.40451;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = 0.40451;
+			offsetArray[4][1] = -0.15451;
+			break;
+		case 6:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0; 		// x offsets in first 
+			offsetArray[0][1] = -0.43301;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.43301;
+			offsetArray[1][1] = 0.0;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = 0.43301;
+			offsetArray[2][1] = 0.43301;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.5;
+			offsetArray[3][1] = -0.25;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = 0.25;
+			offsetArray[4][1] = 0.5;
+			offsetArray[5] = new Array();
+			offsetArray[5][0] = 0.25;
+			offsetArray[5][1] = -0.25;
+			break;
+		case 7:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0; 		// x offsets in first 
+			offsetArray[0][1] = -0.5;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.39092;
+			offsetArray[1][1] = -0.31174;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = -0.48746;
+			offsetArray[2][1] = 0.11126;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.21694;
+			offsetArray[3][1] = 0.45048;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = 0.21694;
+			offsetArray[4][1] = 0.45048;
+			offsetArray[5] = new Array();
+			offsetArray[5][0] = 0.48746;
+			offsetArray[5][1] = 0.11126;
+			offsetArray[6] = new Array();
+			offsetArray[6][0] = 0.39092;
+			offsetArray[6][1] = -0.31174;
+			break;
+		case 8:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0; 		// x offsets in first 
+			offsetArray[0][1] = -0.5;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.35355;
+			offsetArray[1][1] = -0.35355;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = -0.5;
+			offsetArray[2][1] = 0.0;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.35355;
+			offsetArray[3][1] = 0.35355;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = 0.0;
+			offsetArray[4][1] = 0.5;
+			offsetArray[5] = new Array();
+			offsetArray[5][0] = 0.35355;
+			offsetArray[5][1] = 0.35355;
+			offsetArray[6] = new Array();
+			offsetArray[6][0] = 0.5;
+			offsetArray[6][1] = 0.0;
+			offsetArray[7] = new Array();
+			offsetArray[7][0] = 0.35355;
+			offsetArray[7][1] = -0.35355;
+			break;
+		case 9:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0; 		// x offsets in first 
+			offsetArray[0][1] = -0.5;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.32139;
+			offsetArray[1][1] = -0.38302;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = -0.49240;
+			offsetArray[2][1] = -0.08682;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.43301;
+			offsetArray[3][1] = 0.25;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = -0.17101;
+			offsetArray[4][1] = 0.46985;
+			offsetArray[5] = new Array();
+			offsetArray[5][0] = 0.17101;
+			offsetArray[5][1] = 0.46985;
+			offsetArray[6] = new Array();
+			offsetArray[6][0] = 0.43301;
+			offsetArray[6][1] = 0.25;
+			offsetArray[7] = new Array();
+			offsetArray[7][0] = 0.49240;
+			offsetArray[7][1] = -0.08682;
+			offsetArray[8] = new Array();
+			offsetArray[8][0] = 0.32139;
+			offsetArray[8][1] = -0.38302;
+			break;
+		case 10:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0; 		// x offsets in first 
+			offsetArray[0][1] = -0.5;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.29389;
+			offsetArray[1][1] = -0.40451;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = -0.47553;
+			offsetArray[2][1] = -0.15451;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.47553;
+			offsetArray[3][1] = 0.15541;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = -0.29389;
+			offsetArray[4][1] = 0.40451;
+			offsetArray[5] = new Array();
+			offsetArray[5][0] = 0.0;
+			offsetArray[5][1] = 0.5;
+			offsetArray[6] = new Array();
+			offsetArray[6][0] = 0.29389;
+			offsetArray[6][1] = 0.40451;
+			offsetArray[7] = new Array();
+			offsetArray[7][0] = 0.47553;
+			offsetArray[7][1] = 0.15451;
+			offsetArray[8] = new Array();
+			offsetArray[8][0] = 0.47553;
+			offsetArray[8][1] = -0.15451;
+			offsetArray[9] = new Array();
+			offsetArray[9][0] = 0.29389;
+			offsetArray[9][1] = -0.40451;
+			break;
+		case 11:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0; 		// x offsets in first 
+			offsetArray[0][1] = -0.5;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.27032;
+			offsetArray[1][1] = -0.42063;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = -0.45482;
+			offsetArray[2][1] = -0.20771;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.49491;
+			offsetArray[3][1] = 0.07116;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = -0.37787;
+			offsetArray[4][1] = 0.32743;
+			offsetArray[5] = new Array();
+			offsetArray[5][0] = -0.14087;
+			offsetArray[5][1] = 0.47975;
+			offsetArray[6] = new Array();
+			offsetArray[6][0] = 0.14087;
+			offsetArray[6][1] = 0.47975;
+			offsetArray[7] = new Array();
+			offsetArray[7][0] = 0.37787;
+			offsetArray[7][1] = 0.32743;
+			offsetArray[8] = new Array();
+			offsetArray[8][0] = 0.49491;
+			offsetArray[8][1] = 0.07116;
+			offsetArray[9] = new Array();
+			offsetArray[9][0] = 0.45482;
+			offsetArray[9][1] = -0.20771;
+			offsetArray[10] = new Array();
+			offsetArray[10][0] = 0.27032;
+			offsetArray[10][1] = -0.42063;
+			break;
+		case 12:
+			offsetArray[0] = new Array();
+			offsetArray[0][0] = 0.0; 		// x offsets in first 
+			offsetArray[0][1] = -0.5;	// y offsets in second
+			offsetArray[1] = new Array();
+			offsetArray[1][0] = -0.25;
+			offsetArray[1][1] = -0.43301;
+			offsetArray[2] = new Array();
+			offsetArray[2][0] = -0.43301;
+			offsetArray[2][1] = -0.25;
+			offsetArray[3] = new Array();
+			offsetArray[3][0] = -0.5;
+			offsetArray[3][1] = 0.0;
+			offsetArray[4] = new Array();
+			offsetArray[4][0] = -0.43301;
+			offsetArray[4][1] = 0.25;
+			offsetArray[5] = new Array();
+			offsetArray[5][0] = -0.25;
+			offsetArray[5][1] = 0.43301;
+			offsetArray[6] = new Array();
+			offsetArray[6][0] = 0.0; 		// x offsets in first 
+			offsetArray[6][1] = 0.5;	// y offsets in second
+			offsetArray[7] = new Array();
+			offsetArray[7][0] = 0.25;
+			offsetArray[7][1] = 0.43301;
+			offsetArray[8] = new Array();
+			offsetArray[8][0] = 0.43301;
+			offsetArray[8][1] = 0.25;
+			offsetArray[9] = new Array();
+			offsetArray[9][0] = 0.5;
+			offsetArray[9][1] = 0.0;
+			offsetArray[10] = new Array();
+			offsetArray[10][0] = 0.43301;
+			offsetArray[10][1] = -0.25;
+			offsetArray[11] = new Array();
+			offsetArray[11][0] = 0.25;
+			offsetArray[11][1] = -0.43301;
+			break;
+		case 13:
+			break;
+		case 14:
+			break;
+		case 15:
+			break;
+		case 16:
+			break;
+		case 17:
+			break;
+		case 18:
+			break;
+		case 19:
+			break;
+		case 20:
+			break;
+		case 21:
+			break;
+		case 22:
+			break;
+		case 23:
+			break;
+		case 24:
+			break;
+		case 25:
+			break;
+		case 26:
+			break;
+		case 27:
+			break;
+		case 28:
+			break;
+		case 29:
+			break;
+		case 30:
+			break;
+		case 31:
+			break;
+		case 32:
+			break;
+		case 33:
+			break;
+	}
+	
+	calcOffsets(n,diam,holeLoc);
+	
+	tablePrint(n,diam);
+	
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<h1>Bolt Hole Circles</h1>
+<br/>
+<h3 class='minor'>from John McDonald</h3>
+
+<blockquote>
+<p>This calculator will calculate bolt hole positions for regular n-gons. "Regular" 
+means all sides have equal lengths. "n-gon" includes triangle, square, pentagon, 
+hexagon, heptagon, through 33-gon. This is based on data in "Machinery's Handbook 
+29th Edition"</p>
+
+<img class=inline src="Bolt hole circle fm MH29.jpg" alt="Bolt hole circle fm MH29" width="570" height="456">
+
+<p>All calculations are relative to the center of the polygon, i.e. the center of 
+the bolt hole circle is assigned (0,0). Top and right are positive offsets and 
+bottom/left are negative offsets. A vertex of the polygon is always at top center. 
+[This is considered a Type A Bolt Hole Circle in Machinery's Handbook.] The top center 
+hole is assigned the number one. The remaining holes are numbered in 
+a counter-clockwise direction. For example, bolt hole locations for 
+the five holes in a pentagon would have two holes below center, the number one hole 
+directly above center, and two holes above and left/right of center.</p>
+
+<p>If you are not working from center, then you will need to translate the dimensions 
+provided as output to your (0,0) location. If your circle has two holes evenly centered 
+on the top of the circle, then you will need to wait for an update to this page.</p>
+
+<p>Input is straightforward. Only two parameters are required: the number of sides 
+in your regular polygon and the diameter of your circle. One optional input choice is 
+provided. This is whether your bolt holes are located on the circle (default) or 
+if the sides of your polygon are tangent to the circle (i.e. the circle is 'inside' 
+your n-gon). This latter selection is used primarily for laying out a regular polygon. 
+For instance, you might be making a special wrench with a hexagonal hole (the project 
+that spurred me to write this program). Drill the hole to the diameter of the nut size, 
+layout the hexagon around this hole, and file to the layout lines.</p>
+
+<p>The methodology is straight from Machinery's Handbook. The Handbook has four tables 
+for calculating bolt holes with 3 to 33 holes. Only one (so far) of these four tables 
+is included here as it corresponds with the layout of holes discussed above. The data 
+is for a bolt hole circle of diameter 1. So multiplying your diameter in any dimensions 
+by the factors from the table for the indicated number of holes provides the offsets 
+for milling machine setup (relative to the origin).</p>
+
+
+<form name="myData">
+
+<fieldset>
+	<legend>Enter the following data for your bolt hole circles:</legend>
+		<label for="polySides">Number of Sides</label>
+		<input type="text" id="polySides" placeholder="6" autofocus><br/>
+		<label for="diameter">Circle Diamater (in/mm)</label>
+		<input type="text" id="diameter" placeholder="5"><br/>
+		<select name=”holeLoc” size=”1”>
+			<option value=”a” selected=”selected”>Holes on Circle</option>
+			<option value=”b”>Lines on Circle</option>
+		</select>
+		<br/>
+		<input type="button" value="Calculate Bolt Hole Circle Data" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+</form>
+<br/>
+<hr/>
+<div>
+</div name = "div2">
+<div>
+</div>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

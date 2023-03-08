@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Railroad Gage</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="railroad, gage, scale"/>
+	<meta name="description" content="Specifications for different railroad gages."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word;}
+  	
+  	td.right {
+  		text-align: right;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Summary of Railroad Scales</h1>
+<br/>
+
+
+<br/><br/>
+
+<table cellspacing="5" border="2" cellpadding="5">
+
+<tr>
+<th>Name of Scale</th>
+<th>Scale to Foot</th>
+<th>Proportion</th>
+<th>Coupler Center Above Railhead</th>
+<th>Track Gage</th>
+<th>Remarks</th>
+</tr>
+<tr>
+	<td>1"</td>
+	<td>1.000" (25.4mm)</td>
+	<td>1:12</td>
+	<td>2 7/8" (73mm)</td>
+	<td>4.750" (121mm)</td>
+	<td></td>
+</tr>
+<tr><td>3/4"</td>      <td>.750(19.Omm)</td>   <td>1:16</td>      <td>2 1/4"(57mm)</td>   <td>3.500"(88.9mm)</td><td></td><tr/>
+
+<tr> <td>17/32"</td>    <td>.531"(13.5mm)</td>  <td>1:22.6</td>   <td>l 7/16"(37mm)</td>  <td>2.500"(63.5mm)</td><td></td><tr/>
+<tr><td>1/2"</td>      <td>.500"(12.7mm)</td>  <td>1:24</td>     <td>1 7/16"(37mm)</td>  <td>2.500"(63.5mm)</td><td></td><tr/>
+
+<tr> <td>3/8</td>       <td>.375"(9.52mm)</td>  <td>1:32</td>     <td>1 1/16"(27mm)</td>  <td>1.766"(44.9mm)</td><td></td><tr/>
+
+<tr> <td>O(17)</td>     <td>.266"(6.75mm)</td>  <td>1:45.2</td>    <td>11/16"(17mm)</td>  <td>1.250"(31.8mm)</td> <td>++</td><tr/>
+<tr> <td>O</td>         <td>.250"(6.35mm)</td>  <td>1:48</td>      <td>11/16"(17mm)</td>  <td>1.250"(31.8mm)</td> <td>++</td><tr/>
+
+<tr> <td>On3</td>       <td>.250"(6.35mm)</td>  <td>1:48</td>       <td>9/16"(14mm)</td>   <td>.750"(19.0mm)</td><td></td><tr/>
+
+<tr> <td>On2</td>       <td>.250"(6.35mm)</td>  <td>1:48</td>      <td>11/32"(8.7mm)</td>  <td>.500"(12.7mm)</td><td></td><tr/>
+
+<tr> <td>S</td>         <td>.188"(4.76mm)</td>  <td>1:64</td>      <td>17/32"(13mm)</td>   <td>.875"(22.2mm)</td><td></td><tr/>
+
+<tr> <td>Sn3</td>       <td>.188"(4.76mm)</td>  <td>1:64</td>      <td>17/32"(10mm)</td>   <td>.563"(14.3mm)</td><td></td><tr/>
+
+<tr> <td>OO</td>        <td>4.0mm(.1575")</td>  <td>1:76.2</td>    <td>29/64"(12mm)</td>   <td>.750"(19.0mm)</td><td></td><tr/>
+
+<tr> <td>HO</td>        <td>3.5mm(.1378")</td>  <td>1:87.1</td>    <td>25/64"(9.9mm)</td>  <td>.649"(16.5mm)</td><td></td><tr/>
+
+<tr> <td>HOn3</td>      <td>3.5mm(.1378")</td>  <td>1:87.1</td>    <td>9/32"(7.1mm)</td>   <td>.413"(10.5mm)</td><td></td><tr/>
+
+<tr> <td>HOn2</td>      <td>3.5mm(.1378")</td>  <td>1:87.1</td>                   <td>.276"(7.01mm)</td><td></td><td></td><tr/>
+
+<tr> <td>TT</td>        <td>.100"(2.54mm)</td>  <td>1:120</td>     <td>9/32"(7.1mm)</td>   <td>.471"(12.0mm)</td><td></td><tr/>
+<tr> <td>TTn3</td>      <td>.100"(2.54mm)</td>  <td>1:120</td>     <td>7/32"(5.54mm)</td>  <td>.300"(7.62mm)</td><td></td><tr/>
+
+<tr> <td>N</td>         <td>.075"(1.90mm)</td>  <td>1:160</td>    <td>.216"(5.5mm)</td>    <td>.353"(8.97mm)</td><td></td><tr/>
+
+<tr> <td>Nn3(40")</td>  <td>.075"(1.90mm)</td>  <td>1:160</td>                    <td>.250"(6.35mm)</td><td></td><td></td><tr/>
+
+<tr> <td>Z</td><td>.055"(1.39mm)</td>  <td>1:220</td>                    <td>.257"(6.52mm)</td><td></td><td></td><tr/>
+</table>
+<p>++ Except for track gage and associated dimensions, STANDARDS for these scales
+are generally the same and are referred to simply as "O" STANDARDS.</p>
+</form>
+<hr />
+<footer>
+<p>Based on data at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

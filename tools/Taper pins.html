@@ -1,0 +1,724 @@
+<html>
+<head>
+<title>Taper Pin Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table th {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function calcDiam()
+{
+	var pinDiam = parseFloat(document.getElementById("pinDiam").value);
+	var pinNum = document.getElementById("pinNum").value;
+	var len = parseFloat(document.getElementById("length").value);
+	
+	var result = 0;
+	var test = isNaN(pinDiam)
+	
+	if (!test)
+	{
+		if (len != 0)
+		{
+			result = pinDiam - (0.02083 * len);
+		}
+	}
+	else if (pinNum != "")
+	{
+		switch (pinNum)
+		{
+			case "7/0":
+				pinDiam = 0.0625;
+				break;
+			case "6/0":
+				pinDiam = 0.0780;
+				break;
+			case "5/0":
+				pinDiam = 0.0940;
+				break;
+			case "4/0":
+				pinDiam = 0.1090;
+				break;
+			case "3/0":
+				pinDiam = 0.1250;
+				break;
+			case "2/0":
+				pinDiam = 0.1410;
+				break;
+			case "0":
+				pinDiam = 0.1560;
+				break;
+			case "1":
+				pinDiam = 0.1720;
+				break;
+			case "2":
+				pinDiam = 0.1930;
+				break;
+			case "3":
+				pinDiam = 0.2190;
+				break;
+			case "4":
+				pinDiam = 0.2500;
+				break;
+			case "5":
+				pinDiam = 0.2890;
+				break;
+			case "6":
+				pinDiam = 0.3410;
+				break;
+			case "7":
+				pinDiam = 0.4090;
+				break;
+			case "8":
+				pinDiam = 0.4920;
+				break;
+			case "9":
+				pinDiam = 0.5910;
+				break;
+			case "10":
+				pinDiam = 0.7060;
+				break;
+			case "11":
+				pinDiam = 0.8600;
+				break;
+			case "12":
+				pinDiam = 1.0320;
+				break;
+			case "13":
+				pinDiam = 1.2410;
+				break;
+			case "014":
+				pinDiam = 1.5210;
+				break;
+		}
+			if (len != 0)
+			{
+				result = pinDiam - (0.02083 * len);
+			}
+	}
+	
+	
+	document.getElementById("smDiam").value = result.toFixed(4);
+	
+
+}	// end of function
+
+function getPinInfo(pinNumber){
+	let pinInfo = [pinNumber,0,0,0,0,0];
+	// pinInfo = [pinNumber, diam, maxLen, pt1, pt2, pt3]
+	switch (pinNumber)
+		{
+			case "7/0":
+				pinInfo[1] = 0.0625;
+				pinInfo[2] = 0.75;
+				pinInfo[3] = 0.75;
+				break;
+			case "6/0":
+				pinInfo[1] = 0.0780;
+				pinInfo[2] = 1.0;
+				pinInfo[3] = 1.0;
+				break;
+			case "5/0":
+				pinInfo[1] = 0.0940;
+				pinInfo[2] = 1.0;
+				pinInfo[3] = 1.0;
+				break;
+			case "4/0":
+				pinInfo[1] = 0.1090;
+				pinInfo[2] = 1.0;
+				pinInfo[3] = 1.0;
+				break;
+			case "3/0":
+				pinInfo[1] = 0.1250;
+				pinInfo[2] = 1.0;
+				pinInfo[3] = 1.0;
+				break;
+			case "2/0":
+				pinInfo[1] = 0.1410;
+				pinInfo[2] = 2.5;
+				pinInfo[3] = 1.25;
+				pinInfo[4] = 2.5;
+				break;
+			case "0":
+				pinInfo[1] = 0.1560;
+				pinInfo[2] = 3.0;
+				pinInfo[3] = 1.5;
+				pinInfo[4] = 3.0;
+				break;
+			case "1":
+				pinInfo[1] = 0.1720;
+				pinInfo[2] = 3.0;
+				pinInfo[3] = 1.5;
+				pinInfo[4] = 3.0;
+				break;
+			case "2":
+				pinInfo[1] = 0.1930;
+				pinInfo[2] = 3.5;
+				pinInfo[3] = 1.75;
+				pinInfo[4] = 3.5;
+				break;
+			case "3":
+				pinInfo[1] = 0.2190;
+				pinInfo[2] = 3.5;
+				pinInfo[3] = 1.75;
+				pinInfo[4] = 3.5;
+				break;
+			case "4":
+				pinInfo[1] = 0.2500;
+				pinInfo[2] = 4.0;
+				pinInfo[3] = 2.0;
+				pinInfo[4] = 4.0;
+				break;
+			case "5":
+				pinInfo[1] = 0.2890;
+				pinInfo[2] = 4.0;
+				pinInfo[3] = 2.0;
+				pinInfo[4] = 4.0;
+				break;
+			case "6":
+				pinInfo[1] = 0.3410;
+				pinInfo[2] = 5.0;
+				pinInfo[3] = 1.67;
+				pinInfo[4] = 3.33;
+				pinInfo[5] = 5.0;
+				break;
+			case "7":
+				pinInfo[1] = 0.4090;
+				pinInfo[2] = 5.0;
+				pinInfo[3] = 1.67;
+				pinInfo[4] = 3.33;
+				pinInfo[5] = 5.0;
+				break;
+			case "8":
+				pinInfo[1] = 0.4920;
+				pinInfo[2] = 5.0;
+				pinInfo[3] = 1.67;
+				pinInfo[4] = 3.33;
+				pinInfo[5] = 5.0;
+				break;
+			case "9":
+				pinInfo[1] = 0.5910;
+				pinInfo[2] = 6.0;
+				pinInfo[3] = 2.0;
+				pinInfo[4] = 4.0;
+				pinInfo[5] = 6.0;
+				break;
+			case "10":
+				pinInfo[1] = 0.7060;
+				pinInfo[2] = 6.0;
+				pinInfo[3] = 2.0;
+				pinInfo[4] = 4.0;
+				pinInfo[5] = 6.0;
+				break;
+		}
+	return pinInfo;
+}
+
+function getDrill(diameter){
+	const drillSizes = [0.0625,0.0781,0.0938,0.1094,0.1250,0.1406,0.1562,0.1719,0.1875,0.2031,0.2188,0.2344,0.2500,0.2656,0.2812,0.2969,0.3125,0.3281,0.3438,0.3594,0.3750,0.3906,0.4062,0.4219,0.4375,0.4531,0.4688,0.4844,0.50,0.5156,0.5312,0.5469,0.5625,0.5781,0.5938,0.6094,0.6250,0.6406,0.6562,0.6719,0.6875,0.7031]
+	const drillNames = ['1/16','5/64','3/32','7/64','1/8','9/64','5/32','11/64','3/16','13/64','7/32','15/64','1/4','17/64','9/32','19/64','5/16','21/64','11/32','23/64','3/8','25/64','13/32','27/64','7/16','29/64','15/32','31/64','1/2','33/64','17/32','35/64','9/16','37/64','19/32','39/64','5/8','41/64','21/32','43/64','11/16','45/64']
+	
+	let drills = drillSizes.filter((x) => {if (x <= diameter) return x} );
+	const drill = drills.pop();			// largest of drills <= diameter
+	
+	return drillNames[drillSizes.indexOf(drill)];
+}
+
+function createTable(numCols,dOne,dTwo,dThree,depthTwo,depthThree,pinLen){
+	let tbl = "<table><tr><th></th><th>1st Drill</th>";
+	if (numCols > 1){
+		tbl = tbl + "<th>2nd Drill</th>";
+	}
+	if (numCols > 2){
+		tbl = tbl + "<th>3rd Drill</th>";
+	}
+	
+	tbl = tbl + "</tr><tr><td>Drill Size (in)</td>";
+	tbl = tbl + `<td>${dOne}</td>`;
+	
+	if (numCols > 1){
+		tbl = tbl + `<td>${dTwo}</td>`;
+	}
+	if (numCols > 2){
+		tbl = tbl + `<td>${dThree}</td>`;
+	}
+	
+	tbl = tbl + "</tr><tr><td>Drill depth (in)</td>";
+	tbl = tbl + `<td>${pinLen}</td>`
+	
+	if (numCols > 2){
+		tbl = tbl + `<td>${depthTwo}</td><td>${depthThree}</td></tr></table>`;
+	}
+	else if (numCols > 1){
+		tbl = tbl + `<td>${depthTwo}</td></tr></table>`;
+	}
+	else {
+		tbl = tbl + "</tr></table>";
+	}
+	return tbl;
+}
+
+function drillFmLen(maxDiam,len){
+	const taper = 0.02083;
+	return (maxDiam - taper * len);
+}
+
+
+function calcDrills(){
+
+	const pinNumber = document.getElementById("pinNumber").value;
+	const pinLength = parseFloat(document.getElementById("pinLength").value);
+	
+	// Find the intersection of the taper line for a given pin number and the 
+	// length of the pin. This intersection gives the smallest drill size.
+	// Each pin number has 1 to 3 points along its taper line. 
+	// The location of the intersection relative to the dots determines how 
+	// many drills are required. These are determined by halving or 'thirding' 
+	// the taper line and reading off the corresponding drill sizes. Depths 
+	// are just 1/2 or 1/3 of the given pin length.
+	
+	// Compute the taper line for the provided pin number.
+	// Find the intersection with the pin length for smallest drill size.
+	// Look up the points for the provided pin number.
+	// Determine which points the intersection lies between.
+	// Use this info to determine if other drills are needed.
+	// If so divide the length by 2 or 3 to get drill depths.
+	// Use these same divisors & the taper line to determine the other drill sizes 
+	// required.
+	
+	const pinInfo = getPinInfo(pinNumber);
+	
+	// pinInfo contains [pinNumber, pinDiam, maxPinLen, pt1, pt2, pt3]
+	// the taper line is smallDiam = diam - (0.02083) * maxPinLen
+	
+	const smallestDiam = drillFmLen(pinInfo[1],pinLength);
+	
+	const drillOneSize = getDrill(smallestDiam);
+	
+	// now need to determine which points pinLength falls between
+	
+	let numDrills = 1;
+	let drillThreeDepth = 0;
+	let drillTwoDepth = 0;
+	let drillTwoSize = 0;
+	let drillThreeSize = 0;
+	
+	if (!(pinInfo[5] === 0)){		// there are three dots
+		if (pinInfo[4] < pinLength && pinLength <= pinInfo[5]) {	// pin between dots 2 and 3
+			drillThreeDepth = pinLength/3;
+			drillThreeSize = getDrill(drillFmLen(pinInfo[1],drillThreeDepth));	// get smallest drill between 2 & 3
+			drillTwoDepth = 2 * pinLength/3
+			drillTwoSize = getDrill(drillFmLen(pinInfo[1],drillTwoDepth));
+			numDrills = 3;
+		}
+		else if (pinInfo[3] <= pinLength && pinLength <= pinInfo[4]) {	// pin between dots 1 and 2
+			drillTwoDepth = pinLength/2;
+			drillTwoSize = getDrill(drillFmLen(pinInfo[1],drillTwoDepth));	// get smallest drill between 1 & 2
+			numDrills = 2;
+		}
+	}
+	else if (!(pinInfo[4] === 0)){	// there are two dots
+		if (pinInfo[3] <= pinLength && pinLength <= pinInfo[4]) {	// pin between dots 1 and 2
+			drillTwoDepth = pinLength/2;
+			drillTwoSize = getDrill(drillFmLen(pinInfo[1],drillTwoDepth));	// get smallest drill between 1 & 2
+			numDrills = 2;
+		}
+	}
+	
+	const output = createTable(numDrills,drillOneSize,drillTwoSize,drillThreeSize,drillTwoDepth,drillThreeDepth,pinLength);
+	const div = document.getElementsByTagName("div")[0];
+	div.innerHTML = output;
+}
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Taper Pin Calculator
+</h1>
+
+<p>
+	The large hole diameter on the South Bend 9" tailstock is 5/32" as 
+	measured by a punch of that size. The small hole was somewhere between 1/8" and 
+	9/16". From "Machinery's Handbook" the standard taper pin sizes run from 1/16" to 
+	1.52". The large diameter is the basis for pin size. The taper on all pins is 0.250" 
+	per foot (or 1.194&deg;). The table below provides an overview of the standard taper 
+	pin sizes. 
+</p>
+
+<p>	
+	The calculator returns the diameter of the small end of the pin given the pin 
+	diameter (or pin number) and the length of the desired pin. The diameter at the 
+	small end is computed by multiplying the nominal length of the pin by the factor 
+	0.02083 and subtracting the result from the basic pin diameter. 
+</p>
+
+<table>
+	<tr>
+		<th>Pin Number</th>
+		<th>Pin Size (in)</th>
+		<th>End Crown Radius (Min-Max) (in)</th>
+		<th>Range of Lengths (in)</th>
+		<th>Standard Reamer (in)</th>
+	</tr>
+	<tr>
+		<td>7/0</td>
+		<td>0.0625</td>
+		<td>0.052 - 0.072</td>
+		<td>1/4 - 1</td>
+		<td>&hellip;</td>
+	</tr>
+	<tr>
+		<td>6/0</td>
+		<td>0.0780</td>
+		<td>0.068 - 0.088</td>
+		<td>1/4 - 1/2</td>
+		<td>&hellip;</td>
+	</tr>
+	<tr>
+		<td>5/0</td>
+		<td>0.0940</td>
+		<td>0.084 - 0.104</td>
+		<td>1 1/4 - 1 1/2</td>
+		<td>1/4 - 1</td>
+	</tr>
+	<tr>
+		<td>4/0</td>
+		<td>0.1090</td>
+		<td>0.099 - 0.119</td>
+		<td>1 1/4 - 2</td>
+		<td>1/4 - 1</td>
+	</tr>
+	<tr>
+		<td>3/0</td>
+		<td>0.1250</td>
+		<td>0.115 - 0.135</td>
+		<td>1/4 - 1</td>
+		<td>1/4 - 1</td>
+	</tr>
+	<tr>
+		<td>2/0</td>
+		<td>0.0625</td>
+		<td>0.052 - 0.072</td>
+		<td>1 1/2 - 2</td>
+		<td>1/2 - 1 1/4</td>
+	</tr>
+	<tr>
+		<td>0</td>
+		<td>0.1560</td>
+		<td>0.146 - 0.166</td>
+		<td>1 1/2 - 3</td>
+		<td>1/2 - 1 1/4</td>
+	</tr>
+	<tr>
+		<td>1</td>
+		<td>0.1720</td>
+		<td>0.162 - 0.182</td>
+		<td>1 1/2 - 3</td>
+		<td>3/4 - 1 1/4</td>
+	</tr>
+	<tr>
+		<td>2</td>
+		<td>0.1930</td>
+		<td>0.183 - 0.203</td>
+		<td>1 3/4 - 3</td>
+		<td>3/4 - 1 1/2</td>
+	</tr>
+	<tr>
+		<td>3</td>
+		<td>0.2190</td>
+		<td>0.209 - 0.229</td>
+		<td>2 - 4</td>
+		<td>3/4 - 1 3/4</td>
+	</tr>
+	<tr>
+		<td>4</td>
+		<td>0.2500</td>
+		<td>0.240 - 0.260</td>
+		<td>2 1/4 - 4</td>
+		<td>3/4 - 2</td>
+	</tr>
+	<tr>
+		<td>5</td>
+		<td>0.2890</td>
+		<td>0.279 - 0.299</td>
+		<td>2 3/4 - 6</td>
+		<td>1 - 2 1/2</td>
+	</tr>
+	<tr>
+		<td>6</td>
+		<td>0.3410</td>
+		<td>0.331 - 0.351</td>
+		<td>3 1/4 - 6</td>
+		<td>1 1/4 - 3</td>
+	</tr>
+	<tr>
+		<td>7</td>
+		<td>0.4090</td>
+		<td>0.399 - 0.419</td>
+		<td>4 - 8</td>
+		<td>1 1/4 - 3 1/4</td>
+	</tr>
+	<tr>
+		<td>8</td>
+		<td>0.4920</td>
+		<td>0.482 - 0.502</td>
+		<td>4 3/4 - 8</td>
+		<td>1 1/4 - 4 1/2</td>
+	</tr>
+	<tr>
+		<td>9</td>
+		<td>0.5910</td>
+		<td>0.581 - 0.601</td>
+		<td>5 1/2 - 8</td>
+		<td>1 1/4 - 5 1/4</td>
+	</tr>
+	<tr>
+		<td>10</td>
+		<td>0.7060</td>
+		<td>0.696 - 0.716</td>
+		<td>6 1/4 - 8</td>
+		<td>1 1/2 - 6</td>
+	</tr>
+	<tr>
+		<td>11</td>
+		<td>0.8600</td>
+		<td>0.850 - 0.870</td>
+		<td>2 - 8</td>
+		<td>&hellip;</td>
+	</tr>
+	<tr>
+		<td>12</td>
+		<td>1.0320</td>
+		<td>1.022 - 1.042</td>
+		<td>2 - 9</td>
+		<td>&hellip;</td>
+	</tr>
+	<tr>
+		<td>13</td>
+		<td>1.2410</td>
+		<td>1.231 - 1.251</td>
+		<td>3 - 11</td>
+		<td>&hellip;</td>
+	</tr>
+	<tr>
+		<td>14</td>
+		<td>1.5210</td>
+		<td>1.511 - 1.531</td>
+		<td>3 - 13</td>
+		<td>&hellip;</td>
+	</tr>
+</table>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Fill out the form and hit the button:</legend>
+		<label for="pinDiam">Pin Diameter</label>
+		<input type="text" id="pinDiam" placeholder="0.156" autofocus><br/>
+		<label for="pinNum">Pin Number</label>
+		<input type="text" id="pinNum" placeholder="0"><br/>
+		<label for="length">Length of Pin</label>
+		<input type="text" id="length" placeholder="1.5"><br/>
+		<hr/>
+		<input type="button" value="Calculate Small Diameter" onclick="calcDiam()"/>
+		<br/>
+		<br/>
+		<label for="smDiam">Small End Diameter = </label>
+		<input type="text" name="smDiam" id="smDiam" value="" size="25" disabled/><br />
+		<br/>
+		<br/>
+</fieldset>
+
+<p>
+	A second concern for taper pins is drilling and reaming the hole. For short pins 
+	the drill size is the small diameter of the pin. Drilling is followed by reaming 
+	with the appropriate tapered reamer. If you have spiral fluted tapered reamers, 
+	you do not need more than the single hole drilled with this small drill even for 
+	longer pins. However, if you are using straight fluted tapered reamers, then for 
+	longer pins it is necessary to step drill the hole first. Determining which drills 
+	to use and how deep to drill can be looked up in a chart on page 1755 in 
+	"Machinery's Handbook" 29th ed. Alternatively the calculator below can be used. 
+	Simply enter the required parameters and hit the calculate button. The output will 
+	be a table with the drills and depths needed prior to using your tapered reamer. 
+	This calculator, like "Machinery's Handbook", only returns fractional size drills.
+</p>
+
+<p class="note">
+	The following calculator only works for pin numbers 7/0 - 10. These are the only 
+	sizes covered in the graph in "Machinery's Handbook".
+</p>
+
+<fieldset>
+	<legend>Fill in the two fields and hit the button:</legend>
+		<label for="pinNumber">Pin Number</label>
+		<input type="text" id="pinNumber" placeholder="0"><br/>
+		<label for="pinLength">Length of Pin(in)</label>
+		<input type="text" id="pinLength" placeholder="1.5"><br/>
+		<hr/>
+		<input type="button" value="Calculate Drills & Depths" onclick="calcDrills()"/>
+		<br/>
+		<br/>
+</fieldset>
+
+<hr/>
+
+<div>
+
+</div>
+
+<hr/>
+
+
+
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>February 25, 2019</p>
+</footer>
+</html>

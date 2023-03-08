@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Lathe Speed Calculator</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="lathe, speed, diameter, calculation, metalwork"/>
+	<meta name="description" content="Determine best lathe speeds for given diameter and metal."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+<!--
+	A list of materials with associated low and high speeds for a 1" diameter bar is defined.
+	The user inputs the speeds available on hisher machine.
+	The user selects the material and the program then prints a listing of the diameters appropriate
+		for the speeds available.
+--!>
+
+
+<!--
+	Formulas used:
+	dlow=c*lo[nm]/speed[i];
+	dhigh=c*hi[nm]/speed[i];
+	where c = 12/pi
+		lo (hi) are low (high) values (sfpm) for a given material, nm
+		speed[i] is one of the user's available speeds
+--!>
+
+<script type="text/javascript">
+<!--
+	var mtlSpdArray = [["alumi",200,300],["brass",100,300],["lostl",80,150],["mestl",60,100],["histl",50,60],["tdstl",40,80],["alstl",50,70],["malir",80,90],["sfcir",100,150],["mdcir",70,100],["hdcir",40,60],["coppr",60,80],["hibrz",70,90]];
+	
+	/*
+		Edit the following list of speeds to match those on your lathe.
+		Also edit the speeds for the displayed table on line # 273.
+	*/
+	
+	var mySpdArray = [85,115,150,215,280,345,505,625,875,1090,1595,2225];
+	
+	function myIndexOf(text) { // takes item to find, then returns index found
+		var l = mtlSpdArray.length;
+		for (var k=0; k<l; k++) {
+			if (mtlSpdArray[k][0] == text) { // only search first column of 2d array
+				return k;
+			}
+		}
+		return false;
+	}
+	
+	function getMtlName(id){
+		switch (id) {
+			case "alumi":
+				return "Aluminum and Alloys";
+				break;
+			case "brass":
+				return "Brass and Soft Bronze";
+				break;
+			case "lostl":
+				return "Low Carbon Steel";
+				break;
+			case "mestl":
+				return "Medium Carbon Steel";
+				break;
+			case "histl":
+				return "High Carbon Steel";
+				break;
+			case "tdstl":
+				return "Tool and Die Steel";
+				break;
+			case "alstl":
+				return "Alloy Steel";
+				break;
+			case "malir":
+				return "Malleable Iron";
+				break;
+			case "sfcir":
+				return "Soft Cast Iron";
+				break;
+			case "mdcir":
+				return "Medium Cast Iron";
+				break;
+			case "hdcir":
+				return "Hard Cast Iron";
+				break;
+			case "coppr":
+				return "Copper";
+				break;
+			case "hibrz":
+				return "High Tensile Bronze";
+				break;
+		}
+	}
+	
+	function GenOutput() {
+		var circum = 12/Math.PI;
+		var loDiam = 0;
+		var hiDiam = 0;
+		var mtlChosen = document.getElementById("material").value;
+		
+		
+		var div = document.getElementsByTagName("div")[0];
+		var tbl = document.createElement("table");
+		var tblBody = document.createElement("tbody");
+		var row = document.createElement("tr");
+		var cell = document.createElement("th");
+		var cellText = document.createTextNode(getMtlName(mtlChosen));
+		cell.appendChild(cellText);
+		cell.setAttribute("colspan", 3)
+		row.appendChild(cell);
+		tblBody.appendChild(row);
+		var row1 = document.createElement("tr");
+		var cell1 = document.createElement("th");
+		var cellText1 = document.createTextNode("Lathe Speed");
+		cell1.appendChild(cellText1);
+		row1.appendChild(cell1);
+		var cell2 = document.createElement("th");
+		var cellText2 = document.createTextNode("Low Diameter");
+		cell2.appendChild(cellText2);
+		row1.appendChild(cell2);
+		var cell3 = document.createElement("th");
+		var cellText3 = document.createTextNode("High Diameter");
+		cell3.appendChild(cellText3);
+		row1.appendChild(cell3);
+		tblBody.appendChild(row1);
+		tbl.appendChild(tblBody);
+		
+		
+		var mtlIndex = myIndexOf(mtlChosen);
+		var lo = mtlSpdArray[mtlIndex][1];
+		var hi = mtlSpdArray[mtlIndex][2];
+		for (var k=0; k<mySpdArray.length; k++) {
+			loDiam = circum*lo/mySpdArray[k];
+			loDiam = loDiam.toFixed(3);
+			hiDiam = circum*hi/mySpdArray[k];
+			hiDiam = hiDiam.toFixed(3);
+			row = document.createElement("tr");
+			cell = document.createElement("td");
+			cellText = document.createTextNode(mySpdArray[k]);
+			cell.appendChild(cellText);
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cellText = document.createTextNode(loDiam);
+			cell.appendChild(cellText);
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cellText = document.createTextNode(hiDiam);
+			cell.appendChild(cellText);
+			row.appendChild(cell);
+			tblBody.appendChild(row);
+
+		}
+		tbl.appendChild(tblBody);
+		div.appendChild(tbl);
+	}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Recommended Turning Diameters for Given Lathe Speeds</h1>
+<br/>
+<p>Input the speeds available on your lathe by editing this file (instructions in 
+	file at the two places speeds need to be changed). Select a material type to be cut from the drop down 
+	menu. Hit the Calculate button</p>
+<h3 class=minor>speeds (rpm) available on your lathe</h3>
+
+<!--
+	Edit the following table for the speeds on your lathe. 
+	Also edit the speeds above (line # 132).
+--!>
+
+<table class="narrow">
+	<tr><th>Speed (rpm)</th></tr>
+	<tr><td>85</td></tr>
+	<tr><td>115</td></tr>
+	<tr><td>150</td></tr>
+	<tr><td>215</td></tr>
+	<tr><td>280</td></tr>
+	<tr><td>345</td></tr>
+	<tr><td>505</td></tr>
+	<tr><td>625</td></tr>
+	<tr><td>875</td></tr>
+	<tr><td>1090</td></tr>
+	<tr><td>1595</td></tr>
+	<tr><td>2225</td></tr>
+</table>
+
+<br/>
+
+<fieldset>
+	<legend>Speed/Diameter Calculator</legend>
+		<label for="material">Material:</label>
+		<select id="material" name="material">
+			<option value="alumi">Aluminum and Alloys</option>
+			<option value="brass">Brass and Soft Bronze</option>
+			<option value="lostl">Low Carbon Steel</option>
+			<option value="mestl">Medium Carbon Steel</option>
+			<option value="histl">High Carbon Steel</option>
+			<option value="tdstl">Tool and Die Steel</option>
+			<option value="alstl">Alloy Steel</option>
+			<option value="malir">Malleable Iron</option>
+			<option value="sfcir">Soft Cast Iron</option>
+			<option value="mdcir">Medium Cast Iron</option>
+			<option value="hdcir">Hard Cast Iron</option>
+			<option value="coppr">Copper</option>
+			<option value="hibrz">High Tensile Bronze</option>
+		</select>
+	<input type="button" value="Calculate Diameters" onclick="GenOutput()"/>
+</fieldset>
+<br/><br/>
+<div id="addedTable">
+</div>
+<hr />
+<footer>
+<p>Based on data at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

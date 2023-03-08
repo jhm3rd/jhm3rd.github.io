@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Density Data</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="conversion, density, metalwork"/>
+	<meta name="description" content="Density conversions and densities for common substances."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word;}
+  	
+  	td.right {
+  		text-align: right;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Density</h1>
+<br/>
+<h3>Density Conversion Formulas</h3>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mfrac>
+		<mrow>
+			<mi>oz</mi>
+		</mrow>
+		<mrow>
+			<msup>
+				<mi>in</mi>
+				<mn>3</mn>
+			</msup>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<msup>
+	<mfenced>
+		<mfrac>
+			<mrow>
+				<mn>2.54</mn>
+				<mi>cm</mi>
+			</mrow>
+				<mi>in</mi>
+		</mfrac>
+	</mfenced>
+	<mn>3</mn>
+	</msup>
+	<mo>&times;</mo>
+		<mn>0.00220462</mn>
+		<mfrac>
+			<mrow>
+				<mi>lb</mi>
+			</mrow>
+			<mi>gm</mi>
+		</mfrac>
+	<mo>&times;</mo>
+		<mn>16</mn>
+		<mfrac>
+			<mrow>
+				<mi>oz</mi>
+			</mrow>
+			<mrow>
+				<mi>lb</mi>
+			</mrow>
+		</mfrac>
+	<mo>&times;</mo>
+		<mfrac>
+				<mi>gm</mi>
+				<mi>cc</mi>
+		</mfrac>
+</math>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mfrac>
+		<mrow>
+			<mi>oz</mi>
+		</mrow>
+		<mrow>
+			<msup>
+				<mi>in</mi>
+				<mn>3</mn>
+			</msup>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+			<mn>0.578036</mn>
+	<mfrac>
+		<mrow>
+			<mi>gm</mi>
+		</mrow>
+		<mi>cc</mi>
+	</mfrac>
+</math>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mn>1</mn>
+	<mi>oz</mi>
+	<mo>=</mo>
+	<mn>28.35</mn>
+	<mi>gm</mi>
+</math>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mfrac>
+		<mrow>
+			<mi>gm</mi>
+		</mrow>
+		<mrow>
+			<msup>
+				<mi>in</mi>
+				<mn>3</mn>
+			</msup>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<mn>16.38706</mn>
+	<mfrac>
+		<mrow>
+			<mi>gm</mi>
+		</mrow>
+		<mi>cc</mi>
+	</mfrac>
+</math>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mfrac>
+		<mrow>
+			<mi>oz</mi>
+		</mrow>
+		<mrow>
+			<mi>cc</mi>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<mn>0.035274</mn>
+	<mfrac>
+		<mrow>
+			<mi>gm</mi>
+		</mrow>
+		<mi>cc</mi>
+	</mfrac>
+</math>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mfrac>
+		<mrow>
+			<mi>lb</mi>
+		</mrow>
+		<mrow>
+			<msup>
+				<mi>in</mi>
+				<mn>3</mn>
+			</msup>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<mn>0.036127</mn>
+	<mfrac>
+		<mrow>
+			<mi>gm</mi>
+		</mrow>
+		<mi>cc</mi>
+	</mfrac>
+</math>
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mi>Hg</mi>
+	<mo>=</mo>
+	<mn>13.5462</mn>
+	<mfrac>
+		<mrow>
+			<mi>gm</mi>
+		</mrow>
+		<mi>cc</mi>
+	</mfrac>
+	<mtext>
+		@ 20&deg; C
+	</mtext>
+</math>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mi>Water</mi>
+	<mo>=</mo>
+	<mn>62.428</mn>
+	<mfrac>
+		<mrow>
+			<mi>lb</mi>
+		</mrow>
+		<msup>
+			<mi>ft</mi>
+			<mn>3</mn>
+		</msup>
+	</mfrac>
+	<mtext>
+		@ 20&deg; C
+	</mtext>
+</math>
+
+
+<br/><br/>
+
+<table cellspacing="5" border="2" cellpadding="5">
+
+<tr>
+<th rowspan="2">Material</th>
+<th rowspan="2">gm/cc</th>
+<th rowspan="2">oz/in3</th>
+<th rowspan="2">lb/in3</th>
+<th>Linear Expansion</th>
+</tr>
+<tr>
+<th>(uin/in/&deg;F)
+</tr>
+<tr>
+	<td>Gold</td>
+	<td>19.296</td>
+	<td>11.154</td>
+	<td>0.697</td>
+	<td>7.9</td>
+</tr>
+<tr><td>Mercury</td>		<td>13.547</td> <td>7.830</td><td>0.4894</td></tr>
+<tr><td>Lead</td>		<td>11.299</td> <td>6.531</td><td>0.4082</td>	<td>16.2</td></tr>
+<tr><td>Silver</td>		<td>10.5</td> <td>6.069</td><td>0.379</td>	<td>10.6</td></tr>
+<tr><td>Bronze</td>		 <td>8.844</td> <td>5.112</td><td>0.3195</td>	 <td>9.86</td></tr>
+<tr><td>Copper</td>		 <td>8.813</td> <td>5.094</td><td>0.3184</td>	 <td>9.4</td></tr>
+<tr><td>Brass</td></tr>
+<tr><td class="right">80% Cu - 20% Zn</td>		 <td>8.595</td> <td>4.968</td><td>0.3105</td>	 <td>9.57</td></tr>
+<tr><td class="right">70% Cu - 30% Zn</td>		 <td>8.393</td> <td>4.851</td><td>0.3032</td>	 <td>9.57</td></tr>
+<tr><td class="right">60% Cu - 40% Zn</td>	 <td>8.354</td> <td>4.829</td><td>0.3018</td>	 <td>9.57</td></tr>
+<tr><td class="right">50% Cu - 50% Zn</td>		 <td>8.193</td> <td>4.736</td><td>0.2960</td>	 <td>9.57</td></tr>
+<tr><td>Steel</td>		 <td>7.795</td> <td>4.506</td><td>0.2816</td>	 <td>6.36</td></tr>
+<tr><td>Cast Iron</td>		 <td>7.197</td> <td>4.16</td><td>0.26</td>	 <td>5.56</td></tr>
+<tr><td>Aluminum</td>	 <td>2.558</td> <td>1.478</td><td>0.0924</td>	<td>12.34</td></tr>
+<tr><td>Gunmetal</td>	 <td>8.84</td> <td>5.11</td><td>0.3194</td>	<td>10.1</td></tr>
+<tr><td>White Metal</td>		 <td>7.31</td> <td>4.23</td><td>0.2641</td></tr>
+<tr><td>Zinc</td>		 <td>7.06</td> <td>4.081</td><td>0.2551</td>	<td>16.2</td></tr>
+<tr><td>Oak (transverse)</td><td></td><td></td><td></td><td>3.0</td></tr>
+<tr><td>Oak (longitudinal)</td><td></td><td></td><td></td><td>2.7</td></tr>
+<tr><td>German Silver</td><td></td><td></td><td></td><td>10.2</td></tr>
+<tr><td>Glass</td><td></td><td></td><td></td><td>4.8</td></tr>
+<tr><td>Stainless Steel</td><td></td><td></td><td></td><td>5.9</td></tr>
+<tr><td>Nickel</td><td></td><td></td><td></td><td>7.1</td></tr>
+<tr><td>Phospher Bronze</td><td></td><td></td><td></td><td>9.3</td></tr>
+<tr><td>Sea Water</td>		 <td>1.025</td> <td>0.592</td><td>0.037</td></tr>
+<tr><td>Water</td>		 <td>1.000</td> <td>0.578</td><td>0.0361</td></tr>
+<tr><td>Ice</td>		 <td>0.9195</td></tr>
+<tr><td>Gasoline</td>	 <td>0.675</td> <td>0.390</td><td>0.024</td></tr>
+<tr><td>Brick</td>		 <td>1.8</td> <td>1.040</td><td>0.065</td></tr>
+<tr><td>Concrete</td>	 <td>2.1</td> <td>0.079</td><td>0.076</td></tr>
+<tr><td>Earth</td>		 <td>1.6</td> <td>0.925</td><td>0.058</td></tr>
+<tr><td>Granite</td>		 <td>2.7</td> <td>1.561</td><td>0.098</td></tr>
+<tr><td>Dry Sand</td>		 <td>1.65</td> <td>0.954</td><td>0.060</td></tr>
+<tr><td>Ivory</td>		 <td>1.874</td> <td>1.083</td><td>0.068</td></tr>
+
+</table>
+
+</form>
+<hr />
+<footer>
+<p>Based on data at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

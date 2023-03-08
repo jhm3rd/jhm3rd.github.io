@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+Making Gear Cutters with Buttons
+</title>
+<meta name="keywords" content="gear, button, calculation, metalwork, cutter"/>
+<meta name="description" content="Determine the correct size for buttons used to make gear cutters"/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	img {
+		float: left;
+		margin: 3px 10px 3px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 100px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 40px;
+		width: 100%;
+	}
+	input[type="text"] {
+		width: 100px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		margin-left: 20 px;
+	}
+  	table td {
+  		border: solid 1px #fab; 
+  		width: 9%; 
+  		word-wrap: break-word;
+  	}
+	.bolded
+		{
+			font-weight: bolder;
+		}
+</style>
+<script type="text/javascript">
+          // src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+<!--
+
+function FillSpreadsheet() {
+	var module = parseFloat(document.getElementById("module").value);
+	var pa = parseFloat(document.getElementById("pressureAngle").value);
+	var units = document.getElementById("units").value;
+	
+	// convert pa to radians
+	pa = 2*Math.PI*pa/360;
+
+	// bcd = pcd Cos pa and bcd = NM Cos pa
+
+	var decim // number of decimal places for display
+	var vpcd8 = new Number();
+	var vpcd7 = new Number();
+	var vpcd6 = new Number();
+	var vpcd5 = new Number();
+	var vpcd4 = new Number();
+	var vpcd3 = new Number();
+	var vpcd2 = new Number();
+	var vpcd1 = new Number();
+	
+	var vccd8 = new Number();
+	var vccd7 = new Number();
+	var vccd6 = new Number();
+	var vccd5 = new Number();
+	var vccd4 = new Number();
+	var vccd3 = new Number();
+	var vccd2 = new Number();
+	var vccd1 = new Number();
+	
+	var vrcd8 = new Number();
+	var vrcd7 = new Number();
+	var vrcd6 = new Number();
+	var vrcd5 = new Number();
+	var vrcd4 = new Number();
+	var vrcd3 = new Number();
+	var vrcd2 = new Number();
+	var vrcd1 = new Number();
+	
+	var vbcd8 = new Number();
+	var vbcd7 = new Number();
+	var vbcd6 = new Number();
+	var vbcd5 = new Number();
+	var vbcd4 = new Number();
+	var vbcd3 = new Number();
+	var vbcd2 = new Number();
+	var vbcd1 = new Number();
+	
+	var vbd8 = new Number();
+	var vbd7 = new Number();
+	var vbd6 = new Number();
+	var vbd5 = new Number();
+	var vbd4 = new Number();
+	var vbd3 = new Number();
+	var vbd2 = new Number();
+	var vbd1 = new Number();
+	
+	var vbs8 = new Number();
+	var vbs7 = new Number();
+	var vbs6 = new Number();
+	var vbs5 = new Number();
+	var vbs4 = new Number();
+	var vbs3 = new Number();
+	var vbs2 = new Number();
+	var vbs1 = new Number();
+	
+	var vi8 = new Number();
+	var vi7 = new Number();
+	var vi6 = new Number();
+	var vi5 = new Number();
+	var vi4 = new Number();
+	var vi3 = new Number();
+	var vi2 = new Number();
+	var vi1 = new Number();
+	
+		vpcd8 = 135*module;
+		vpcd7 = 55*module;
+		vpcd6 = 35*module;
+		vpcd5 = 26*module;
+		vpcd4 = 21*module;
+		vpcd3 = 17*module;
+		vpcd2 = 14*module;
+		vpcd1 = 12*module;
+		
+		vccd8 = 137*module;
+		vccd7 = 57*module;
+		vccd6 = 37*module;
+		vccd5 = 28*module;
+		vccd4 = 23*module;
+		vccd3 = 19*module;
+		vccd2 = 16*module;
+		vccd1 = 14*module;
+		
+		vrcd8 = (135-2.314)*module;
+		vrcd7 = (55-2.314)*module;
+		vrcd6 = (35-2.314)*module;
+		vrcd5 = (26-2.314)*module;
+		vrcd4 = (21-2.314)*module;
+		vrcd3 = (17-2.314)*module;
+		vrcd2 = (14-2.314)*module;
+		vrcd1 = (12-2.314)*module;
+		
+		vbcd8 = 135*Math.cos(pa)*module;
+		vbcd7 = 55*Math.cos(pa)*module;
+		vbcd6 = 35*Math.cos(pa)*module;
+		vbcd5 = 26*Math.cos(pa)*module;
+		vbcd4 = 21*Math.cos(pa)*module;
+		vbcd3 = 17*Math.cos(pa)*module;
+		vbcd2 = 14*Math.cos(pa)*module;
+		vbcd1 = 12*Math.cos(pa)*module;
+		
+		vbd8 = 135*Math.sin(pa)*module;
+		vbd7 = 55*Math.sin(pa)*module;
+		vbd6 = 35*Math.sin(pa)*module;
+		vbd5 = 26*Math.sin(pa)*module;
+		vbd4 = 21*Math.sin(pa)*module;
+		vbd3 = 17*Math.sin(pa)*module;
+		vbd2 = 14*Math.sin(pa)*module;
+		vbd1 = 12*Math.sin(pa)*module;
+		
+		vbs8 = 135*Math.cos(pa)*Math.sin(pa + Math.PI/2/135)*module;
+		vbs7 = 55*Math.cos(pa)*Math.sin(pa + Math.PI/2/55)*module;
+		vbs6 = 35*Math.cos(pa)*Math.sin(pa + Math.PI/2/35)*module;
+		vbs5 = 26*Math.cos(pa)*Math.sin(pa + Math.PI/2/26)*module;
+		vbs4 = 21*Math.cos(pa)*Math.sin(pa + Math.PI/2/21)*module;
+		vbs3 = 17*Math.cos(pa)*Math.sin(pa + Math.PI/2/17)*module;
+		vbs2 = 14*Math.cos(pa)*Math.sin(pa + Math.PI/2/14)*module;
+		vbs1 = 12*Math.cos(pa)*Math.sin(pa + Math.PI/2/12)*module;
+		
+		vi8 = 0.5*(135*Math.sin(pa)-(135-2.314) +135*Math.cos(pa)*Math.cos(pa + Math.PI/2/135))*module;
+		vi7 = 0.5*(55*Math.sin(pa)-(55-2.314) +55*Math.cos(pa)*Math.cos(pa + Math.PI/2/55))*module;
+		vi6 = 0.5*(35*Math.sin(pa)-(35-2.314) +35*Math.cos(pa)*Math.cos(pa + Math.PI/2/35))*module;
+		vi5 = 0.5*(26*Math.sin(pa)-(26-2.314) +26*Math.cos(pa)*Math.cos(pa + Math.PI/2/26))*module;
+		vi4 = 0.5*(21*Math.sin(pa)-(21-2.314) +21*Math.cos(pa)*Math.cos(pa + Math.PI/2/21))*module;
+		vi3 = 0.5*(17*Math.sin(pa)-(17-2.314) +17*Math.cos(pa)*Math.cos(pa + Math.PI/2/17))*module;
+		vi2 = 0.5*(14*Math.sin(pa)-(14-2.314) +14*Math.cos(pa)*Math.cos(pa + Math.PI/2/14))*module;
+		vi1 = 0.5*(12*Math.sin(pa)-(12-2.314) +12*Math.cos(pa)*Math.cos(pa + Math.PI/2/12))*module;
+
+	if (units == "mm") // set output format depending on choice of units
+	{
+		decim = 2;
+		
+	document.getElementById("teeth8").value = "135 to rack";
+	document.getElementById("teeth7").value = "55 to 134";
+	document.getElementById("teeth6").value = "35 to 54";
+	document.getElementById("teeth5").value = "26 to 34";
+	document.getElementById("teeth4").value = "21 to 25";
+	document.getElementById("teeth3").value = "17 to 20";
+	document.getElementById("teeth2").value = "14 to 16";
+	document.getElementById("teeth1").value = "12 to 13";
+
+	document.getElementById("pcd8").value = vpcd8.toFixed(decim);
+	document.getElementById("pcd7").value = vpcd7.toFixed(decim);
+	document.getElementById("pcd6").value = vpcd6.toFixed(decim);
+	document.getElementById("pcd5").value = vpcd5.toFixed(decim);
+	document.getElementById("pcd4").value = vpcd4.toFixed(decim);
+	document.getElementById("pcd3").value = vpcd3.toFixed(decim);
+	document.getElementById("pcd2").value = vpcd2.toFixed(decim);
+	document.getElementById("pcd1").value = vpcd1.toFixed(decim);
+
+	document.getElementById("ccd8").value = vccd8.toFixed(decim);
+	document.getElementById("ccd7").value = vccd7.toFixed(decim);
+	document.getElementById("ccd6").value = vccd6.toFixed(decim);
+	document.getElementById("ccd5").value = vccd5.toFixed(decim);
+	document.getElementById("ccd4").value = vccd4.toFixed(decim);
+	document.getElementById("ccd3").value = vccd3.toFixed(decim);
+	document.getElementById("ccd2").value = vccd2.toFixed(decim);
+	document.getElementById("ccd1").value = vccd1.toFixed(decim);
+
+	document.getElementById("rcd8").value = vrcd8.toFixed(decim);
+	document.getElementById("rcd7").value = vrcd7.toFixed(decim);
+	document.getElementById("rcd6").value = vrcd6.toFixed(decim);
+	document.getElementById("rcd5").value = vrcd5.toFixed(decim);
+	document.getElementById("rcd4").value = vrcd4.toFixed(decim);
+	document.getElementById("rcd3").value = vrcd3.toFixed(decim);
+	document.getElementById("rcd2").value = vrcd2.toFixed(decim);
+	document.getElementById("rcd1").value = vrcd1.toFixed(decim);
+
+	document.getElementById("bcd8").value = vbcd8.toFixed(decim);
+	document.getElementById("bcd7").value = vbcd7.toFixed(decim);
+	document.getElementById("bcd6").value = vbcd6.toFixed(decim);
+	document.getElementById("bcd5").value = vbcd5.toFixed(decim);
+	document.getElementById("bcd4").value = vbcd4.toFixed(decim);
+	document.getElementById("bcd3").value = vbcd3.toFixed(decim);
+	document.getElementById("bcd2").value = vbcd2.toFixed(decim);
+	document.getElementById("bcd1").value = vbcd1.toFixed(decim);
+
+	document.getElementById("bd8").value = vbd8.toFixed(decim);
+	document.getElementById("bd7").value = vbd7.toFixed(decim);
+	document.getElementById("bd6").value = vbd6.toFixed(decim);
+	document.getElementById("bd5").value = vbd5.toFixed(decim);
+	document.getElementById("bd4").value = vbd4.toFixed(decim);
+	document.getElementById("bd3").value = vbd3.toFixed(decim);
+	document.getElementById("bd2").value = vbd2.toFixed(decim);
+	document.getElementById("bd1").value = vbd1.toFixed(decim);
+
+	document.getElementById("bs8").value = vbs8.toFixed(decim);
+	document.getElementById("bs7").value = vbs7.toFixed(decim);
+	document.getElementById("bs6").value = vbs6.toFixed(decim);
+	document.getElementById("bs5").value = vbs5.toFixed(decim);
+	document.getElementById("bs4").value = vbs4.toFixed(decim);
+	document.getElementById("bs3").value = vbs3.toFixed(decim);
+	document.getElementById("bs2").value = vbs2.toFixed(decim);
+	document.getElementById("bs1").value = vbs1.toFixed(decim);
+
+	document.getElementById("i8").value = vi8.toFixed(decim);
+	document.getElementById("i7").value = vi7.toFixed(decim);
+	document.getElementById("i6").value = vi6.toFixed(decim);
+	document.getElementById("i5").value = vi5.toFixed(decim);
+	document.getElementById("i4").value = vi4.toFixed(decim);
+	document.getElementById("i3").value = vi3.toFixed(decim);
+	document.getElementById("i2").value = vi2.toFixed(decim);
+	document.getElementById("i1").value = vi1.toFixed(decim);
+	} // end if
+	else
+	{
+		decim = 3;
+		
+		vpcd8 = vpcd8*0.03937;
+		vpcd7 = vpcd7*0.03937;
+		vpcd6 = vpcd6*0.03937;
+		vpcd5 = vpcd5*0.03937;
+		vpcd4 = vpcd4*0.03937;
+		vpcd3 = vpcd3*0.03937;
+		vpcd2 = vpcd2*0.03937;
+		vpcd1 = vpcd1*0.03937;
+
+		vccd8 = vccd8*0.03937;
+		vccd7 = vccd7*0.03937;
+		vccd6 = vccd6*0.03937;
+		vccd5 = vccd5*0.03937;
+		vccd4 = vccd4*0.03937;
+		vccd3 = vccd3*0.03937;
+		vccd2 = vccd2*0.03937;
+		vccd1 = vccd1*0.03937;
+		
+		vrcd8 = vrcd8*0.03937;
+		vrcd7 = vrcd7*0.03937;
+		vrcd6 = vrcd6*0.03937;
+		vrcd5 = vrcd5*0.03937;
+		vrcd4 = vrcd4*0.03937;
+		vrcd3 = vrcd3*0.03937;
+		vrcd2 = vrcd2*0.03937;
+		vrcd1 = vrcd1*0.03937;
+		
+		vbcd8 = vbcd8*0.03937;
+		vbcd7 = vbcd7*0.03937;
+		vbcd6 = vbcd6*0.03937;
+		vbcd5 = vbcd5*0.03937;
+		vbcd4 = vbcd4*0.03937;
+		vbcd3 = vbcd3*0.03937;
+		vbcd2 = vbcd2*0.03937;
+		vbcd1 = vbcd1*0.03937;
+		
+		vbd8 =vbd8*0.03937;
+		vbd7 =vbd7*0.03937;
+		vbd6 =vbd6*0.03937;
+		vbd5 =vbd5*0.03937;
+		vbd4 =vbd4*0.03937;
+		vbd3 =vbd3*0.03937;
+		vbd2 =vbd2*0.03937;
+		vbd1 =vbd1*0.03937;
+		
+		vbs8 = vbs8*0.03937;
+		vbs7 = vbs7*0.03937;
+		vbs6 = vbs6*0.03937;
+		vbs5 = vbs5*0.03937;
+		vbs4 = vbs4*0.03937;
+		vbs3 = vbs3*0.03937;
+		vbs2 = vbs2*0.03937;
+		vbs1 = vbs1*0.03937;
+		
+		vi8 = vi8*0.03937;
+		vi7 = vi7*0.03937;
+		vi6 = vi6*0.03937;
+		vi5 = vi5*0.03937;
+		vi4 = vi4*0.03937;
+		vi3 = vi3*0.03937;
+		vi2 = vi2*0.03937;
+		vi1 = vi1*0.03937;
+		
+	document.getElementById("teeth8").value = "135 to rack";
+	document.getElementById("teeth7").value = "55 to 134";
+	document.getElementById("teeth6").value = "35 to 54";
+	document.getElementById("teeth5").value = "26 to 34";
+	document.getElementById("teeth4").value = "21 to 25";
+	document.getElementById("teeth3").value = "17 to 20";
+	document.getElementById("teeth2").value = "14 to 16";
+	document.getElementById("teeth1").value = "12 to 13";
+
+	document.getElementById("pcd8").value = vpcd8.toFixed(decim);
+	document.getElementById("pcd7").value = vpcd7.toFixed(decim);
+	document.getElementById("pcd6").value = vpcd6.toFixed(decim);
+	document.getElementById("pcd5").value = vpcd5.toFixed(decim);
+	document.getElementById("pcd4").value = vpcd4.toFixed(decim);
+	document.getElementById("pcd3").value = vpcd3.toFixed(decim);
+	document.getElementById("pcd2").value = vpcd2.toFixed(decim);
+	document.getElementById("pcd1").value = vpcd1.toFixed(decim);
+
+	document.getElementById("ccd8").value = vccd8.toFixed(decim);
+	document.getElementById("ccd7").value = vccd7.toFixed(decim);
+	document.getElementById("ccd6").value = vccd6.toFixed(decim);
+	document.getElementById("ccd5").value = vccd5.toFixed(decim);
+	document.getElementById("ccd4").value = vccd4.toFixed(decim);
+	document.getElementById("ccd3").value = vccd3.toFixed(decim);
+	document.getElementById("ccd2").value = vccd2.toFixed(decim);
+	document.getElementById("ccd1").value = vccd1.toFixed(decim);
+
+	document.getElementById("rcd8").value = vrcd8.toFixed(decim);
+	document.getElementById("rcd7").value = vrcd7.toFixed(decim);
+	document.getElementById("rcd6").value = vrcd6.toFixed(decim);
+	document.getElementById("rcd5").value = vrcd5.toFixed(decim);
+	document.getElementById("rcd4").value = vrcd4.toFixed(decim);
+	document.getElementById("rcd3").value = vrcd3.toFixed(decim);
+	document.getElementById("rcd2").value = vrcd2.toFixed(decim);
+	document.getElementById("rcd1").value = vrcd1.toFixed(decim);
+
+	document.getElementById("bcd8").value = vbcd8.toFixed(decim);
+	document.getElementById("bcd7").value = vbcd7.toFixed(decim);
+	document.getElementById("bcd6").value = vbcd6.toFixed(decim);
+	document.getElementById("bcd5").value = vbcd5.toFixed(decim);
+	document.getElementById("bcd4").value = vbcd4.toFixed(decim);
+	document.getElementById("bcd3").value = vbcd3.toFixed(decim);
+	document.getElementById("bcd2").value = vbcd2.toFixed(decim);
+	document.getElementById("bcd1").value = vbcd1.toFixed(decim);
+
+	document.getElementById("bd8").value = vbd8.toFixed(decim);
+	document.getElementById("bd7").value = vbd7.toFixed(decim);
+	document.getElementById("bd6").value = vbd6.toFixed(decim);
+	document.getElementById("bd5").value = vbd5.toFixed(decim);
+	document.getElementById("bd4").value = vbd4.toFixed(decim);
+	document.getElementById("bd3").value = vbd3.toFixed(decim);
+	document.getElementById("bd2").value = vbd2.toFixed(decim);
+	document.getElementById("bd1").value = vbd1.toFixed(decim);
+
+	document.getElementById("bs8").value = vbs8.toFixed(decim);
+	document.getElementById("bs7").value = vbs7.toFixed(decim);
+	document.getElementById("bs6").value = vbs6.toFixed(decim);
+	document.getElementById("bs5").value = vbs5.toFixed(decim);
+	document.getElementById("bs4").value = vbs4.toFixed(decim);
+	document.getElementById("bs3").value = vbs3.toFixed(decim);
+	document.getElementById("bs2").value = vbs2.toFixed(decim);
+	document.getElementById("bs1").value = vbs1.toFixed(decim);
+
+	document.getElementById("i8").value = vi8.toFixed(decim);
+	document.getElementById("i7").value = vi7.toFixed(decim);
+	document.getElementById("i6").value = vi6.toFixed(decim);
+	document.getElementById("i5").value = vi5.toFixed(decim);
+	document.getElementById("i4").value = vi4.toFixed(decim);
+	document.getElementById("i3").value = vi3.toFixed(decim);
+	document.getElementById("i2").value = vi2.toFixed(decim);
+	document.getElementById("i1").value = vi1.toFixed(decim);
+	} // end else
+	
+} // end of function
+
+// -->
+</script>
+</head>
+<body>
+
+<h1>Designing Gear Cutters</h1></br>
+
+<br/>
+<img src="Gear cutter design.jpg" alt="Geometric Definition of Terms">
+<br/>
+
+<p>
+Making gears requires making a cutter with the appropriate profile. The amateur machinist usually does this using 
+the button method developed by Ivan Law and further improved by John Stevenson. They have both given tables 
+for the button diameter, button spacing and infeed required to produce the cutter. This method relies on the fact that 
+the involute curve can be closely approximated to a circle over the limited distance of a gear tooth.</p>
+
+<p>
+Relatively little information is available on the methods used to create the tables of button diameter, button spacing 
+and infeed for the button method. On this page Mike (see credits below) has derived generalised equations for these parameters 
+based on the geometry. With these equations it is straightforward to design cutters for any gear given the number 
+of teeth, the module and the pressure angle.</p>
+
+<h2>Some Definitions</h2>
+
+<p>
+<dfn>Number of teeth (N)</dfn> This is simply the number of teeth on the gear.</p>
+
+<p>
+<dfn>Pitch circle diameter (pcd)</dfn> This is the diameter of an imaginary circle running through the gear teeth that is used to calculate the tooth profile.</p>
+
+<p>
+<dfn>Module (M)</dfn> This is the pitch circle diameter divided by the number of teeth. Thus pcd = NM.</p>
+
+<p>
+<dfn>Crest circle diameter (ccd)</dfn> This is the circle that touches the extremities of all the teeth. This is the outside diameter of the disc from which the gear is made. The ccd = (N+2)M</p>
+
+<p>
+<dfn>Root circle diameter (rcd)</dfn> This is the circle that touches the base of all the teeth. The rcd is equal to the ccd minus twice the full depth of 
+the teeth(D) + clearance (f). The full depth of the tooth + clearance is usually expressed as D+f and this is the depth the gear cutter must be 
+fed into the gear blank when cutting the teeth. By convention D+f = 0.6866 x circular pitch = 0.6866 (PI) NM/N =2.157M. Thus the root circle 
+diameter = (N+2)M - 4.314M = (N-2.314)M</p>
+
+<p><dfn>Base circle diameter (bcd)</dfn> This is the circle that is used to generate the involute profile of the teeth.</p>
+
+<p>
+<dfn>Pressure angle (p)</dfn> This is the angle AOC in the diagram above. A line drawn from the intercept of the gear tooth with the pitch circle forms 
+a tangent to the base circle at the pressure angle.</p>
+
+<p>
+<dfn>Angular pitch (ap)</dfn> This is the angle between any point on one tooth to a similar point on the next tooth.It is given by 360/N in degrees 
+or 2(PI)/N in radians where PI = 3.142. The angle BOA in the diagram above is equal to 1/2 the circular pitch. </p>
+
+<p><dfn>Button diameter (bd)</dfn> This is the diameter of the button used to form the cutter. The button radius AC extends from the pitch point A 
+on the tooth to a tangent C on the base circle.</p>
+
+<br/>
+<h2>Geometry</h2>
+<br/>
+
+<p>
+In the diagram the line AC is a tangent to the base circle and it is thus at right angles to the radius OC.</p>
+
+<br/>
+<h3>Calculation of the base circle diameter</h3>
+<br/>
+
+<blockquote>
+<math>
+	<mrow>
+		<mi>OC</mi>
+		<mo>=</mo>
+		<mi>AO</mi>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mrow>
+			<mo>(</mo>
+			<mi>p</mi>
+			<mo>)</mo>
+		</mrow>
+	</mrow>
+	<mspace width='.3em' />
+	<mtext>but</mtext>
+	<mspace width='.3em' />
+	<mrow>
+		<mi>OC</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mi>bcd</mi>
+			<mn>2</mn>
+		</mfrac>
+	</mrow>
+	<mspace width='.3em' />
+	<mtext>and</mtext>
+	<mspace width='.3em' />
+	<mrow>
+		<mi>AO</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mi>pcd</mi>
+			<mn>2</mn>
+		</mfrac>
+	</mrow>
+</math>
+</blockquote>
+<blockquote>
+Thus
+</blockquote>
+
+<blockquote>
+<math>
+	<mrow>
+		<mi>bcd</mi>
+		<mo>=</mo>
+		<mi>pcd</mi>
+		<mspace width='.1em' />
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mrow>
+			<mo>(</mo>
+			<mi>p</mi>
+			<mo>)</mo>
+		</mrow>
+	</mrow>
+	<mspace width='.3em' />
+	<mtext>and</mtext>
+	<mspace width='.3em' />
+	<mrow>
+		<mi>bcd</mi>
+		<mo>=</mo>
+		<mi>NM</mi>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mrow>
+			<mo>(</mo>
+			<mi>p</mi>
+			<mo>)</mo>
+		</mrow>
+	</mrow>
+</math>
+</blockquote>
+<hr/>
+<br/>
+<h3>Calculation of the button diameter</h3>
+<br/>
+
+<blockquote>
+<math>
+	<mrow>
+		<mi>AC</mi>
+		<mo>=</mo>
+		<mi>AO</mi>
+		<mi>sin</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mrow>
+			<mo>(</mo>
+			<mi>p</mi>
+			<mo>)</mo>
+		</mrow>
+	</mrow>
+	<mspace width='.3em' />
+	<mtext>but</mtext>
+	<mspace width='.3em' />
+	<mrow>
+		<mi>AC</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mi>bd</mi>
+			<mn>2</mn>
+		</mfrac>
+	</mrow>
+	<mspace width='.3em' />
+	<mtext>and</mtext>
+	<mspace width='.3em' />
+	<mrow>
+		<mi>AO</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mi>pcd</mi>
+			<mn>2</mi>
+		</mfrac>
+	</mrow>
+</math>
+</blockquote>
+<blockquote>
+Thus</blockquote>
+
+<blockquote>
+<math>
+	<mrow>
+		<mi>bd</mi>
+		<mo>=</mo>
+		<mi>pcd</mi>
+		<mspace width='.1em' />
+		<mi>sin</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mrow>
+			<mo>(</mo>
+			<mi>p</mi>
+			<mo>)</mo>
+		</mrow>
+	</mrow>
+	<mspace width='.3em' />
+	<mtext>and</mtext>
+	<mspace width='.3em' />
+	<mrow>
+		<mi>bd</mi>
+		<mo>=</mo>
+		<mi>NM</mi>
+		<mi>sin</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mrow>
+			<mo>(</mo>
+			<mi>p</mi>
+			<mo>)</mo>
+		</mrow>
+	</mrow>
+</math>
+</blockquote>
+<hr />
+<br/>
+<h3>Calculation of the button separation</h3>
+<br/>
+
+<blockquote>
+The triangle CEO is a right angled triangle. Hence:</blockquote>
+
+<blockquote>
+<math>
+	<mi>CE</mi>
+	<mo>=</mo>
+	<mi>CO</mi>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mrow>
+		<mo>(</mo>
+			<mtext>angle</mtext>
+			<mspace width='.3em' />	
+			<mi>COE</mi>		
+		<mo>)</mo>
+	</mrow>
+</math>
+</blockquote>
+<blockquote>
+<math>
+	<mi>CE</mi>
+	<mo>=</mo>
+	<mi>CO</mi>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mrow>
+		<mo>(</mo>
+			<mtext>angle</mtext>
+			<mspace width='.3em' />	
+			<mi>AOC</mi>
+			<mo>+</mo>		
+			<mtext>angle</mtext>
+			<mspace width='.3em' />	
+			<mi>AOG</mi>
+		<mo>)</mo>
+	</mrow>
+</math>
+</blockquote>
+<blockquote>
+<math>
+	<mi>CE</mi>
+	<mo>=</mo>
+	<mi>CO</mi>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mrow>
+		<mo>(</mo>
+			<mrow>
+				<mi>p</mi>
+				<mo>+</mo>
+				<mfrac>
+					<mi>ap</mi>
+					<mn>4</mn>
+				</mfrac>
+			</mrow>
+		<mo>)</mo>
+	</mrow>
+</math>
+</blockquote>
+<blockquote>
+<math>
+	<mi>CE</mi>
+	<mo>=</mo>
+	<mi>CO</mi>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mrow>
+		<mo>(</mo>
+			<mrow>
+				<mi>p</mi>
+				<mo>+</mo>
+				<mfrac>
+					<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+					<mrow>
+						<mn>2</mn>
+						<mi>N</mi>
+					</mrow>
+				</mfrac>
+			</mrow>
+		<mo>)</mo>
+	</mrow>
+</math>
+</blockquote>
+
+<blockquote>But <math display='inline'><mi>CE</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac></math> the 
+button separation and <math display='inline'><mi>CO</mi><mo>=</mo><mfrac><mi>bcd</mi><mn>2</mn></mfrac></math>. Hence:</blockquote>
+
+<blockquote>
+<math>
+	<mi>bs</mi>
+	<mo>=</mo>
+	<mrow>
+		<mi>bcd</mi>
+		<mi>sin</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mrow>
+		<mo>(</mo>
+			<mrow>
+				<mi>p</mi>
+				<mo>+</mo>
+				<mfrac>
+					<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+					<mrow>
+						<mn>2</mn>
+						<mi>N</mi>
+					</mrow>
+				</mfrac>
+			</mrow>
+		<mo>)</mo>
+	</mrow>
+	</mrow>
+</math>
+</blockquote>
+
+<blockquote>but <math display='inline'><mi>bcd</mi><mo>=</mo><mi>NM</mi><mi>cos</mi><mo>&#x2061;<!--FUNCTION APPLICATION--></mo><mi>p</mi></math>, thus</blockquote>
+
+<blockquote>
+<math>
+	<mi>bs</mi>
+	<mo>=</mo>
+	<mi>NM</mi>
+	<mrow>
+		<mo>(</mo>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mi>p</mi>
+		<mo>)</mo>
+		<mo>{</mo>
+		<mi>sin</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mo>(</mo>
+		<mi>p</mi>
+		<mo>+</mo>
+		<mfrac>
+			<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+			<mrow>
+				<mn>2</mn>
+				<mi>N</mi>
+			</mrow>
+		</mfrac>
+		<mo>)</mo>
+		<mo>}</mo>
+	</mrow>
+</math>
+</blockquote>
+<hr />
+<br/>
+<h3>Calculation of the infeed</h3>
+<br/>
+
+<p>
+Mike measures infeed from the outer edge of the buttons ie. point G. The infeed (inf) is the distace GF ie from point G to the root circle.
+</p>
+
+<blockquote>
+<math>
+	<mi>GF</mi>
+	<mo>=</mo>
+	<mi>CH</mi>
+	<mo>-</mo>
+	<mi>EF</mi>
+	<mo>=</mo>
+	<mi>CH</mi>
+	<mo>-</mo>
+	<mo>(</mo>
+	<mi>FO</mi>
+	<mo>-</mo>
+	<mi>EO</mi>
+	<mo>)</mo>
+</math>
+</blockquote>
+
+<blockquote>
+<math>
+	<mi>CH</mi>
+	<mo>=</mo>
+	<mfrac>
+		<mtext>button diameter</mtext>
+		<mn>2</mn>
+	</mfrac>
+</math>
+</blockquote>
+<blockquote>
+<math>
+	<mi>FO</mi>
+	<mo>=</mo>
+	<mfrac>
+		<mtext>root circle diameter</mtext>
+		<mn>2</mn>
+	</mfrac>
+</math>
+</blockquote>
+<blockquote>
+<math>
+	<mi>EO</mi>
+	<mo>=</mo>
+	<mrow>
+		<mfrac>
+			<mi>bcd</mi>
+			<mn>2</mn>
+		</mfrac>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mo>(</mo>
+		<mrow>
+			<mi>p</mi>
+			<mo>+</mo>
+			<mfrac>
+				<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+				<mrow>
+					<mn>2</mn>
+					<mi>N</mi>
+				</mrow>
+			</mfrac>
+		</mrow>
+		<mo>)</mo>
+	</mrow>
+</math>
+</blockquote>
+<blockquote>
+but <math display='inline'><mi>bcd</mi><mo>=</mo><mi>pcd</mi><mspace width='.3em' /><mi>cos</mi><mo>&#x2061;<!--FUNCTION APPLICATION--></mo><mi>p</mi></math>. Hence</blockquote>
+<blockquote>
+<math>
+	<mi>EO</mi>
+	<mo>=</mo>
+	<mrow>
+		<mfrac>
+			<mi>NM</mi>
+			<mn>2</mn>
+		</mfrac>
+		<mrow>
+		<mo>(</mo>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mi>p</mi>
+		<mo>)</mo>
+		<mo>{</mo>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mo>(</mo>
+		<mi>p</mi>
+		<mo>+</mo>
+		<mfrac>
+			<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+			<mrow>
+				<mn>2</mn>
+				<mi>N</mi>
+			</mrow>
+		</mfrac>
+		<mo>)</mo>
+		<mo>}</mo>
+	</mrow>
+	</mrow>
+</math>
+Hence:</blockquote>
+
+<blockquote><math display='inline'><mi>CE</mi><mo>=</mo><mfrac><mtext>button separation</mtext><mn>2</mn></mfrac></math> and 
+<math display='inline'><mi>CO</mi><mo>=</mo><mfrac><mi>bcd</mi><mn>2</mn></mfrac></math>. Hence:</blockquote>
+
+<blockquote>
+<math>
+	<mi>inf</mi>
+	<mo>=</mo>
+	<mfrac>
+		<mtext>button diameter</mtext>
+		<mn>2</mn>
+	</mfrac>
+	<mo>-</mo>
+	<mfrac>
+		<mtext>root circle diameter</mtext>
+		<mn>2</mn>
+	</mfrac>
+	<mo>+</mo>
+	<mrow>
+		<mfrac>
+			<mi>NM</mi>
+			<mn>2</mn>
+		</mfrac>
+		<mrow>
+		<mo>(</mo>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mi>p</mi>
+		<mo>)</mo>
+		<mo>{</mo>
+		<mi>cos</mi>
+		<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+		<mo>(</mo>
+		<mi>p</mi>
+		<mo>+</mo>
+		<mfrac>
+			<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+			<mrow>
+				<mn>2</mn>
+				<mi>N</mi>
+			</mrow>
+		</mfrac>
+		<mo>)</mo>
+		<mo>}</mo>
+	</mrow>
+	</mrow>
+</math>
+</blockquote>
+
+<blockquote>
+<math>
+	<mi>inf</mi>
+	<mo>=</mo>
+	<mfrac>
+		<mrow>
+			<mi>NM</mi>
+			<mi>sin</mi>
+			<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+			<mi>p</mi>
+			<mo>-</mo>
+			<mo>(</mo>
+			<mi>N</mi>
+			<mo>-</mo>
+			<mn>2.314</mn>
+			<mo>)</mo>
+			<mi>M</mi>
+			<mo>+</mo>
+			<mi>NM</mi>
+			<mo>(</mo>
+			<mi>cos</mi>
+			<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+			<mi>p</mi>
+			<mo>{</mo>
+			<mi>cos</mi>
+			<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+			<mo>(</mo>
+			<mrow>
+				<mi>p</mi>
+				<mo>+</mo>
+				<mfrac>
+					<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+					<mrow>
+						<mn>2</mn>
+						<mi>N</mi>
+					</mrow>
+				</mfrac>
+			</mrow>
+			<mo>)</mo>
+			<mo>}</mo>
+		</mrow>
+		<mn>2</mn>
+	</mfrac>
+</math>
+</blockquote>
+
+<blockquote>
+<math>
+	<mi>inf</mi>
+	<mo>=</mo>
+	<mfrac>
+		<mrow>
+			<mi>M</mi>
+			<mo>[</mo>
+			<mi>N</mi>
+			<mi>sin</mi>
+			<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+			<mi>p</mi>
+			<mo>-</mo>
+			<mo>(</mo>
+			<mi>N</mi>
+			<mo>-</mo>
+			<mn>2.314</mn>
+			<mo>)</mo>
+			<mo>+</mo>
+			<mi>N</mi>
+			<mo>(</mo>
+			<mi>cos</mi>
+			<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+			<mi>p</mi>
+			<mo>{</mo>
+			<mi>cos</mi>
+			<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+			<mo>(</mo>
+			<mrow>
+				<mi>p</mi>
+				<mo>+</mo>
+				<mfrac>
+					<mi>&#x3c0;<!--GREEK SMALL LETTER PI--></mi>
+					<mrow>
+						<mn>2</mn>
+						<mi>N</mi>
+					</mrow>
+				</mfrac>
+			</mrow>
+			<mo>)</mo>
+			<mo>}</mo>
+			<mo>]</mo>
+		</mrow>
+		<mn>2</mn>
+	</mfrac>
+</math>
+</blockquote>
+<br />
+<hr />
+<br />
+<form name="calcGearBtns">
+<fieldset>
+	<legend>Required Input</legend>
+		<label for="module">Module</label>
+		<input id="module" placeholder="1" autofocus><br>
+		<label for ="pressureAngle">Slope</label>
+		<input id="pressureAngle" placeholder="14.5"><br>
+		<label for ="units">Units</label>
+		<input id="units" placeholder="mm"><br>
+</fieldset>
+<br/>
+<input type="button" value="Calculate Buttons" onclick="FillSpreadsheet()"/><br /><br/>
+<br/>
+<table>
+	<tr>
+		<th scope="col"># of Teeth</th>
+		<th scope="col">Pitch Circle Diam</th>
+		<th scope="col">Crest Circle Diam</th>
+		<th scope="col">Root Circle Diam</th>
+		<th scope="col">Base Circle Diam</th>
+		<th scope="col">Button Diameter</th>
+		<th scope="col">Button Spacing</th>
+		<th scope="col">Infeed</th>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth8" id="teeth8" value="" size="10"/></td>
+		<td><input type="text" name="pcd8" id="pcd8" value="" size="15"/></td>
+		<td><input type="text" name="ccd8" id="ccd8" value="" size="15"/></td>
+		<td><input type="text" name="rcd8" id="rcd8" value="" size="15"/></td>
+		<td><input type="text" name="bcd8" id="bcd8" value="" size="15"/></td>
+		<td><input type="text" name="bd8" id="bd8" value="" size="15"/></td>
+		<td><input type="text" name="bs8" id="bs8" value="" size="15"/></td>
+		<td><input type="text" name="i8" id="i8" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth7" id="teeth7" value="" size="10"/></td>
+		<td><input type="text" name="pcd7" id="pcd7" value="" size="15"/></td>
+		<td><input type="text" name="ccd7" id="ccd7" value="" size="15"/></td>
+		<td><input type="text" name="rcd7" id="rcd7" value="" size="15"/></td>
+		<td><input type="text" name="bcd7" id="bcd7" value="" size="15"/></td>
+		<td><input type="text" name="bd7" id="bd7" value="" size="15"/></td>
+		<td><input type="text" name="bs7" id="bs7" value="" size="15"/></td>
+		<td><input type="text" name="i7" id="i7" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth6" id="teeth6" value="" size="10"/></td>
+		<td><input type="text" name="pcd6" id="pcd6" value="" size="15"/></td>
+		<td><input type="text" name="ccd6" id="ccd6" value="" size="15"/></td>
+		<td><input type="text" name="rcd6" id="rcd6" value="" size="15"/></td>
+		<td><input type="text" name="bcd6" id="bcd6" value="" size="15"/></td>
+		<td><input type="text" name="bd6" id="bd6" value="" size="15"/></td>
+		<td><input type="text" name="bs6" id="bs6" value="" size="15"/></td>
+		<td><input type="text" name="i6" id="i6" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth5" id="teeth5" value="" size="10"/></td>
+		<td><input type="text" name="pcd5" id="pcd5" value="" size="15"/></td>
+		<td><input type="text" name="ccd5" id="ccd5" value="" size="15"/></td>
+		<td><input type="text" name="rcd5" id="rcd5" value="" size="15"/></td>
+		<td><input type="text" name="bcd5" id="bcd5" value="" size="15"/></td>
+		<td><input type="text" name="bd5" id="bd5" value="" size="15"/></td>
+		<td><input type="text" name="bs5" id="bs5" value="" size="15"/></td>
+		<td><input type="text" name="i5" id="i5" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth4" id="teeth4" value="" size="10"/></td>
+		<td><input type="text" name="pcd4" id="pcd4" value="" size="15"/></td>
+		<td><input type="text" name="ccd4" id="ccd4" value="" size="15"/></td>
+		<td><input type="text" name="rcd4" id="rcd4" value="" size="15"/></td>
+		<td><input type="text" name="bcd4" id="bcd4" value="" size="15"/></td>
+		<td><input type="text" name="bd4" id="bd4" value="" size="15"/></td>
+		<td><input type="text" name="bs4" id="bs4" value="" size="15"/></td>
+		<td><input type="text" name="i4" id="i4" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth3" id="teeth3" value="" size="10"/></td>
+		<td><input type="text" name="pcd3" id="pcd3" value="" size="15"/></td>
+		<td><input type="text" name="ccd3" id="ccd3" value="" size="15"/></td>
+		<td><input type="text" name="rcd3" id="rcd3" value="" size="15"/></td>
+		<td><input type="text" name="bcd3" id="bcd3" value="" size="15"/></td>
+		<td><input type="text" name="bd3" id="bd3" value="" size="15"/></td>
+		<td><input type="text" name="bs3" id="bs3" value="" size="15"/></td>
+		<td><input type="text" name="i3" id="i3" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth2" id="teeth2" value="" size="10"/></td>
+		<td><input type="text" name="pcd2" id="pcd2" value="" size="15"/></td>
+		<td><input type="text" name="ccd2" id="ccd2" value="" size="15"/></td>
+		<td><input type="text" name="rcd2" id="rcd2" value="" size="15"/></td>
+		<td><input type="text" name="bcd2" id="bcd2" value="" size="15"/></td>
+		<td><input type="text" name="bd2" id="bd2" value="" size="15"/></td>
+		<td><input type="text" name="bs2" id="bs2" value="" size="15"/></td>
+		<td><input type="text" name="i2" id="i2" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="teeth1" id="teeth1" value="" size="10"/></td>
+		<td><input type="text" name="pcd1" id="pcd1" value="" size="15"/></td>
+		<td><input type="text" name="ccd1" id="ccd1" value="" size="15"/></td>
+		<td><input type="text" name="rcd1" id="rcd1" value="" size="15"/></td>
+		<td><input type="text" name="bcd1" id="bcd1" value="" size="15"/></td>
+		<td><input type="text" name="bd1" id="bd1" value="" size="15"/></td>
+		<td><input type="text" name="bs1" id="bs1" value="" size="15"/></td>
+		<td><input type="text" name="i1" id="i1" value="" size="15"/></td>
+	</tr>
+	
+</table>
+<br/>
+</form>
+<hr/>
+</body>
+<footer>
+<p>Taken from Mike's Workshop <a href="http://mikesworkshop.weebly.com/designing-gear-cutters.html">Designing Gear Cutters.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</html>

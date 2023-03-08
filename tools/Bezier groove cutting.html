@@ -1,0 +1,785 @@
+<html>
+<head>
+<title> Cutting B&eacute;zier Grooves on the Lathe</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+  	span.pp {
+  		color: red;
+  	}
+  	span.ppb {
+  		color: blue;
+  	}
+  	span.ppp {
+  		color: purple;
+  	}
+  	span.ppg {
+  		color: gray;
+  	}
+  	blockquote.code {
+  		font-family: Menlo;
+  		font-size: 12pt;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+window.onload = function() {
+	let canvas = document.getElementById("drawingCanvas");
+	let context = canvas.getContext("2d");
+	
+	let centerX = 150;
+	let centerY = 150;
+	let radius = 100;
+	let buffer = 10;
+	let stockLen = 125;
+	let startingAngle = 1.56 * Math.PI;
+	let endingAngle = 0.45 * Math.PI;
+	let stepX = 20;
+	let stepY = 5;
+	let vertOffset = Math.cos(Math.PI/6)*radius;
+	let horizOffset = Math.sin(Math.PI/6)*radius;
+	
+	context.lineWidth = 1;
+	
+	// Circle
+	context.arc(centerX, centerY, radius + buffer, startingAngle, endingAngle);
+	context.stroke();
+	
+	// Step measurement line
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,260);
+	context.lineTo(centerX + 3*stepX,260);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,270);
+	context.lineTo(centerX + 2*stepX,250);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,250);
+	context.lineTo(centerX + 3*stepX,270);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("Step size", 175, 275);
+	
+	context.lineWidth = 2;
+	context.strokeStyle = "black";
+		
+	centerX = centerX + stepX;
+	
+	// Top side of stock
+	context.beginPath();
+	context.moveTo(centerX,centerY - radius - stockLen);
+	context.lineTo(centerX,centerY - radius);
+	context.stroke();
+	
+	// Bottom side of stock
+	context.beginPath();
+	context.moveTo(centerX,centerY + radius + stockLen);
+	context.lineTo(centerX,centerY + radius);
+	context.stroke();
+	
+	// First step down and right
+	context.beginPath();
+	context.moveTo(centerX,centerY - radius);
+	context.lineTo(centerX,centerY - radius + stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX,centerY - radius + stepY);
+	context.lineTo(centerX + stepX,centerY - radius + stepY);
+	context.stroke();
+	
+	// Second step down and right
+	context.beginPath();
+	context.moveTo(centerX + stepX,centerY - radius + stepY);
+	context.lineTo(centerX + stepX,centerY - radius + 3*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + stepX,centerY - radius + 3*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 3*stepY);
+	context.stroke();
+	
+	// Third step down and right
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 3*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 6*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 6*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 6*stepY);
+	context.stroke();
+	
+	// Fourth step down and right
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 6*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 12*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 12*stepY);
+	context.lineTo(centerX + 4*stepX,centerY - radius + 12*stepY);
+	context.stroke();
+	
+	// Fifth step down
+	context.beginPath();
+	context.moveTo(centerX + 4*stepX,centerY - radius + 12*stepY);
+	context.lineTo(centerX + 4*stepX,centerY - radius + 28*stepY);
+	context.stroke();
+	
+	// Sixth step left and down
+	context.beginPath();
+	context.moveTo(centerX + 4*stepX,centerY - radius + 28*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 28*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 28*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 34*stepY);
+	context.stroke();
+	
+	// Seventh step left and down
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 34*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 34*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 34*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 37*stepY);
+	context.stroke();
+	
+	// Eighth step left and down
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 37*stepY);
+	context.lineTo(centerX + 1*stepX,centerY - radius + 37*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 1*stepX,centerY - radius + 37*stepY);
+	context.lineTo(centerX + 1*stepX,centerY - radius + 39*stepY);
+	context.stroke();
+	
+	// Ninth step left and down
+	context.beginPath();
+	context.moveTo(centerX + 1*stepX,centerY - radius + 39*stepY);
+	context.lineTo(centerX,centerY - radius + 39*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX,centerY - radius + 39*stepY);
+	context.lineTo(centerX,centerY - radius + 40*stepY);
+	context.stroke();
+	
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("Not a Bezier curve", 130, 155);
+	
+	// Radius dimension line
+// 	context.beginPath();
+// 	context.moveTo(centerX - stepX,centerY);
+// 	context.lineTo(centerX - stepX + radius,centerY);
+// 	context.stroke();
+	
+} //end of drawing
+
+// round
+// Rounds a number to a specified amount of digits.
+// Use Math.round() and template literals to round the number to the specified number 
+// of digits. Omit the second argument, decimals to round to an integer.
+const round = (n, decimals = 0) => Number(`${Math.round(`${n}e${decimals}`)}e-${decimals}`);
+const sampNum = 100;
+let normalFactor = 0;
+let widthOfCurve = 1;
+let ctrlPts = [[0,0],[0,0],[0,0],[0,0]];
+
+
+function generateXValues(num=500)
+	//	x = cpx1(1-t)^3+cpx2t(1-t)^2+cpx3t^2(1-t)+cpx4t^3
+	//	returns an array of x positions for num t values in the range 0...1
+{
+	// grab the x-values from the four control points
+	const cp1 = ctrlPts[0][0];
+	const cp2 = 3 * ctrlPts[1][0];
+	const cp3 = 3 * ctrlPts[2][0];
+	const cp4 = ctrlPts[3][0];
+	
+	let xValueArr = [];
+	for (let i=0; i<=num; i++)
+		{
+			t = i / num;
+			xValueArr[i] = cp1*Math.pow((1-t),3) + cp2*t*Math.pow((1-t),2) + cp3*(1-t)*Math.pow(t,2) + cp4*Math.pow(t,3);
+		}
+	// need to normalize x so the difference between cp1 and cp4 equals length of cut, widthOfCurve
+
+	return xValueArr;
+}
+
+function generateDepths(num=500)
+	//	ctrlPts is an array of four control points for the desired B&eacute;zier curve
+	//	scale is a scalar to set the appropriate size of the curve; default is 1
+	//	sampNum is the number of sampled points between 0 and 1; global set at 100
+	//	y = cpy1(1-t)^3+cpy2*t(1-t)^2+cpy3*t^2(1-t)+cpy4*t^3
+	//	returns an array of sampNum depths from origin, which may not be well defined
+	//	need to normalize all depths relative to the largest, which by default becomes origin
+{
+	let depths = [];
+	let t = 0;
+	const cp1 = ctrlPts[0][1];
+	const cp2 = 3 * ctrlPts[1][1];
+	const cp3 = 3 * ctrlPts[2][1];
+	const cp4 = ctrlPts[3][1];
+	for (let i=0; i<=num; i++)
+		{
+			t = (i + 1) / num;
+			depths[i] = cp1*Math.pow((1-t),3) + cp2*t*Math.pow((1-t),2) + cp3*(1-t)*Math.pow(t,2) + cp4*Math.pow(t,3);
+		}
+		
+	//	formula below needs total depth of cut instead of widthOfCurve or use X's normalization factor
+	//	need to find a minumum for y to use for above and also to define starting cut and 
+	//	to list cuts coming from the starting cut and heading in both directions (unlike the symmetrical round cuts)	
+	
+	return depths;
+}
+
+function convertX(coordArr)
+	//	requires x-min; x-min is probably just ctrlPts[0][0] but we will double check
+{
+	const xMin = Math.min(...coordArr);
+	return coordArr.map((item) => item - xMin);
+}
+
+function convertY(coordArr,yMax)
+	//	y-max could be anywhere on the curve
+{
+	return coordArr.map((item) => Math.abs(item - yMax))
+}
+
+function scale(coordArr,scaleFactor)
+{
+	return coordArr.map((item) => item * scaleFactor);
+}
+
+const findLastIndex = (arr, fn) =>
+	(arr
+	.map((val, i) => [i, val])
+	.filter(([i, val]) => fn(val, i, arr))
+	.pop() || [-1])[0];
+//	Takes an array and a function to find the desired element in the array
+
+function getDepthOfCut(xArray,depthArray,x,fileBuffer)
+{
+	//	This fxn uses two arrays generated by generateDepths() and generateXValues
+	//	It finds the closest x-coordinate using the findLastIndex fxn and returns the 
+	//	corresponding t-value
+	//	The t-value is used to look up the associated y-coordinate
+	
+	const index = findLastIndex(xArray,n => n < x);
+	return depthArray[index] - fileBuffer;			//	get the depth and subtract filing buffer
+}
+
+function makeTable() {
+
+	ctrlPts[0][0] = parseFloat(document.getElementById("cp1x").value);
+	ctrlPts[0][1] = parseFloat(document.getElementById("cp1y").value);
+	ctrlPts[1][0] = parseFloat(document.getElementById("cp2x").value);
+	ctrlPts[1][1] = parseFloat(document.getElementById("cp2y").value);
+	ctrlPts[2][0] = parseFloat(document.getElementById("cp3x").value);
+	ctrlPts[2][1] = parseFloat(document.getElementById("cp3y").value);
+	ctrlPts[3][0] = parseFloat(document.getElementById("cp4x").value);
+	ctrlPts[3][1] = parseFloat(document.getElementById("cp4y").value);
+	widthOfCurve = document.getElementById("widthOfCut").value;
+	depthOfCurve = document.getElementById("depthOfCut").value;
+	const stepSize = parseFloat(document.getElementById("stepSize").value);
+	const numOfSteps = Math.floor(widthOfCurve / stepSize);
+	let precision = document.getElementById("precision").value;
+	let fileBuffer = document.getElementById("buffer").value;
+	let density = document.getElementById("density").value;
+	
+	
+	if (precision == "")
+	{
+		precision = "3";
+	} // end if
+	
+	if (fileBuffer == "")
+	{
+		fileBuffer = "0.003";				//	default
+	}
+	fileBuffer = parseFloat(fileBuffer);
+	
+	if (widthOfCurve == "")
+	{
+		widthOfCurve = "1.0";
+	}
+	widthOfCurve = parseFloat(widthOfCurve);
+
+	if (depthOfCurve == "")
+	{
+		depthOfCurve = "0.5";
+	}
+	depthOfCurve = parseFloat(depthOfCurve);
+
+	if (density == "")
+	{
+		density = "500";
+	}
+	density = parseFloat(density);
+	
+	//	Generate the arrays of coordinates from the control points
+	const xArray = generateXValues(density);
+	const depthArray = generateDepths(density);	//	array containing the sampled depths of cut
+	
+	//	Convert the coordinate systems of the arrays
+	const yMax = Math.max(...depthArray);
+	const yMin = Math.min(...depthArray);
+	const convXArray = convertX(xArray);
+	const convYArray = convertY(depthArray,yMax);
+	
+	//	Scale the arrays to fit the size of the curve on the part
+	const scaleXFactor = Math.abs(widthOfCurve/(ctrlPts[0][0] - ctrlPts[3][0]));
+	const scalXArray = scale(convXArray,scaleXFactor);
+	const scaleYFactor = Math.abs(depthOfCurve/(yMax - yMin));
+	const scalYArray = scale(convYArray,scaleYFactor);
+	
+	
+	let y = 0.0;
+	let carriage = new Number();
+	let crossSlide = new Number();
+		
+	let x;
+	let stepNum = 0;
+			
+	let div = document.getElementsByTagName("div")[0];
+	let tablI, rowI;
+	
+	tablI = document.createElement("table");
+	tablI.createTHead();
+	rowI = tablI.tHead.insertRow();
+	let headCell = rowI.insertCell(0);
+	headCell.setAttribute('colSpan', '5');
+	headCell.innerHTML = `Cutting a B&eacute;zier Groove with Step Size  + ${stepSize}`;
+
+	tablI.createTHead();
+	rowI = tablI.tHead.insertRow();
+	let head2Cell = rowI.insertCell(0);
+	head2Cell.setAttribute('colSpan', '5');
+	head2Cell.innerHTML = 'Cutting starts from the Right and proceeds Left';
+
+
+	tablI.appendChild(document.createElement('tbody'));
+	rowI = tablI.tBodies[0].insertRow();
+	let brkCell = rowI.insertCell(0);
+	brkCell.setAttribute('colSpan', '3');
+	brkCell.innerHTML = ' ';
+	
+	rowI = tablI.tBodies[0].insertRow();
+	let cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "Step #";
+	let cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "x";
+	let cell2 = rowI.insertCell(2);
+	cell2.innerHTML = "y";
+	let cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "Carriage travel to right";
+	let cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "Cross slide cutting travel";
+	
+	let prevCut = 0;
+	
+	//	for (let counter = 1; counter <= Math.floor(widthOfCurve/stepSize); counter++) {
+	for (let counter =  Math.floor(widthOfCurve/stepSize); counter >= 1; counter--) {
+
+		x = counter * (stepSize/widthOfCurve);
+		x = x.toPrecision(precision);
+		//	y = y + stepSize;
+		//	y = round(y, precision);
+		//y = y.toPrecision(precision);
+		carriage = stepSize;
+		//	carriage = carriage.toPrecision(precision);
+		//	counter * 2 * stepSize + toolWidth
+		crossSlide = getDepthOfCut(scalXArray,scalYArray,x, fileBuffer);
+		crossSlide = crossSlide.toPrecision(precision);
+		//	y is difference between current and previous cut
+		y = crossSlide - prevCut;
+		y = y.toPrecision(precision);
+		prevCut = crossSlide; 
+		
+		stepNum += 1;
+
+		rowI = tablI.tBodies[0].insertRow();
+		cell0 = rowI.insertCell(0);
+		cell0.innerHTML = stepNum;			// put the step number in first cell
+		cell1 = rowI.insertCell(1);
+		cell1.innerHTML = x;				// put x in second cell
+		cell2 = rowI.insertCell(2);
+		cell2.innerHTML = y;				// put y in third cell
+		cell3 = rowI.insertCell(3);
+		cell3.innerHTML = carriage;			// put the carriage travel in fourth cell
+		cell4 = rowI.insertCell(4);
+		cell4.innerHTML = crossSlide;		// put the cross slide travel in fifth cell
+	}	// end for i
+	
+	div.appendChild(tablI);
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>B&eacute;zier Groove Cutting Calculator</h1>
+<h2>Turning a B&eacute;zier curve on the side of your stock</h2><br />
+
+<canvas id="drawingCanvas" width="300" height="300"></canvas>
+
+<p>
+	This calculator produces a table of carriage and cross slide movements. With this 
+	table an operator can use a lathe  equipped with the parting tool of choice to 
+	mimic a radius tool cutting an arbitrarily curved groove in the side of a part. The 
+	calculator will produce this table using the chosen step size for either roughing out 
+	a groove or for producing a groove that requires minimal filing. 
+</p>
+
+<p>
+	There are three ways to find the desired B&eacute;zier curve, that I am aware of. I 
+	used a French curve stencil to find the cut for the <a href="Picture holders.html">
+	Picture holders</a>. This curve was held against the screen while dragging around 
+	the control points to get a good fit using the site, <a href="https://pomax.github.io/bezierinfo/#aligning">
+	B&eacute;zier curve tutorial</a>. A second way is to use the Grapher application. A saved 
+	B&eacute;zier curve graph, Documents/Bezier curve generator.gcx, can be modified by 
+	altering the four control points. The third way is using a saved file called Bezier 
+	Curves at <a href="https://learn.maplesoft.com/">Learn Maple</a>. Again the control 
+	points have to modified to change the curve.
+</p>
+
+<p class="note">
+	Need to log in to Learn Maple to use the web browser based math program and open the 
+	saved file. Login information is located in 1Password. Google Chrome is the preferred 
+	browser for this application. Safari is prohibitively slow.
+</p>
+
+<img class=inline src="BC formulas.png" alt="The formulas used in Grapher calculation" width="630" height="156">
+
+<p class="note">
+	The coefficients in the two equations use the default control points discussed below. 
+	The two central coefficients in each equation do not use the control points directly, 
+	but add factors. So 177 = 59 + <span class="pp">118</span>, 
+	429 = 143 + <span class="pp">286</span>, 435 = 145 + <span class="pp">290</span>, & 
+	264 = 88 + <span class="pp">176</span>. 
+	The same (<span class="pp">red</span>) factors need to be added to any control points 
+	used for the central coefficients.
+</p>
+
+<p>	
+	The program needs four parameters to produce the table of cuts: the four control 
+	points of the cubic B&eacute;zier curve that is the profile of the desired groove 
+	(e.g., (57,220),(59,145),(143,88),(206,96)), the width of the cut, the depth of the 
+	cut, and the step size (e.g., 0.010). Both should be entered in decimal form. 
+	(Entering fractions will produce an error of some type, dependent on your browser.) 
+	The program assumes that the stock to be cut is more than twice the groove radius in 
+	diameter. (Or you will be mimicking a cutoff tool!) The default precision is three 
+	decimals, but this can be changed as desired. The next optional parameter that can be 
+	modified is the filing "buffer". It defaults to 0.003". Using the formulas 
+	precisely will take the corner of the cutter right up to the curve. Any movement 
+	past this point will result in cutting too deep. Since filing is required to remove 
+	the shoulders, a little extra can be built in via the buffer to avoid cutting too deep.
+</p>
+
+<p class="note">
+	The picture shows a large and inconsistent filing buffer.
+</p>
+
+<p>
+	Sampling Density, the last optional parameter, is a quirk of the algorithm used. 
+	Instead of solving the two parametric equations for x and y, which is extremely 
+	complex, the function is sampled. The total range of the function is split into 
+	Sampling Density parts. The numbers generated for each of these points is used as a 
+	lookup table when looking for a depth of cut that corresponds to a given x&#8209;coordinate. 
+	As an example, if the curve is to span one inch, then the default Sampling Density of 
+	500 gives a depth of cut value every 0.002". This should be sufficient coverage for a 
+	0.010" wide cut. If the width of cut drops or the size of the curve grows, 500 may not 
+	be sufficient and should be increased.
+</p>
+
+<p>
+	To use the chart the following procedure is recommended. Any long stretches of minimal 
+	cross slide advancement should all be cut at once in the standard fashion to save time. 
+	After this the carriage is moved one step to the right and the cross slide is advanced 
+	according to the value in the table. When the 'stepped' curve is complete file as 
+	needed to produce the 3&#8209;dimensional B&eacute;zier curve of your dreams!
+</p>
+
+<p class="note">
+	The x's and y's listed in the table may be of value for a lathe equipped with DROs 
+	on both axes.
+</p>
+
+<p>
+	The challenge faced when implementing this is finding y from x. Finding the roots of 
+	these cubic equations is non-trivial. Consequently, a different path will be used. 
+	A table of x values will be generated for a set number of t values in the range 
+	0&hellip;1. A similar table of y values will be generated. A lookup algorithm will 
+	find the closest x&#8209;value in the table and use the corresponding t&#8209;value 
+	to find the associated y&#8209;value in the y table.
+</p>
+
+<p class="note">
+	This program only works for "simple" B&eacute;zier curves. That is, there is only one 
+	y&#8209;value for each x&#8209;value.
+</p>
+
+<p>
+	I found this code in DevonThink under array functions: <em>findLastIndex</em>. It
+	returns the index of the last element for which the provided function returns a 
+	truthy value. It uses Array.prototype.map() to map each element to an array with its 
+	index and value. Use Array.prototype.filter() to remove elements for which the fxn 
+	returns falsy values, Array.prototype.pop() to get the last one. -1 is the default 
+	value when not found. It will be used for the look up function.
+</p>
+
+<blockquote class="code">
+	<span class="pp">const</span> <span class="ppb">findLastIndex</span> <span class="pp">=</span> (arr, fn) 
+	<span class="pp">=></span><br/>
+  		(arr<br/>
+		.<span class="ppp">map</span>((val, i) <span class="pp">=</span> [i, val])<br/>
+		.<span class="ppp">filter</span>(([i, val]) <span class="pp">=</span> fn(val, i, arr))<br/>
+		.<span class="ppb">pop</span>() || [-1])[0];
+</blockquote>
+
+<p>
+	Examples:
+</p>
+
+<blockquote class="code">
+	<span class="ppp">findLastIndex</span>([1, 2, 3, 4], n <span class="pp">=></span> n % 2 <span class="pp">===</span> 1); <span class="ppg">// 2 (index of the value 3)</span><br/>
+	<span class="ppp">findLastIndex</span>([1, 2, 3, 4], n <span class="pp">=></span> n <span class="pp">===</span> 5); <span class="ppg">// -1 (default value when not found)</span>
+</blockquote>
+
+<p>
+	It has been a struggle getting the code to work. I began thinking a simple conversion 
+	of the round curve cutting tool would be sufficient. Consequently, I did not think 
+	the problem through sufficiently. This morning I put some effort into planning the 
+	best approach to realizing this tool.
+</p>
+
+<p>
+	The following assumptions are critical for realizing this tool. You must start with 
+	a B&eacute;zier curve. The B&eacute;zier curve must be oriented as if it is on the 
+	part held in the lathe. There is a one-to-one correspondence between x- and 
+	y&#8209;coordinates, e.g. the curve does not turn back toward its starting point. The 
+	output is formatted to assist cutting from the right end of the curve to the left. The 
+	maximum depth and width of the cut are known. The tool is not set up for face cuts, 
+	but the output could easily be adapted for a face cut.
+</p>
+
+<p>
+	The following steps are followed by the program.
+</p>
+
+<ol>
+	<li>Using the four control points input by the user generate the array of x-coordinates 
+		and the array of y-coordinates</li>
+	<li>Define y<sub>max</sub>, y<sub>min</sub>, x<sub>max</sub>, and x<sub>min</sub></li>
+	<li>Convert the curve's coordinate system to the lathe coordinate system.</li>
+	<li>Scale the arrays to fit the dimensions of the part</li>
+	<li>Starting at x<sub>max</sub> find the depth of cut from the arrays, subtract 
+		the width of cut and repeat</li>
+</ol>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter the required data for your planned B&eacute;zier curve cut:</legend>
+		<label for="radius">Four Control Points</label>
+		<input type="text" id="cp1x" placeholder="57" autofocus>
+		<input type="text" id="cp1y" placeholder="220"><br/>
+		<label for="radius"></label>
+		<input type="text" id="cp2x" placeholder="59">
+		<input type="text" id="cp2y" placeholder="145"><br/>
+		<label for="radius"></label>
+		<input type="text" id="cp3x" placeholder="143">
+		<input type="text" id="cp3y" placeholder="88"><br/>
+		<label for="radius"></label>
+		<input type="text" id="cp4x" placeholder="206">
+		<input type="text" id="cp4y" placeholder="96"><br/>
+		<label for="widthOfCut">Width of Cut</label>
+		<input type="text" id="widthOfCut" placeholder="1.000"><br/>
+		<label for="depthOfCut">Depth of Cut</label>
+		<input type="text" id="depthOfCut" placeholder="0.500"><br/>
+		<label for="stepSize">Planned Step Size</label>
+		<input type="text" id="stepSize" placeholder="0.010"><br/>
+		<label for="precision">Desired Precision (optional)</label>
+		<input tupe="text" id="precision" placeholder="3"><br/>
+		<label for="buffer">Filing Buffer (optional)</label>
+		<input tupe="text" id="buffer" placeholder="0.003"><br/>
+		<label for="density">Sampling Density (optional)</label>
+		<input tupe="text" id="density" placeholder="500"><br/>
+		<br/>
+		<input type="button" value="Calculate Cutting Table" onclick="makeTable()"/>
+</fieldset>
+
+<p class=note>
+	Reload this HTML page between calculations, if you don't want successive 
+	calculations appended.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>January 7, 2022</p>
+</footer>
+</html>

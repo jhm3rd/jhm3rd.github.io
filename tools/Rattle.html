@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Rattle</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="diameter, measurement, hole, bore, calculation, metalwork"/>
+	<meta name="description" content="Using rattle to measure large bores."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+// Get user input
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function sind(num) {
+	return Math.sin(rpd * num);
+}
+
+function cosd(num) {
+	return Math.cos(rpd * num);
+}
+
+function rss2(a,b) {
+	return Math.sqrt(a*a + b*b);
+}
+
+function acsd(num) {
+	// DPR*acos((ABS(a)<1) ? (a) : SGN(a))
+	if (num<1) {
+		return dpr * Math.acos(abs(num));
+	}
+	else {
+		return drp * Math.acos(sgn(num));
+	}
+}
+
+function vang(arr1,arr2) {
+	// cos(theta) = dot product / product of the vector lengths
+	// cos(theta) = (u1v1 + u2v2 + ...)/(sqrt(u1^2 + u2^2 + ...) * sqrt(v1^2 + v2^2 + ...))
+	var i;
+	var dp = 0;
+	var sqSide1 = 0;
+	var sqSide2 = 0;
+	var theta;
+	for (i in arr1) {
+		dp = dp + arr1[i] * arr2[i];
+		sqSide1 = sqSide1 + arr1[i] * arr1[i];
+		sqSide2 = sqSide2 + arr2[i] * arr2[i];
+	}
+	theta = acsd(dp/(Math.sqrt(sqSide1) * Math.sqrt(sqSide2)));
+	return theta;
+}
+
+function getInput() {
+	var theta;
+	var diam;
+	var diff
+	var beta;
+	var stick = parseFloat(document.getElementById("stick").value); 			
+	var rattle = parseFloat(document.getElementById("rattle").value);
+	
+	theta = asnd(0.5 * rattle/stick);
+	beta = asnd(rattle/stick);
+	diam = stick * cosd(theta)/(1 - 0.5 * (1 - cosd(beta)));
+	diff = stick - stick;
+	
+	document.getElementById("diam").value = diam.toFixed(6);
+	document.getElementById("diff").value = diff.toFixed(6);
+	
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Rattle&mdash;Measuring Large Bores</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">In his book, "Home Machinist's Bedside Reader #1 (pg. 11)", Guy
+Lautard describes a technique for measuring a large bore when you don't have a
+set of calipers large enough to span the diameter.</blockquote>
+
+<blockquote>Basically, you cut a "stick" to a length slightly less than the
+diameter of the bore and provide it with rounded or pointed ends.  Inserted in
+the bore, this stick will "rattle" back and forth a (hopefully small) amount. 
+You measure the peak-to-peak rattle and then use a formula to calculate the
+actual diameter.  Lautard gives a formula but it looks like an approximation
+to me - although I haven't examined it closely.</blockquote>
+
+<blockquote>If the rattle distance is small compared to the diameter of the bore,
+the stick length itself is a very accurate approximation of the bore diameter.</blockquote>
+
+<blockquote>I wrote RATTLE.EXE to accurately compute the diameter given the stick
+and rattle lengths in order to evaluate this procedure.  You can use it to
+calculate the diameter if you need to use this procedure.</blockquote>
+
+<blockquote>BTW, this is the way I was taught to use internal calipers.  If you
+try to set the calipers to the actual diameter, you're very likely to spring
+them slightly.  When withdrawn from the bore to be measured, they will
+unspring slightly thus affecting the reading.  Better to set them so they
+"rattle" slightly in the hole and then measure them.  RATTLE will prove to you
+that, if you make the rattle very small, the difference between the measured
+caliper distance and the actual diameter will be very small indeed.</blockquote>
+	
+<fieldset>
+	<legend>Enter the following measurements</legend>
+		<label for="stick">Measured stick/caliper distance</label>
+		<input type="text" id="stick" placeholder="4.0" autofocus><br/>
+		<label for="rattle">Rattle distance</label>
+		<input type="text" id="rattle" placeholder="0.2"><br/>
+		<input type="button" value="Calculate Diameter/Difference" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+<fieldset>
+	<legend>Output</legend>
+		<label for="diam">Diameter</label>
+		<input type="text" id="diam" readOnly = "True"><br/>
+		<label for="diff">Diameter - stick</label>
+		<input type="text" id="diff" readOnly = "True"><br/>
+</fieldset>
+<br/>
+<hr />
+<footer>
+<p>Based on RATTLE.C at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

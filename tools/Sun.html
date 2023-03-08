@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Sun</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="astronomy, sun, position, latitude, longitude, calculation"/>
+	<meta name="description" content="Calculation of solar location."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+// Get user input
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function sind(num) {
+	return Math.sin(rpd * num);
+}
+
+function cosd(num) {
+	return Math.cos(rpd * num);
+}
+
+function rss2(a,b) {
+	return Math.sqrt(a*a + b*b);
+}
+
+function rss3(a,b,c) {
+	return Math.sqrt(a * a + b * b + c * c);
+}
+
+function acsd(num) {
+	// DPR*acos((ABS(a)<1) ? (a) : SGN(a))
+	if (num<1) {
+		return dpr * Math.acos(num);
+	}
+	else {
+		return dpr * Math.acos(sgn(num));
+	}
+}
+
+function tand(num) {
+	return Math.tan(num * rpd);
+}
+
+function atand(num) {
+	return dpr * Math.atan(num);
+}
+
+function frac(a) {
+	return (a - Math.floor(a));
+}
+
+function vang(arr1,arr2) {
+	// cos(theta) = dot product / product of the vector lengths
+	// cos(theta) = (u1v1 + u2v2 + ...)/(sqrt(u1^2 + u2^2 + ...) * sqrt(v1^2 + v2^2 + ...))
+	var i;
+	var dp = 0;
+	var sqSide1 = 0;
+	var sqSide2 = 0;
+	var theta;
+	for (i in arr1) {
+		dp = dp + arr1[i] * arr2[i];
+		sqSide1 = sqSide1 + arr1[i] * arr1[i];
+		sqSide2 = sqSide2 + arr2[i] * arr2[i];
+	}
+	theta = acsd(dp/(Math.sqrt(sqSide1) * Math.sqrt(sqSide2)));
+	return theta;
+}
+/* pmark..  functions peculiar to this program */
+/*
+void suncomp (struct sundat *s);
+void sunprint (struct sundat *s);
+int tnorm (struct sundat *s);
+void pstpdt (dbl ut);
+void hms (char *label, dbl t);
+void dms (dbl a);
+void menu (void);
+void dtinit (struct datetime *s);
+double jdnum (int month, int day, int year, real ut);
+void csep (real x, char format[]);
+void sd (struct sundial *p);
+void sdp (struct sundial *p);
+void iinput (char prompt[],int defalt,int *idata);
+void rinput (char prompt[],float defalt,float *data);
+double normab (double x, double a, double b);
+void info (void);
+char rdata (void);
+dbl caz (dbl lat1, dbl lon1, dbl lat2, dbl lon2);
+
+*/
+/* Global variables */
+
+/* Create sundat object */
+/* First create the constructor */
+function SunDat (month, day, year, ut, lat, lon, ra, dec, alt, az, dist, eqt, gmst, gast, ghaa, lhas, ghas, sd, hparx, aparx, utrise, utset, ost, odt) {
+	this.month = month;
+	this.day = day;
+	this.year = year;
+	this.ut = ut;			// universal time (hr)
+	this.lat = lat;			// latitude (deg)
+	this.lon = lon;			// longitude (deg)
+	this.ra = ra;			// right ascension (hr)
+	this.dec = dec;			// declination (deg)
+	this.alt = alt;			// altitude of sun (deg)
+	this.az = az;			// azimuth of sun (deg)
+	this.dist = dist;		// distance (au)
+	this.eqt = eqt;			// equation of time (sec)
+	this.gmst = gmst;		// greenwich mean Sidereal time (hr)
+	this.gast = gast;		// greenwich apparent Sidereal time (hr)
+	this.ghaa = ghaa;		// greenwich hour angle of Aries (deg)
+	this.lhas = lhas;		// local hour angle of sun (deg)
+	this.ghas = ghas;		// greenwich hour angle of sun (deg)
+	this.sd = sd;			// semi-diameter of sun (deg)
+	this.hparx = hparx;		// horizontal parallax (deg)
+	this.aparx = aparx;		// altitude parallax (deg)
+	this.utrise = utrise;	// ut of sunrise (hr)
+	this.utset = utset;		// ut of sunset (hr)
+	this.ost = ost;			// standard time GMT offset (hr)
+	this.odt = odt;			// daylight saving time GMT offset (hr)
+}
+
+// Now create methods for getting and setting the object's parameters
+SunDat.prototype.getMonth = function() {
+	return this.month;
+}
+SunDat.prototype.setMonth = function(month) {
+	this.month = month;
+}
+
+SunDat.prototype.getDay = function() {
+	return this.day;
+}
+SunDat.prototype.setDay = function(day) {
+	this.day = day;
+}
+
+SunDat.prototype.getYear = function() {
+	return this.year;
+}
+SunDat.prototype.setYear = function(year) {
+	this.year = year;
+}
+
+SunDat.prototype.getUt = function() {
+	return this.ut;
+}
+SunDat.prototype.setUt = function(ut) {
+	this.ut = ut;
+}
+
+SunDat.prototype.getLat = function() {
+	return this.lat;
+}
+SunDat.prototype.setLat = function(lat) {
+	this.lat = lat;
+}
+
+SunDat.prototype.getLon = function() {
+	return this.lon;
+}
+SunDat.prototype.setLon = function(lon) {
+	this.lon = lon;
+}
+
+SunDat.prototype.getRa = function() {
+	return this.ra;
+}
+SunDat.prototype.setRa = function(ra) {
+	this.ra = ra;
+}
+
+SunDat.prototype.getDec = function() {
+	return this.dec;
+}
+SunDat.prototype.setDec = function(dec) {
+	this.dec = dec;
+}
+
+SunDat.prototype.getAlt = function() {
+	return this.alt;
+}
+SunDat.prototype.setAlt = function(alt) {
+	this.alt = alt;
+}
+
+SunDat.prototype.getAz = function() {
+	return this.az;
+}
+SunDat.prototype.setAz = function(az) {
+	this.az = az;
+}
+
+SunDat.prototype.getDist = function() {
+	return this.dist;
+}
+SunDat.prototype.setDist = function(dist) {
+	this.dist = dist;
+}
+
+SunDat.prototype.getEqt = function() {
+	return this.eqt;
+}
+SunDat.prototype.setEqt = function(eqt) {
+	this.eqt = eqt;
+}
+
+SunDat.prototype.getGmst = function() {
+	return this.gmst;
+}
+SunDat.prototype.setGmst = function(gmst) {
+	this.gmst = gmst;
+}
+
+SunDat.prototype.getGast = function() {
+	return this.gast;
+}
+SunDat.prototype.setGast = function(gast) {
+	this.gast = gast;
+}
+
+SunDat.prototype.getGhaa = function() {
+	return this.ghaa;
+}
+SunDat.prototype.setGhaa = function(ghaa) {
+	this.ghaa = ghaa;
+}
+
+SunDat.prototype.getLhas = function() {
+	return this.lhas;
+}
+SunDat.prototype.setLhas = function(lhas) {
+	this.lhas = lhas;
+}
+
+SunDat.prototype.getGhas = function() {
+	return this.ghas;
+}
+SunDat.prototype.setGhas = function(ghas) {
+	this.ghas = ghas;
+}
+
+SunDat.prototype.getSd = function() {
+	return this.sd;
+}
+SunDat.prototype.setSd = function(sd) {
+	this.sd = sd;
+}
+
+SunDat.prototype.getHparx = function() {
+	return this.hparx;
+}
+SunDat.prototype.setHparx = function(hparx) {
+	this.hparx = hparx;
+}
+
+SunDat.prototype.getAparx = function() {
+	return this.aparx;
+}
+SunDat.prototype.setAparx = function(aparx) {
+	this.aparx = aparx;
+}
+
+SunDat.prototype.getUtrise = function() {
+	return this.utrise;
+}
+SunDat.prototype.setUtrise = function(utrise) {
+	this.utrise = utrise;
+}
+
+SunDat.prototype.getUtset = function() {
+	return this.utset;
+}
+SunDat.prototype.setUtset = function(utset) {
+	this.utset = utset;
+}
+
+SunDat.prototype.getOst = function() {
+	return this.ost;
+}
+SunDat.prototype.setOst = function(ost) {
+	this.ost = ost;
+}
+
+SunDat.prototype.getOdt = function() {
+	return this.odt;
+}
+SunDat.prototype.setOdt = function(odt) {
+	this.odt = odt;
+}
+
+// Finally create an instance, s1, of SunDat
+
+var s1 = new SunDat();
+
+// Now repeat the same process for  the object DateTime
+
+function DateTime(month,day,year,hour,minute,second,dw,dow,isdst,dyear,umonth,uday,uyear,uhour,uminute,usecond,lt,ut,jd) {
+	this.month = month;			// local date and time 
+	this.day = day;
+	this.year = year;
+	this.hour = hour;
+	this.minute = minute;
+	this.second = second;
+	this.dw = dw;				// day of week number (SUN=0) 
+	this.dow = dow;				// day of week string 
+	this.isdst = isdst;			// daylight savings flag 
+	this.dyear = dyear;			// days since 1 January (0-365) 
+	this.umonth = umonth;		// universal date and time 
+	this.uday = uday;
+	this.uyear = uyear;
+	this.uhour = uhour;
+	this.uminute = uminute;
+	this.usecond = usecond;
+	this.lt = lt;				// not used
+	this.ut = ut;				// universal time in fractional hours 
+	this.jd = jd;				// julian date 
+};
+
+DateTime.prototype.getMonth = function() {
+	return this.month;
+}
+DateTime.prototype.setMonth = function(month) {
+	this.month = month;
+}
+
+DateTime.prototype.getDay = function() {
+	return this.day;
+}
+DateTime.prototype.setDay = function(day) {
+	this.day = day;
+}
+
+DateTime.prototype.getYear = function() {
+	return this.year;
+}
+DateTime.prototype.setYear = function(year) {
+	this.year = year;
+}
+
+DateTime.prototype.getHour = function() {
+	return this.hour;
+}
+DateTime.prototype.setHour = function(hour) {
+	this.hour = hour;
+}
+
+DateTime.prototype.getMinute = function() {
+	return this.minute;
+}
+DateTime.prototype.setMinute = function(minute) {
+	this.minute = minute;
+}
+
+DateTime.prototype.getSecond = function() {
+	return this.second;
+}
+DateTime.prototype.setSecond = function(second) {
+	this.second = second;
+}
+
+DateTime.prototype.getDw = function() {
+	return this.dw;
+}
+DateTime.prototype.setDw = function(dw) {
+	this.dw = dw;
+}
+
+DateTime.prototype.getDow = function() {
+	return this.dow;
+}
+DateTime.prototype.setDow = function(dow) {
+	this.dow = dow;
+}
+
+DateTime.prototype.getIsdst = function() {
+	return this.isdst;
+}
+DateTime.prototype.setIsdst = function(isdst) {
+	this.isdst = isdst;
+}
+
+DateTime.prototype.getDYear = function() {
+	return this.dyear;
+}
+DateTime.prototype.setDYear = function(dyear) {
+	this.dyear = dyear;
+}
+
+DateTime.prototype.getUMonth = function() {
+	return this.umonth;
+}
+DateTime.prototype.setUMonth = function(umonth) {
+	this.umonth = umonth;
+}
+
+DateTime.prototype.getUDay = function() {
+	return this.uday;
+}
+DateTime.prototype.setUDay = function(uday) {
+	this.uday = uday;
+}
+
+DateTime.prototype.getUYear = function() {
+	return this.uyear;
+}
+DateTime.prototype.setUYear = function(uyear) {
+	this.uyear = uyear;
+}
+
+DateTime.prototype.getUHour = function() {
+	return this.uhour;
+}
+DateTime.prototype.setUHour = function(uhour) {
+	this.uhour = uhour;
+}
+
+DateTime.prototype.getUMinute = function() {
+	return this.uminute;
+}
+DateTime.prototype.setUMinute = function(uminute) {
+	this.uminute = uminute;
+}
+
+DateTime.prototype.getUSecond = function() {
+	return this.usecond;
+}
+DateTime.prototype.setUSecond = function(usecond) {
+	this.usecond = usecond;
+}
+
+DateTime.prototype.getLt = function() {
+	return this.lt;
+}
+DateTime.prototype.setLt = function(lt) {
+	this.lt = lt;
+}
+
+DateTime.prototype.getUt = function() {
+	return this.ut;
+}
+DateTime.prototype.setUt = function(ut) {
+	this.ut = ut;
+}
+
+DateTime.prototype.getJd = function() {
+	return this.jd;
+}
+DateTime.prototype.setJd = function(jd) {
+	this.jd = jd;
+}
+
+var dt = new DateTime();
+
+// one more time with SunDial
+
+function SunDial(alt,az,phip,thetap,phig,thetag,lgnomon,alpha,beta,gamma,ratio) {
+	this.alt = alt;			// altitude of sun (deg) 
+	this.az = az;			// azimuth of sun (deg) 
+	this.phip = phip;		// perpendicular to plane - azimuth (deg) 
+	this.thetap = thetap;	// perpendicular to plane - elevation (deg) 
+	this.phig = phig;		// gnomon azimuth (deg) 
+	this.thetag = thetag;	// gnomon elevation (deg) 
+	this.lgnomon = lgnomon;	// gnomon length (units arbitrary) 
+/*
+IF E,N,U are unit vectors along East(x), North(y) and Up(z)
+ and P is a unit vector normal to the plane, then:
+
+ALPHA = ANGLE OF SHADOW wrt N x P
+BETA = ANGLE OF SHADOW wrt P x E
+GAMMA = ANGLE OF SHADOW wrt P (90 deg for horizontal plane)
+*/
+	this.alpha = alpha;		// shadow angle wrt N x P (deg)
+	this.beta = beta;		// shadow angle wrt P x E (deg)
+	this.gamma = gamma;		// shadow angle wrt P (deg)
+	this.ratio = ratio;		// ratio of shadow length/gnomon length (nd)
+}
+
+SunDial.prototype.getAlt = function() {
+	return this.alt;
+}
+SunDial.prototype.setAlt = function(alt) {
+	this.alt = alt;
+}
+
+SunDial.prototype.getAz = function() {
+	return this.az;
+}
+SunDial.prototype.setAz = function(az) {
+	this.az = az;
+}
+
+SunDial.prototype.getPhip = function() {
+	return this.phip;
+}
+SunDial.prototype.setPhip = function(phip) {
+	this.phip = phip;
+}
+
+SunDial.prototype.getThetap = function() {
+	return this.thetap;
+}
+SunDial.prototype.setThetap = function(thetap) {
+	this.thetap = thetap;
+}
+
+SunDial.prototype.getPhig = function() {
+	return this.phig;
+}
+SunDial.prototype.setPhig = function(phig) {
+	this.phig = phig;
+}
+
+SunDial.prototype.getThetag = function() {
+	return this.thetag;
+}
+SunDial.prototype.setThetag = function(thetag) {
+	this.thetag = thetag;
+}
+
+SunDial.prototype.getLgnomon = function() {
+	return this.lgnomon;
+}
+SunDial.prototype.setLgnomon = function(lgnomon) {
+	this.lgnomon = lgnomon;
+}
+
+SunDial.prototype.getAlpha = function() {
+	return this.alpha;
+}
+SunDial.prototype.setAlpha = function(alpha) {
+	this.alpha = alpha;
+}
+
+SunDial.prototype.getBeta = function() {
+	return this.beta;
+}
+SunDial.prototype.setBeta = function(beta) {
+	this.beta = beta;
+}
+
+SunDial.prototype.getGamma = function() {
+	return this.gamma;
+}
+SunDial.prototype.setGamma = function(gamma) {
+	this.gamma = gamma;
+}
+
+SunDial.prototype.getRatio = function() {
+	return this.ratio;
+}
+SunDial.prototype.setRatio = function(ratio) {
+	this.ratio = ratio;
+}
+
+var dial = new SunDial();
+
+var beginBrk = "<p>";				// for HTML output
+var endBrk = "</p>";
+	
+var mo = new Array(0,31,28,31,30,31,30,31,31,30,31,30,31);
+
+function suncomp (s) { // s is an instance of SunDat
+	var i;
+	var G,L,C,N,V,M,J,t1,t2;
+	var sinl,singml,singl,cosg,sing,tsun,rsun,psun,x,ra,dec,dist;
+	var ut,et,xs1,xs2,xjed0,jd,mjd,jed,tcap,tlc,gmst,omega,eqe,gast,ghaa;
+	var last,sunml,eqt,slat,clat,lha,sd,cd,slha,clha,alt,xn,xd,az,tss,xm,xl;
+	var alpha,sdel,cdel,cosh,hh;
+	var utrs = new Array();
+	var ts1,ts2,ts3,ts4,nn;
+
+	/*
+	G=MEAN ANOMALY OF SUN
+	L=MEAN LONGITUDE OF SUN
+	C=MEAN LONGITUDE OF MOON
+	N=LONGITUDE OF ASCENDING NODE OF MOON'S ORBIT
+	V=MEAN ANOMALY OF VENUS
+	M=MEAN ANOMALY OF MARS
+	J=MEAN ANOMALY OF JUPITER
+	*/
+
+	tnorm(s);
+	// ut=s->ut; Is this how one gets a property from a C++ struct?
+	ut = s.getUt();
+	slat = sind(s.getLat());
+	clat = cosd(s.getLat());
+	et = ut + 49.3/3600;
+	//ts1=(int)(275*s->month/9); Guess that (int) is similar to Math.floor(); yes (int) converts following type to int losing decimal
+	ts1 = Math.floor(275 * s.getMonth()/9);
+	ts2 = Math.floor((s.getMonth() + 9)/12);
+	ts3 = Math.floor(s.getYear() % 4);
+	ts4 = Math.floor(1 + (ts3 + 2)/3);
+	nn = ts1 - ts2 * ts4 + s.getDay() - 30;
+	xs1 = 100 * s.getYear() + s.getMonth() - 190002.5; // Assume , in original was meant to be ;
+	xs2 = 0.5 * (1 - sgn(xs1));
+	xjed0 = 367 * s.getYear() - Math.floor(0.25 * 7 * (s.getYear() + ts2)) + ts1 + s.getDay() + 1721013.5 + xs2;
+	jd = xjed0 + ut/24;			/* julian date */
+	mjd = jd - 2400000.5;			/* mean julian date */
+	jed = xjed0 + et/24;			/* julian ephemeris date */
+	tcap = (jed - 2415020)/36525;	/* time from 1900 epoch (julian centuries) */
+	tlc = nn + ut/24;				/* time from jan. 0 of current year (days) */
+	gmst = normab(6.67170278 + 0.0657098232 * (xjed0 - 2433282.5) + 1.0027379093 * ut, 0, 24);
+	omega = normab(372.1133 - 0.0529539 * (jd - 2433282.5), 0, 360);
+	eqe = -0.00029 * sind(omega);				/* equation of the equinoxes (hr) */
+	gast = normab(gmst + eqe, 0, 24);			/* greenwich apparent Sidereal time (hr) */
+	ghaa = 15 * gast;							/* greenwich hour angle of aries (deg) */
+	last = normab(gast - s.getLon()/15, 0, 24);		/* local apparent Sidereal time (hr) */
+	sunml = normab(279.697 + 0.98564734 * (jd - 2415020), 0,360);		/* sun mean longitude (deg) */
+	x = sunml * rpd;
+
+	/* 
+	sundial time = clock time + eqt
+	eqt = true sun - fictitious sun
+	if eqt>0 the true sun leads the fictitious sun and the sundial reads fast
+	*/
+
+	eqt = -97.8 * Math.sin(x) - 431.3 * Math.cos(x) + 596.6 * Math.sin(2*x) - 1.9 * Math.cos(2 * x) + 4 * Math.sin(3 * x) + 19.3 * Math.cos(3 * x) - 12.7 * Math.sin(4 * x);	/* equation of time (sec) */
+
+	t1 = tcap;
+	t2 = t1 * t1;
+
+	G = rpd * normab(358.475833 + 35999.04975 * t1 -0.00015 * t2, 0, 360);
+	L = rpd * normab(279.696678 + 36000.76892 * t1 + 0.000303 * t2, 0, 360);
+	C = rpd * normab(270.434164 + 480960 * t1 + 307.883142 * t1 - 0.001133 * t2, 0, 360);
+	N = rpd * normab(259.183275 - 1800 * t1 - 134.142008 * t1 + 0.002078 * t2, 0, 360);
+	V = rpd * normab(212.603219 + 58320 * t1 + 197.803875 * t1 + 0.001286 * t2, 0, 360);
+	M = rpd * normab(319.529425 + 19080 * t1 + 59.8585 * t1 + 0.000181 * t2, 0, 360);
+	J = rpd * normab(225.444651 + 2880 * t1 + 154.906654 * t1, 0, 360);
+
+	sinl = Math.sin(L);
+	singml = Math.sin(G - L);
+	singl = Math.sin(G + L);
+	cosg = Math.cos(G);
+	sing = Math.sin(G);
+	tsun = 0.39793 * sinl + 9.998999E-03 * singml + 0.003334 * singl - 0.000208 * t1 * sinl;
+	tsun = tsun + 0.000042 * Math.sin(2 * G + L) - 0.00004 * Math.cos(L) - 0.000039 * Math.sin(N - L);
+	tsun = tsun - 0.00003 * t1 * singml - 0.000014 * Math.sin(2 * G - L) - 0.00001 * Math.cos(G - L - J) - 0.00001 * t1 * singl;
+	rsun = 1.000421 - 0.033503 * cosg - 0.00014 * Math.cos(2 * G) + 0.000084 * t1 * cosg - 0.000033 * Math.sin(G - J) + 0.000027 * Math.sin(2 * (G - V));
+	psun = -0.041295 * Math.sin(2 * L) + 0.032116 * sing - 0.001038 * Math.sin(G - 2 * L) - 0.000346 * Math.sin(G + 2 * L);
+	psun = psun - 0.000095 - 0.00008 * t1 * sing - 0.000079 * Math.sin(N) + 0.000068 * Math.sin(2 * G);
+	psun = psun + 0.000046 * t1 * Math.sin(2 * L) + 0.00003 * Math.sin(C - L) - 0.000025 * Math.cos(G - J);
+	psun = psun + 0.000024 * Math.sin(4 * G - 8 * M + 3 * J) - 0.000019 * Math.sin(G - V) - 0.000017 * Math.cos(2 * (G - V));
+
+	x = psun/Math.sqrt(rsun - tsun * tsun);
+	ra = normab((L * dpr + asnd(x))/15, 0, 24.);	/* right ascension (hr) */
+	dec = asnd(tsun/Math.sqrt(rsun));					/* declination (deg) */
+	dist = Math.sqrt(rsun);							/* dist (au) */
+
+	lha = 15 * (gast - ra) - s.getLon();					/* local hour angle (deg) */
+	sd = sind(dec);
+	cd = cosd(dec);
+	slha = sind(lha);
+	clha = cosd(lha);
+	alt = asnd(slat * sd + clat * cd * clha);			/* altitude of sun (deg) */
+														/*note: ghas = longitude of sun (measured positive westwards) */
+	s.setGhas(normab(ghaa - ra * 15 ,0 ,360));			/* greenwich ha of sun (deg) */
+	s.setLhas(normab(s.getGhas() - s.getLon(), 0 , 360));		/* local ha of sun (deg) */
+	az = caz(s.getLat(), s.getLon(), dec, s.getGhas());				/* azimuth of sun (deg) */
+	s.setSd(959.63/(3600 * dist));						/* semi-diameter of sun (deg) */
+	s.setHparx(8.793999 * s.getSd()/959.63);				/* horizontal parallax (deg) */
+	s.setAparx(asnd(sind(s.getHparx()) * cosd(alt)));		/* altitude parallax (deg) */
+
+	s.setRa(ra);
+	s.setDec(dec);
+	s.setDist(dist);
+	s.setGast(gast);
+	s.setGmst(gmst);
+	s.setGhaa(ghaa);
+	s.setAlt(alt);
+	s.setAz(az);
+	s.setEqt(eqt);
+
+	/* sunrise/set calculations */
+	for (i=0 ; i<2 ; i++) {
+		tss = nn + (6 + 12 * i + s.getLon()/15)/24;
+		xm = normab(0.9856 * tss - 3.251, 0, 360);
+		xl = normab(xm + 1.916 * sind(xm) + 0.02 * sind(2 * xm) + 282.565, 0, 360);
+		alpha = atand(0.91746 * tand(xl));
+		while (abs(alpha - xl) >= 10) {
+			alpha+= 180;
+		}
+		sdel = 0.39782 * sind(xl);
+		cdel = Math.sqrt(1 - Math.pow(sdel, 2));
+		cosh = (cosd(90 + 5/6) - sdel * slat)/(cdel * clat);
+		if (abs(cosh) > 1) {
+			utrs[i]=1.e10;
+		}
+		hh = acsd(cosh);
+		if (i == 0) {
+			hh = 360 - hh;
+		}
+		utrs[i] = normab((hh + alpha)/15 - 0.06571 * tss - 6.62, 0, 24) + s.getLon()/15;
+	}
+	s.setUtrise(utrs[0]);
+	s.setUtset(utrs[1]);
+}
+
+function tnorm(s) { // s is a SunDat object
+	// not needed as mo is declared globally -- int mo[13]={0,31,28,31,30,31,30,31,31,30,31,30,31};
+	var m,d,y,ius;
+	var ut;
+
+	m = s.getMonth();
+	d = s.getDay();
+	y = s.getYear();
+	ut = s.getUt();
+
+	try { // this will halt the pgm with an alert box if either y or m are out of bounds
+		if (y <= 0 || m < 1 || m > 12) {
+			throw "error in tnorm; " + m + d + y + ut; 
+		}
+	}
+	catch(exception) {
+		alert(exception);
+	}
+
+	if (y % 4 == 0 && y % 100 != 0 || y % 400 == 0) { // leap year
+		mo[2]=29;
+	}
+	
+	try {
+		if (d < 1 || d > mo[m]) {
+			throw "error in tnorm; " + m + d + y + ut;
+		}
+	}
+	catch(exception) {
+		alert(exception);
+	}
+
+	ius=sgn(ut);
+
+/*	check: if (ut >= 0. && ut < 24.) goto nexit;
+	ut=ut-ius*24.; mo[2]=28;
+	if (y % 4) goto leap2;
+	mo[2]=29; if (y % 100) goto leap2;
+	if (!(y % 400)) goto leap2; else mo[2]=28;
+	leap2: if (ius < 0) goto back;
+	d++; if (d <= mo[m]) goto check;
+	m++; d=1; if (m <= 12) goto check;
+	m=1; y++; goto check;
+	back: d--; if (d > 0) goto check;
+	m--; if (m > 0) {d=mo[m]; goto check;}
+	m=12; y--; d=mo[m]; goto check;
+	nexit: s->month=m, s->day=d, s->year=y, s->ut=ut; return 0;
+	
+	really difficult to translate this into Javascript that doesn't have a goto statement!!!
+*/
+	check:
+	while (ut < 0 || ut >= 24) {
+		ut = ut - ius * 24;
+		mo[2] = 28;
+		while (!(y % 4)) {
+			mo[2] = 29;
+			while (!(y % 100)) {
+				while (y % 400) {
+					mo[2] = 28;
+				}
+			}
+		}
+		while (ius >= 0) {
+			d++;
+			if (d <= mo[m]) {
+				break check;
+			}
+			m++;
+			d = 1;
+			if (m <= 12) {
+				break check;
+			}
+			m = 1;
+			y++;
+			break check;
+		}
+		d--;
+		if (d > 0) {
+			continue;
+		}
+		m--;
+		if (m > 0) {
+			d = mo[m];
+			continue;
+			}
+		m = 12;
+		y--;
+		d = mo[m];
+		continue;
+	}
+	s.setMonth(m);
+	s.setDay(d);
+	s.setYear(y);
+	s.setUt(ut);
+}
+
+/* sd..-------------------------------------------------------------------- */
+
+/*
+sundial calculations
+
+IF E,N,U are unit vectors along East(x), North(y) and Up(z)
+ and P is a unit vector normal to the plane, then:
+
+ALPHA = ANGLE OF SHADOW wrt N x P
+BETA = ANGLE OF SHADOW wrt P x E
+GAMMA = ANGLE OF SHADOW wrt P
+
+Note that these "wrt" axes may have to be changed if P lies in the N-E plane.
+
+*/
+
+function sd (p) {		// p is a SunDial object instance
+	var ts,as1,bs,cs,ap,bp,cp,ag,bg,cg,delta,ls,ab,ac,bc,k,x,y,z;
+
+	ts = cosd(p.getAlt());
+	as1 = ts * sind(p.getAz());
+	bs = ts * cosd(p.getAz());
+	cs = sind(p.getAlt());
+	ts = cosd(p.getThetap());
+	ap = ts * sind(p.getPhip());
+	bp = ts * cosd(p.getPhip());
+	cp = sind(p.getThetap());
+	ts = cosd(p.getThetag());
+	ag = ts * sind(p.getPhig());
+	bg = ts * cosd(p.getPhig());
+	cg = sind(p.getThetag());
+	p.setAlpha(1.e10);
+	p.setBeta(1.e10);
+	p.setGamma(1.e10);
+	ls = 1.e10;
+	delta = ap * as1 + bp * bs + cp * cs;
+	if (delta != 0.0) {
+		ab = ag * bs - as1 * bg;
+		ac = ag * cs - as1 * cg;
+		bc = bg * cs - bs * cg;
+		k = 1/delta;
+		x = k * (bp * ab + cp * ac);
+		y = k * (cp * bc - ap * ab);
+		z = -k * (ap * ac + bp * bc);
+		ls = rss3(x,y,z);
+		p.setAlpha(acsd((x * cp - z * ap)/(ls * rss2(ap,cp))));
+		p.setBeta(acsd((y * cp - z * bp)/(ls * rss2(bp,cp))));
+		p.setGamma(acsd((x * ap + y * bp + z * cp)/ls));
+		p.setRatio(ls);
+	}
+}
+
+function isItDst(theDate) {	//determines whether theDate is in the DST window 2nd Sun in Mar to 1st Sun in Nov
+							//theDate is the date object to check, returns true if daylight saving time is in effect.
+	var hourToCheck = theDate.getHour();
+	var utHour = theDate.getUHour();
+	var ost = s1.getOst();
+	var odt = s1.getOdt();
+    if (ost != odt) {							// DST is applied to this time zone
+    	if (hourToCheck - utHour == odt) {		// current time minus UT time = DST offset, so in DST window
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    }
+    else {
+    	return false;
+    }
+}
+
+function dateDiff(datePart, date1, date2) { // datePart can be either week(w), day(d), hour(h), minute(m), or second(s)
+	datePart = datePart.toLowerCase();
+	var diff = abs(date1 - date2);
+	var divideBy = { w:604800000,
+					 d:86400000,
+					 h:3600000,
+					 m:60000,
+					 s:1000 };
+					 
+	return diff/divideBy[datePart];
+} // not sure if this function accounts for DST
+
+/* dtinit..---------------------------------------------------------------- */
+
+/* initialize date and time array (object in this case)*/
+
+function dtinit(s) {		// s is a DateTime instance
+	var days = new Array("SUN","MON","TUE","WED","THU","FRI","SAT");
+
+	var today = new Date();
+	
+	//time(&ltime);		/* get current system time as long integer */
+
+	//today=localtime(&ltime);	/* convert time from integer to structure */
+	
+	s.setMonth(today.getMonth() + 1);		// built-in date functions
+	s.setDay(today.getDate());
+	s.setYear(today.getFullYear());
+	/*if (s.getYear > 50) {
+		s.setYear(s.getYear() + 1900);
+	}
+	else {
+		s.setYear(s.getYear() + 2000);
+	}*/
+	s.setHour(today.getHours());			// built-in date functions
+	s.setMinute(today.getMinutes());
+	s.setSecond(today.getSeconds());
+	s.setDw(today.getDay());
+	s.setDow(days[s.getDw()]);
+			// strncpy (s->dow,days[s->dw],4);
+
+/*------------------------------- check on need for isdst (below) ----------------------------------------*/
+	s.setIsdst(isItDst(s)); // Not clear if this is needed as getTimeZoneOffset (from UTC)takes DST into account
+
+	var janOne = new Date(today.getFullYear(), 0, 1);
+	s.setDYear(dateDiff("d", today, janOne));
+
+	//gmt=gmtime(&ltime); not needed with UTC functions		/* convert time from integer to structure */
+	s.setUMonth(today.getUTCMonth() + 1);
+	s.setUDay(today.getUTCDate());
+	s.setUYear(today.getUTCFullYear());
+	// not needed as full years are used if (s->uyear>50) s->uyear+=1900; else s->uyear+=2000;
+	s.setUHour(today.getUTCHours());
+	s.setUMinute(today.getUTCMinutes());
+	s.setUSecond(today.getUTCSeconds());
+	s.setUt(s.getUHour() + s.getUMinute()/60 + s.getUSecond()/3600);
+	s.setJd(jdnum(s.getUMonth(), s.getUDay(), s.getUYear(), s.getUt()));
+}
+
+/* jdnum..----------------------------------------------------------------- */
+
+/*
+GIVEN MONTH, DAY, YEAR AND UNIVERSAL TIME
+ RETURN JULIAN DATE (JD) AND THE DAY OF THE WEEK (DOW)
+VALID FOR 200 CENTURIES STARTING MARCH 1, 1 A.D.
+THE FIRST MONTH OF EACH YEAR IS ASSUMED TO BE MARCH - THEREFORE
+MONTHS AND YEARS ARE CORRECTED ACCORDINGLY
+YEARS THAT ARE MULTIPLES OF 4000 ARE NOT LEAP YEARS
+YEARS AFTER 1582 THAT ARE MULTIPLES OF 400 ARE LEAP YEARS
+YEARS AFTER 1582 THAT ARE MULTIPLES OF 100 ARE NOT LEAP YEARS
+YEARS THAT ARE MULTIPLES OF 4 ARE LEAP YEARS
+THREE WEEKDAYS ARE ADDED IF THE DATE OCCURS AFTER OCTOBER 4, 1582
+ONE TROPICAL YEAR = 365.242198 MEAN SOLAR DAYS
+LENGTH OF CURRENT YEAR = 365.24250 MEAN SOLAR DAYS
+AFTER 20000 YEARS A CORRECTION OF ONE DAY CHANGES THE LENGTH OF THE
+ CALENDAR YEAR TO 365.242200 MEAN SOLAR DAYS
+*/
+
+function jdnum(month, day, year, ut) {
+	var mond = new Array(31,29,31,30,31,30,31,31,30,31,30,31);
+	var dow;
+	var r0,r1,r2,r3,r4,ts,jd,jd0;
+
+	if (month<1 || month>12) {
+		alert("MONTH ERROR IN JDNUM");
+	}
+	if (day<1 || day>mond[month-1]) {
+		alert("DAY ERROR IN JDNUM");
+	}
+	if (year<1 || year>20001) {
+		alert("YEAR ERROR IN JDNUM");
+	}
+	if (month == 2 && day == 29) {
+		if ((year % 4)!=0 || ((year>1582 && (year % 4000)==0) || (year % 100)==0)) {
+			alert("LEAP YEAR ERROR IN JDNUM");
+		}
+	}
+
+	r4 = year + 0.0001 * day + 0.01 * month;
+	r0 = year;
+	r1 = month-2;
+	r2 = day;				// this variable never used
+	r3 = day;
+	if (r1<=0) {
+		r1 = r1 + 12;
+		r0 = r0 - 1;
+	}
+	r3 = r3 + 3 + Math.floor(30.6 * (r1 - 1) + 0.5) + 365.25 * r0 - Math.floor(0.00025 * r0);
+	if (r4 > 1582.1005) {
+		r3 = r3 - Math.floor((Math.floor(0.01 * r0) - 3) * 0.75 + 1);
+	}
+	jd0 = Math.floor(r3 + 1721114) - 0.5;
+	jd = jd0 + ut/24; 
+	ts = (r3 - 4)/7;									// why are these last two lines here?
+	dow = Math.floor(7 * (ts - Math.floor(ts)) + 1.1);
+	return jd;
+}
+
+/* normab..---------------------------------------------------------------- */
+
+/* normalize value between a and b
+(the quantity (b-a) must represent a 'revolution') */
+
+function normab(x, a, b) {
+	var z = b - a;
+	while (x < a) {
+		x+=z;
+	}
+	while (x > b) {
+		x-=z;
+	}
+	return x;
+}
+
+/* caz..------------------------------------------------------------------- */
+
+/* compute relative azimuth */
+
+function caz(lat1, lon1, lat2, lon2) {
+	var slat1,clat1,slat2,clat2;
+	var A,cosA,sinA,cosb,cosc,az;
+	slat1 = sind(lat1);
+	slat2 = sind(lat2);
+	clat1 = cosd(lat1);
+	clat2 = cosd(lat2);
+	cosA = slat1 * slat2 + clat1 * clat2 * cosd(abs(lon2-lon1));
+	A = acsd(cosA);
+	sinA = sind(A);
+	cosb = (slat2 - slat1 * cosA)/(clat1 * sinA);
+	az = acsd(cosb);
+	if (lon1 == lon2) {
+		if (lat1 < lat2) {
+			az = 0;
+		}
+		else {
+			az = 180;
+		}
+	}
+	if (lon2 > lon1) {
+		az = 360 - az;
+	}
+	if (abs(lon2 - lon1) > 180) {
+		az = 360 - az;
+	}
+	return az;
+}
+
+/* pstpdt..---------------------------------------------------------------- */
+
+/* Return PST/PDT CORRESPONDING TO UT */
+
+function pstpdt(ut) {
+	var pt;
+	var yt,totalStr;					// string variable
+
+	pt = ut + s1.getOst();
+	if (pt < 0) {
+		pt+= 24;
+		yt = "<ST ";
+	}
+	else {
+		yt = " ST ";
+	}
+	totalStr = yt + hms(pt);
+	pt = ut + s1.getOdt();
+	if (pt < 0) {
+		pt+= 24;
+		yt = "<DT ";
+	}
+	else {
+		yt = " DT ";
+	}
+	totalStr = totalStr + "\n" + yt + hms(pt);
+	return totalStr;
+}
+
+/* hms..------------------------------------------------------------------- */
+
+/* return a time in h:m:s format */
+
+function hms (t) {
+	var h,m,s;
+	var f;
+
+	h = Math.floor(t);
+	f = frac(t)*3600;
+	f = Math.floor(f);	// this corrects for the fact that there is no integer operation
+	m = f/60;
+	m = Math.floor(m);
+	s = abs(f - m * 60);
+	return h + ":" + m + ":" + s;
+}
+
+/* dms..------------------------------------------------------------------- */
+
+/* print an angle in d:m:s format */
+
+function dms(a) {		// a is a long integer
+	var d,m,s;
+	var sgn=' ';
+	var f;
+
+	d = Math.floor(abs(a));
+	if (a < 0) {
+		sgn='-';
+	}
+	f=frac(abs(a))*3600;
+	f = Math.floor(f);	// this corrects for the fact that there is no integer operation
+	m = f/60;
+	m = Math.floor(m);
+	s = abs(f - m * 60);
+	return sgn + d + ":" + m + ":" + s;
+}
+
+/* csep..------------------------------------------------------------------ */
+
+/* return a number with comma separators */
+
+function csep(x) {
+	var intgr = Math.round(x);
+	return intgr.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/* sunprint..-------------------------------------------------------------- */
+
+/* PRINT SUN DATA */
+
+/* superceded by tablePrint */
+
+function sunprint(s) { // s is a DateTime instance
+	var d,p;
+	var totalHTML = "";									// total HTML to be added to div
+	
+	var beginBrk = "<p>";
+	var endBrk = "</p>";
+	
+	totalHTML = beginBrk + s.getMonth() + "-" + s.getDay() + "-" + s.getYear() + endBrk;
+	totalHTML = totalHTML + beginBrk + "UT " + hms(s.getUt()) + endBrk;
+	totalHTML = totalHTML + beginBrk + pstpdt(s.getUt()) + endBrk;
+	totalHTML = totalHTML + beginBrk + "RA = " + s.getRa().toPrecision(4) + " hr = " + normab(s.getRa() * 15,0,360).toPrecision(6) + "&deg; = " + dms(normab(s.getRa() * 15,0,360)) + endBrk;
+	totalHTML = totalHTML + beginBrk + "DEC = " + s.getDec().toPrecision(6) + " = " + dms(s.getDec()) + endBrk;
+	totalHTML = totalHTML + beginBrk + "DIST = " + s.getDist().toPrecision(8) + " au = " + csep (s.getDist() * 92955807.2674) + " miles" + endBrk;
+	totalHTML = totalHTML + beginBrk + "ALT = " + s.getAlt().toPrecision(5) + "&deg; = " + dms(s.getAlt()) + endBrk;
+	totalHTML = totalHTML + beginBrk + "ZEN = " + (90 - s.getAlt()).toPrecision(4) + "&deg; = " + dms(90-s.getAlt()) + endBrk;
+	totalHTML = totalHTML + beginBrk + "AZ = " + s.getAz().toPrecision(5) + "&deg; = " + dms(s.getAz()) + endBrk;
+	totalHTML = totalHTML + beginBrk + "SD = " + s.getSd().toPrecision(4) + "&deg; = " + dms(s.getSd()) + endBrk;
+	totalHTML = totalHTML + beginBrk + "GMST = " + s.getGmst().toPrecision(4) + " hr" + endBrk;
+	totalHTML = totalHTML + beginBrk + "GAST = " + s.getGast().toPrecision(4) + " hr" + endBrk;
+	totalHTML = totalHTML + beginBrk + "GHAA = " + s.getGhaa().toPrecision(4) + "&deg;" + endBrk;
+	totalHTML = totalHTML + beginBrk + "LHAS = " + s.getLhas().toPrecision(4) + "&deg;" + endBrk;
+	totalHTML = totalHTML + beginBrk + "GHAS = " + s.getGhas().toPrecision(4) + "&deg;" + endBrk;
+	totalHTML = totalHTML + beginBrk + "EQT = " + s.getEqt().toPrecision(5) + " sec = " + dms(s.getEqt()/3600);
+	if (s.eqt < 0) {
+		totalHTML = totalHTML + " dial slow" + endBrk;
+	}
+	else {
+		totalHTML = totalHTML + " dial fast" + endBrk;
+	}
+	totalHTML = totalHTML + beginBrk + "SUNRISE UT " + hms(s.getUtrise()) + pstpdt(s.getUtrise()) + endBrk;
+	totalHTML = totalHTML + beginBrk + "SUNSET UT " + hms(s.getUtset()) + pstpdt(s.getUtset()) + endBrk;
+	d = s.getUtset() - s.getUtrise();
+	p = 100 * d/24;
+	totalHTML = totalHTML + beginBrk + "DAYLIGHT UT " + hms(d) + " = " + d.toPrecision(4) + endBrk;
+	return totalHTML;
+}
+function tablePrint(s) {
+	var div = document.getElementsByTagName("div")[0];
+	var tablI, rowI;
+	
+	tablI = document.createElement("table");
+	tablI.createTHead();
+	rowI = tablI.tHead.insertRow();
+	var headCell = rowI.insertCell(0);
+	headCell.setAttribute('colSpan', '5');
+	headCell.innerHTML = 'Date ' + s.getMonth() + "-" + s.getDay() + "-" + s.getYear();
+	
+	tablI.appendChild(document.createElement('tbody'));
+	rowI = tablI.tBodies[0].insertRow();
+	var brkCell = rowI.insertCell(0);
+	brkCell.setAttribute('colSpan', '5');
+	brkCell.innerHTML = ' ';
+	
+	rowI = tablI.tBodies[0].insertRow();
+	var cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "UT";
+	var cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Universal Time";
+	var cell2 = rowI.insertCell(2);
+	cell2.innerHTML = hms(s.getUt());
+	var cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "";
+	var cell4 = rowI.insertCell(3);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "RA";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Right Ascension of Sun";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getRa().toPrecision(4) + " hr";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = normab(s.getRa() * 15,0,360).toPrecision(6) + "&deg;";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = dms(normab(s.getRa() * 15,0,360));
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "DEC";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Declination of Sun";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getDec().toPrecision(6) + " hr";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = dms(s.getDec());
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "DIST";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Earth-Sun Distance";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getDist().toPrecision(8) + " au";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = csep (s.getDist() * 92955807.2674) + " miles";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "ALT";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Angle of sun above horizontal";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getAlt().toPrecision(5) + "&deg;";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = dms(s.getAlt());
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "< 0 implies sun is not visible";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "ZEN";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Zenith Angle of Sun";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = (90 - s.getAlt()).toPrecision(4) + "&deg;";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = dms(90-s.getAlt());
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "angle below vertical";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "AZ";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Azimuth of Sun";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getAz().toPrecision(5) + "&deg;";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = dms(s.getAz());
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "N=0, E=90, S=180, W=270";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "SD";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Apparent Semi-Diameter of Sun";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getSd().toPrecision(4) + "&deg;";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = dms(s.getSd());
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "GMST";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Greenwich Mean Sidereal Time";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getGmst().toPrecision(4) + " hr";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "GAST";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Greenwich Apparent Sidereal Time";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getGast().toPrecision(4) + " hr";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "GHAA";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Greenwich Hour Angle of Aries";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getGhaa().toPrecision(4) + "&deg;";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "LHAS";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Local Hour Angle of Sun";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getLhas().toPrecision(4) + "&deg;";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "GHAS";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Greenwich Hour Angle of Sun";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getGhas().toPrecision(4) + "&deg;";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "EQT";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Equation of Time";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = s.getEqt().toPrecision(5) + " sec";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = dms(s.getEqt()/3600);
+	cell4 = rowI.insertCell(4);
+	if (s.eqt < 0) {
+		cell4.innerHTML = "Dial Slow";
+	}
+	else {
+		cell4.innerHTML = "Dial Fast";
+	}
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "Sunrise UT";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = hms(s.getUtrise());
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = pstpdt(s.getUtrise());
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "Sunset UT";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = hms(s.getUtset());
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = pstpdt(s.getUtset());
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	d = s.getUtset() - s.getUtrise();
+	p = 100 * d/24;
+	
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "Daylight UT";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Hours of Daylight";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = hms(d);
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = d.toPrecision(4);
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+	
+	var jd = dt.getJd();
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "Julian Date"
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "Days since Jan 1, 4713 BCE";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = csep(jd) + ((jd - Math.floor(jd)).toPrecision(8)).slice(1);
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "";
+	cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "";
+
+	
+	div.appendChild(tablI);
+}
+/* sdp..------------------------------------------------------------------- */
+
+/* print sundial information */
+
+function sdp(p) {
+	var totalHTML = "";
+	totalHTML = totalHTML + beginBrk + "alpha (wrt N x P) = " + p.getAlpha().toPrecision(5) + "&deg;";
+	totalHTML = totalHTML + " | beta (wrt P x E) = " + p.getBeta().toPrecision(5) + "&deg;" + endBrk;
+	totalHTML = totalHTML + beginBrk + "gamma (wrt P) = " + p.getGamma().toPrecision(5) + "&deg;";
+	totalHTML = totalHTML + " | shadow/(gnomon length) ratio = " + p.getRatio().toPrecision(5) + endBrk;
+	return totalHTML;
+}
+
+function sdpTable(p,title,title2) {
+	var div = document.getElementsByTagName("div")[1];
+	var tablI, rowI;
+	
+	tablI = document.createElement("table");
+	tablI.createTHead();
+	rowI = tablI.tHead.insertRow();
+	var headCell = rowI.insertCell(0);
+	headCell.setAttribute('colSpan', '4');
+	headCell.innerHTML = title;
+	
+	tablI.appendChild(document.createElement('tbody'));
+	rowI = tablI.tBodies[0].insertRow();
+	var brkCell = rowI.insertCell(0);
+	brkCell.setAttribute('colSpan', '4');
+	brkCell.innerHTML = title2;
+	
+	rowI = tablI.tBodies[0].insertRow();
+	var cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "alpha (wrt N x P) = ";
+	var cell1 = rowI.insertCell(1);
+	cell1.innerHTML = p.getAlpha().toPrecision(5) + "&deg;";
+	var cell2 = rowI.insertCell(2);
+	cell2.innerHTML = "beta (wrt P x E) = ";
+	var cell3 = rowI.insertCell(3);
+	cell3.innerHTML = p.getBeta().toPrecision(5) + "&deg;";
+
+	rowI = tablI.tBodies[0].insertRow();
+	cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "gamma (wrt P) = ";
+	cell1 = rowI.insertCell(1);
+	cell1.innerHTML = p.getGamma().toPrecision(5) + "&deg;";
+	cell2 = rowI.insertCell(2);
+	cell2.innerHTML = "shadow/gnomon ratio = ";
+	cell3 = rowI.insertCell(3);
+	cell3.innerHTML = p.getRatio().toPrecision(5);
+	
+	div.appendChild(tablI);
+}
+
+function getInput() {
+
+	var i,j,k,m,d,y,dmin;								// integers
+	var x;												// real
+	var op;												// char
+	var xmin,xmax,uts,azover,azlast,ulast,ut0,emin;		// double
+	
+	var cancelScript = false;							// end gracefully if user does not enter needed input
+	var div = document.getElementsByTagName("div")[0];	// determine the place to put the output
+
+	
+	dtinit(dt);		// initialize the global dt, DateTime instance
+
+	s1.setLat(parseFloat(document.getElementById("latitude").value)); 			
+	s1.setLon(parseFloat(document.getElementById("longitude").value));
+	s1.setOst(parseInt(document.getElementById("UTOffset").value));
+	s1.setOdt(parseInt(document.getElementById("dstOffset").value));
+	
+	var numOfElements = document.forms[0].elements.length - 2;
+	var selOpt = document.forms[0].elements[numOfElements].selectedIndex;
+	
+	switch(selOpt) {
+		case 0:
+			// current time
+			s1.setMonth(dt.getMonth());
+			s1.setDay(dt.getDay());
+			s1.setYear(dt.getYear());
+			s1.setUt(dt.getUt());
+			break;
+		case 1:
+			// enter desired date/time
+			var chosenDate = prompt("Enter the desired date (numbers only d-m-y)", dt.getDay() + "-" + dt.getMonth() + "-" + dt.getYear());
+			if (chosenDate != null) {
+    			var dateArray = chosenDate.split('-');
+    			dt.setDay(parseInt(dateArray[0]));
+    			s1.setDay(parseInt(dateArray[0]));
+    			dt.setMonth(parseInt(dateArray[1]));
+    			s1.setMonth(parseInt(dateArray[1]));
+    			dt.setYear(parseInt(dateArray[2]));
+    			s1.setYear(parseInt(dateArray[2]));
+			}
+			else {
+				cancelScript = true;
+			}
+			var chosenTime = prompt("Enter the universal time",dt.getUt());
+			if (chosenTime != null) {
+				s1.setUt(parseInt(chosenTime));
+			}
+			else {
+				s1.setUt(dt.getUt());
+			}
+			break;
+		case 2:
+			// equatorial minimum
+			var chosenMonYr = prompt("Enter the month & year (numbers only)", dt.getMonth() + "-" + dt.getYear());
+			if (chosenMonYr != null) {
+				var dateArray = chosenMonYr.split('-');
+				s1.setMonth(parseInt(dateArray[0]));
+				s1.setYear(parseInt(dateArray[1]));
+				s1.setUt(12 + s1.getLon()/15); 
+				emin = 1.e9; 
+				dmin = 0;
+				for (i=1; i<=mo[s1.getMonth()]; i++) {	// mo[] contains the number of days in a month (w/ 0 in mo[0])
+					s1.setDay(i);
+					suncomp (s1);
+					if (abs(s1.getEqt()) < emin) {
+						emin = abs(s1.getEqt());
+						dmin = s1.getDay();
+					}
+				}
+				s1.setDay(dmin);
+				suncomp (s1);
+			}
+			else {
+				cancelScript = true;
+			}
+			break;
+		case 3:
+			// fall equinox
+			var chosenYr = prompt("Enter the year", dt.getYear());
+			if (chosenYr != null) {
+				s1.setYear(parseInt(chosenYr));
+				s1.setMonth(9);
+				s1.setDay(19);
+				xmin = 1.e9;
+				/* for (s1.ut=12.,i=1; i<=4*24 ; i++,s1.ut++)
+					I believe this means that the s1.ut is initialized along with i
+					the loop continues to the condition (i<=...) and then i is incremented
+					and s1.ut is incremented as well. 
+					see http://stackoverflow.com/questions/276512/what-is-the-full-for-loop-syntax-in-c-and-others-in-case-they-are-compatible
+				*/
+				s1.setUt(12);
+				for (i=1; i<=4*24; i++) {
+					suncomp(s1);
+					if (abs(s1.getDec()) < xmin) {
+						xmin = abs(s1.getDec());
+						m = s1.getMonth();
+						d = s1.getDay();
+						y = s1.getYear();
+						uts = s1.getUt();
+					}
+					s1.setUt(s1.getUt + 1);
+				}
+				s1.setMonth(m);
+				s1.setDay(d);
+				s1.setYear(y);
+				s1.setUt(uts); 
+			}
+			else {
+				cancelScript = true;
+			}
+			break;
+		case 4:
+			// meridian transit
+			var chosenDate = prompt("Enter the desired date (numbers only d-m-y)", dt.getDay() + "-" + dt.getMonth() + "-" + dt.getYear());
+			if (chosenDate != null) {
+				var dateArray = chosenDate.split('-');
+    			s1.setDay(parseInt(dateArray[0]));
+    			s1.setMonth(parseInt(dateArray[1]));
+				s1.setYear(parseInt(dateArray[2]));
+				/* the following means set azover to either 180 or 0;
+					180 if the condition s1.lat > 0 is true and 
+					to 0 if the condition is false:
+					azover = (s1.lat > 0) ? 180 : 0;
+				*/
+				if (s1.getLat() > 0) {
+					azover = 180;
+				}
+				else {
+					azover = 0;
+				}
+				/* assignment statements in C are evaluated from right to left,
+					so s1.ut is set to 12 and then ut0 is set to s1.ut in
+					ut0=s1.ut=12.+s1.lon/15.;
+				*/
+				ut0 = 12 + s1.getLon()/15;
+				s1.setUt(ut0);
+				suncomp(s1);
+				azlast = 1.e10;
+				while (abs(s1.getAz() - azover) > 0.001) {
+					if (azlast > 1.e9) {
+						azlast = s1.getAz();
+						ulast = s1.getUt();
+						s1.setUt(ut0 - s1.getEqt()/3600);
+					}
+					else {
+						s1.setUt(ut0 + (azover - azlast) * (s1.getUt() - ulast)/(s1.getAz() - azlast));
+						azlast = s1.getAz();
+						ulast = s1.getUt();
+					}
+					suncomp(s1);
+				}
+			}
+			else {
+				cancelScript = true;
+			}
+			break;
+		case 5:
+			// summer solstice
+			var chosenYr = prompt("Enter the year", dt.getYear());
+			if (chosenYr != null) {
+				s1.setYear(parseInt(chosenYr));
+				s1.setMonth(6);
+				s1.setDay(19);
+				xmax=-1.e9;
+				s1.setUt(12);
+				for (i=1; i<=4*24; i++) {
+					suncomp(s1);
+					if (s1.getDec() > xmax) {
+						xmax = s1.getDec();
+						m = s1.getMonth();
+						d = s1.getDay();
+						y = s1.getYear();
+						uts = s1.getUt();
+					}
+					s1.setUt(s1.getUt() + 1);
+				}
+				s1.setMonth(m);
+				s1.setDay(d);
+				s1.setYear(y);
+				s1.setUt(uts);
+			}
+			else {
+				cancelScript = true;
+			}
+			break;
+		case 6:
+			// vernal equinox
+			var chosenYr = prompt("Enter the year", dt.getYear());
+			if (chosenYr != null) {
+				s1.setYear(parseInt(chosenYr));
+				s1.setMonth(3);
+				s1.setDay(19);
+				xmin = 1.e9;
+				s1.setUt(12);
+				for (i=1; i<=4*24 ; i++) {
+					suncomp(s1);
+					if (abs(s1.getDec()) < xmin) {
+						xmin = abs(s1.getDec());
+						m = s1.getMonth();
+						d = s1.getDay();
+						y = s1.getYear();
+						uts = s1.getUt();
+					}
+					s1.setUt(s1.getUt() + 1);
+				}
+				s1.setMonth(m);
+				s1.setDay(d);
+				s1.setYear(y);
+				s1.setUt(uts);
+			}
+			else {
+				cancelScript = true;
+			}
+			break;
+		case 7:
+			// winter solstice
+			var chosenYr = prompt("Enter the year", dt.getYear());
+			if (chosenYr != null) {
+				s1.setYear(parseInt(chosenYr));
+				s1.setMonth(12);
+				s1.setDay(19);
+				xmin = 1.e9;
+				s1.setUt(12);
+				for (i=1; i<=4*24; i++) {
+					suncomp(s1);
+					if (s1.getDec < xmin) {
+						xmin = s1.getDec();
+						m = s1.getMonth();
+						d = s1.getDay();
+						y = s1.getYear();
+						uts = s1.getUt();
+					}
+					s1.setUt(s1.getUt + 1);
+				}
+				s1.setMonth(m);
+				s1.setDay(d);
+				s1.setYear(y);
+				s1.setUt(uts);
+			}
+			else {
+				cancelScript = true;
+			}
+			break;
+	}
+	if (!(cancelScript)) {
+		suncomp(s1);
+		// var sunOutput = sunprint(s1);							// create the HTML
+		
+		tablePrint(s1);
+		if (s1.getAlt() > 0) {
+			//sunOutput = sunOutput + beginBrk + "For a horizontal sundial with a vertical gnomon:" + endBrk;
+			//sunOutput = sunOutput + beginBrk + "P = normal to sundial plane | dial time = clock time + EQT" + endBrk;
+			dial.setAlt(s1.getAlt());
+			dial.setAz(s1.getAz());
+			dial.setLgnomon(1);
+			dial.setPhip(0);
+			dial.setThetap(90);
+			dial.setPhig(0);
+			dial.setThetag(90);
+			sd(dial);
+			sdpTable(dial,"For a horizontal sundial with a vertical gnomon","P = normal to sundial plane | dial time = clock time + EQT");
+			//sunOutput = sunOutput + sdp(dial);
+			//sunOutput = sunOutput + beginBrk + "For a vertical (south facing) sundial with a horizontal gnomon:" + endBrk;
+			dial.setPhip(180);
+			dial.setThetap(0);
+			dial.setPhig(180);
+			dial.setThetag(0);
+			sd(dial);
+			//sunOutput = sunOutput + sdp(dial);
+			sdpTable(dial,"For a vertical (south facing) sundial with a horizontal gnomon"," ");
+		}
+	}
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<h1>Sun</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">The program is based 
+on information found in:</blockquote>
+
+		<p class=centered>Almanac for Computers for the year 1978</p>
+
+<blockquote>published by the</blockquote>
+
+		<address>Nautical Almanac Office</address>
+		<address>United States Naval Observatory</address>
+		<address>Washington, DC 20390</address>
+
+<blockquote>In this publication, two types of series expansions are presented.  A short
+term Chebyshev series valid only for 1978 is useless for long term
+computation.  However, a much more complex trigonometric series is described
+which is valid for a 300 year span 1800-2100.  It is this latter series that
+is implemented in the program.  The Almanac lists the following accuracies for
+computed quantities:</blockquote>
+
+<table>
+	<thead>
+		<tr>
+			<td>Computed Quantity</td>
+			<td>Accuracy</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>sun position</td>
+			<td>1E-4 AU</td>
+		</tr>
+		<tr>
+			<td>sun velocity</td>
+			<td>1E-5 AU/day</td>
+		</tr>
+		<tr>
+			<td>right ascension</td>
+			<td>0.1 minute</td>
+		</tr>
+		<tr>
+			<td>declination</td>
+			<td>1 arc minute</td>
+		</tr>
+		<tr>
+			<td>distance</td>
+			<td>5E-5 AU</td>
+		</tr>
+	</tbody>
+</table>
+<br/>
+
+<blockquote>
+<p>Latitude is measured positive north of the equator, negative south of the
+equator - permissible range is -90 <= latitude <= 90 deg.</p>
+
+<p>Longitude is measured positive WESTWARD from Greenwich, negative eastwards
+ - permissible range is -180 <= longitude <= 180 deg.</p>
+
+<p>One way to get fairly accurate values for lat and lon is to find someone who
+has a GPS (Global Positioning System) receiver and ask him to take a reading. 
+Your local airport may also be able to supply accurate values.</p>
+
+<p>UT (Universal Time) offsets are measured negative westward from Greenwich.  In
+the absence of any daylight saving adjustments, Los Angeles time = Universal
+time - 8 hours (i.e., it's 8 hours earlier in LA than it is in London).  The
+correct values for the conus time zones are shown below.</p>
+
+<dl class="centered">
+	<dt>Eastern time zone</dt>	<dd>-5,-4</dd>
+	<dt>Central time zone</dt>	<dd>-6,-5</dd>
+	<dt>Mountain time zone</dt>	<dd>-7,-6</dd>
+	<dt>Pacific time zone</dt>	<dd>-8,-7</dd>
+</dl>
+
+<p>Note that UT is not ALWAYS the same as the time in London. UT NEVER 'goes on
+daylight savings'.  The British DO employ daylight savings (I think it's
+called something like 'British Summer Time').  If you have access to a
+short-wave receiver capable of receiving WWV or WWVH (the USNBS time broadcast
+stations), you can determine UT from their transmissions.  Alternatively, with
+a web browser, go to:</p>
+
+<p class="centered">http://www.hilink.com.au/times/</p>
+
+<p>and you can determine UT as well as local time in many locations around the
+world.</p>
+
+<p>If daylight savings is not used in your area (e.g., Hawaii), enter the same
+value as used for the standard time offset.  Some areas of the world have half
+hour offsets - enter as a decimal fraction, e.g., -9.5 hr.</p>
+</blockquote>
+
+<form name="myData">
+
+<fieldset>
+	<legend>Enter the following data for the location of interest</legend>
+		<label for="latitude">Latitude (&deg;)</label>
+		<input type="text" id="latitude" placeholder="39.974824" autofocus><br/>
+		<label for="longitude">Longitude (&deg;)</label>
+		<input type="text" id="longitude" placeholder="-86.166096"><br/>
+		<label for="UTOffset">Standard time offset from UT (hr)</label>
+		<input type="text" id="UTOffset" placeholder="-5"><br/>
+		<label for="dstOffset">Daylight saving time offset from UT (hr)</label>
+		<input type="text" id="dstOffset" placeholder="-4"><br/>
+		<label for="optionSel">Select the desired date/time</label>
+		<select name=”userOption” size=”1”>
+			<option value=”a” selected=”selected”>Current Time</option>
+			<option value=”b”>Input Date/Time</option>
+			<option value=”e”>Equatorial Minimum</option>
+			<option value=”f”>Fall Equinox</option>
+			<option value=”m”>Meridian Transit</option>
+			<option value=”s”>Summer Solstice</option>
+			<option value=”v”>Vernal Equinox</option>
+			<option value=”w”>Winter Solstice</option>
+		</select>
+		<br/>
+		<input type="button" value="Calculate Sun Data" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+</form>
+<!--<dl class="centered">
+	<dt class="indent">UT</dt> <dd>Universal Time</dd>
+	<dt class="indent">RA</dt> <dd>Right Ascension of sun</dd>
+	<dt class="indent">DEC</dt> <dd>Declination of sun</dd>
+	<dt class="indent">DIST</dt> <dd>Earth-sun Distance</dd>
+	<dt class="indent">ALT</dt> <dd>Altitude of sun (angle above horizontal < 0 => sun not visible)</dd>
+	<dt class="indent">ZEN</dt> <dd>Zenith angle of sun (angle below vertical)</dd>
+	<dt class="indent">AZ</dt> <dd>Azimuth of sun (N=0, E=90, S=180, W=270)</dd>
+	<dt class="indent">SD</dt> <dd>Apparent Semi-Diameter of sun</dd>
+	<dt class="indent">GMST</dt> <dd>Greenwich Mean Sidereal Time</dd>
+	<dt class="indent">GAST</dt> <dd>Greenwich Apparent Sidereal Time</dd>
+	<dt class="indent">GHAA</dt> <dd>Greenwich Hour Angle of Aries</dd>
+	<dt class="indent">LHAS</dt> <dd>Local Hour Angle of Sun</dd>
+	<dt class="indent">GHAS</dt> <dd>Greenwich Hour Angle of Sun</dd>
+	<dt class="indent">EQT</dt> <dd>Equation of Time</dd>
+	<dt class="indent">ST</dt> <dd>Local Standard Time</dd>
+	<dt class="indent">DT</dt> <dd>Local Daylight Savings Time</dd>
+	<dt class="indent">DH</dt> <dd>Hours of Daylight on indicated day</dd>
+</dl>-->
+<p>If standard or daylight savings times are preceeded by '<' (e.g. < ST) they refer to that time on the previous day.)</p>
+<br/>
+<hr/>
+<div>
+</div name = "div2">
+<div>
+</div>
+<footer>
+<p>Based on SUN.C at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

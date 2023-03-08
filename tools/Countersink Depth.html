@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+Countersink Depth Calculater
+</title>
+<meta name="keywords" content="countersink, depth, calculation, metalwork"/>
+<meta name="description" content="Determine correct depth for counterink drilling"/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 0 3px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 275px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+</style>
+<script type="text/javascript">
+<!--
+
+function GetDepth() {
+	var csangle = parseInt(document.getElementById("CSangle").value);
+	var holeD = parseFloat(document.getElementById("holeDiam").value);
+	var csD = parseFloat(document.getElementById("csDiam").value);
+	var tz = 0;
+	var rpd = Math.PI / 180;
+	var dFmC = Number (0);
+	var dFmS = Number (0);
+	
+	if (csD <= holeD){
+		Alert("Countersink diameter must be greater than hole diameter");
+	}
+	else {
+		tz = Math.tan (0.5 * csangle * rpd);
+		dFmC = 0.5 * (csD - holeD) / tz;
+		dFmS = 0.5 * csD / tz;
+	} //end of else
+	
+	document.getElementById("DFmC").value = dFmC.toFixed(5);
+	document.getElementById("DFmS").value = dFmS.toFixed(5);
+} //end of function
+
+// -->
+</script>
+</head>
+<body>
+<form name="Countersink">
+
+<h1>Determine Drilling Depth for Countersink</h1><br />
+
+<p>
+B. Vaughan has written a neat tool for determining the drill/mill depth needed 
+to obtain consistent and correct countersink diameters.</p>
+
+<fieldset>
+	<legend>Required Input</legend>
+		<label for="CSangle">Included angle of countersink = </label>
+		<input id="CSangle" placeholder="60" autofocus><br>
+		<label for ="holeDiam">Drilled hole diameter = </label>
+		<input id="holeDiam" placeholder="0.5"><br>
+		<label for ="csDiam">Countersink hole diameter = </label>
+		<input id="csDiam" placeholder="0.6"><br>
+</fieldset>
+<br>
+<input type="button" value="Calculate Drill Depth" onclick="GetDepth()"/><br /><br />
+<fieldset>
+	<legend>Calculated Depths</legend>
+		<label for="DFmC">Depth from initial contact with drilled hole = </label>
+		<input id="DFmC"><br>
+		<label for ="DFmS">Depth from work surface = </label>
+		<input id="DFmS"><br>
+</fieldset>
+</form>
+<hr />
+</body>
+<footer>
+<p>Based on csk.c at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+
+</html>

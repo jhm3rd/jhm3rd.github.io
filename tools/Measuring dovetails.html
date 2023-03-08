@@ -1,0 +1,614 @@
+<html>
+<head>
+<title> Measuring Dovetails</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+window.onload = function() {
+	let canvas = document.getElementById("drawingCanvas");
+	let context = canvas.getContext("2d");
+	
+	let startingAngle = 1.56 * Math.PI;
+	let endingAngle = 1.559 * Math.PI;
+	
+	const leftEdge = 30;
+	const bottomEdge = 100;
+	const bottomEdgeF = 225;
+	const topEdge = 25;
+	const topEdgeF = 150;
+	const rightEdge = 270;
+	const doveBtm = 70;
+	const doveLess = 40;
+	const doveBitLess = 20;
+	const femDoveWid = 70;
+	const femDoveSmWid = 40;
+	const femDoveHt = 43;
+	
+	const centMaleLX = 46;	// leftEdge + 16
+	const centMaleRX = 254;
+	const centMaleY = 55;	// ~ halfway between top and bottom edges
+	const centFemLX = 104;
+	const centFemRX = 195;
+	const centFemY = 175;
+	const radFem = 17;
+	const rad = 15;
+	
+	const measureLineLeng = 5;
+	const measureLineHt = 15;
+
+	context.lineWidth = 1;
+	
+	// Male dovetail
+	context.beginPath();
+	context.moveTo(leftEdge,bottomEdge);
+	context.lineTo(rightEdge,bottomEdge);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge,bottomEdge);
+	context.lineTo(rightEdge,doveBtm);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge,doveBtm);
+	context.lineTo(rightEdge - doveLess,doveBtm);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(leftEdge,bottomEdge);
+	context.lineTo(leftEdge,doveBtm);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(leftEdge,doveBtm);
+	context.lineTo(leftEdge + doveLess,doveBtm);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(leftEdge + doveBitLess,topEdge);
+	context.lineTo(rightEdge - doveBitLess,topEdge);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(leftEdge + doveBitLess,topEdge);
+	context.lineTo(leftEdge + doveLess,doveBtm);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge - doveBitLess,topEdge);
+	context.lineTo(rightEdge - doveLess,doveBtm);
+	context.stroke();
+	
+	// Male circles
+	context.beginPath();
+	context.arc(centMaleLX,centMaleY,rad,startingAngle,endingAngle);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(centMaleRX,centMaleY,rad,startingAngle,endingAngle);
+	context.stroke();
+	
+	context.lineWidth = 0.5;
+
+	//	X measurement line
+	context.beginPath();
+	context.moveTo(leftEdge + doveBitLess,measureLineHt - measureLineLeng);
+	context.lineTo(leftEdge + doveBitLess,measureLineHt + measureLineLeng);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(leftEdge + doveBitLess,measureLineHt);
+	context.lineTo(rightEdge - doveBitLess,measureLineHt);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(rightEdge - doveBitLess,measureLineHt - measureLineLeng);
+	context.lineTo(rightEdge - doveBitLess,measureLineHt + measureLineLeng);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "blue";
+	context.fillText("X",150,1);
+	
+	//	S2 measurement line
+	context.beginPath();
+	context.moveTo(leftEdge,centMaleY - measureLineLeng - 20);
+	context.lineTo(leftEdge,centMaleY + measureLineLeng - 20);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(leftEdge,centMaleY - 20);
+	context.lineTo(rightEdge,centMaleY - 20);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(rightEdge,centMaleY - measureLineLeng - 20);
+	context.lineTo(rightEdge,centMaleY + measureLineLeng - 20);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "blue";
+	context.fillText("S2",150,centMaleY - 15);
+	
+	//	Diameter measurement line
+	context.beginPath();
+	context.moveTo(centMaleLX - rad,centMaleY);
+	context.lineTo(centMaleLX + rad,centMaleY);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "blue";
+	context.fillText("D",centMaleLX - 5,centMaleY + 1);
+	
+	//	Height measurement line
+	context.beginPath();
+	context.moveTo(rightEdge + 10,topEdge);
+	context.lineTo(rightEdge + 20,topEdge);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge + 15,topEdge);
+	context.lineTo(rightEdge + 15,doveBtm);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge + 10,doveBtm);
+	context.lineTo(rightEdge + 20,doveBtm);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "blue";
+	context.fillText("H",rightEdge + 16,40);
+
+	context.lineWidth = 1;
+	//	Female dovetail
+	context.beginPath();
+	context.moveTo(leftEdge,bottomEdgeF);
+	context.lineTo(rightEdge,bottomEdgeF);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(leftEdge,topEdgeF);
+	context.lineTo(leftEdge + femDoveWid,topEdgeF);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge,topEdgeF);
+	context.lineTo(rightEdge - femDoveWid,topEdgeF);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(leftEdge + femDoveSmWid,topEdgeF + femDoveHt);
+	context.lineTo(rightEdge - femDoveSmWid,topEdgeF + femDoveHt);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(leftEdge,topEdgeF);
+	context.lineTo(leftEdge,bottomEdgeF);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge,topEdgeF);
+	context.lineTo(rightEdge,bottomEdgeF);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(leftEdge + femDoveWid,topEdgeF);
+	context.lineTo(leftEdge + femDoveSmWid,topEdgeF + femDoveHt);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(rightEdge - femDoveWid,topEdgeF);
+	context.lineTo(rightEdge - femDoveSmWid,topEdgeF + femDoveHt);
+	context.stroke();
+
+	//	Female circles
+	context.beginPath();
+	context.arc(centFemLX,centFemY,radFem,startingAngle,endingAngle);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(centFemRX,centFemY,radFem,startingAngle,endingAngle);
+	context.stroke();
+	
+	context.lineWidth = 0.5;
+
+	//	S1 measurement line
+	context.beginPath();
+	context.moveTo(centFemRX - radFem,centFemY - 30);
+	context.lineTo(centFemRX - radFem,centFemY - 20);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(centFemRX - radFem,centFemY - 25);
+	context.lineTo(centFemLX + radFem,centFemY - 25);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(centFemLX + radFem,centFemY - 30);
+	context.lineTo(centFemLX + radFem,centFemY - 20);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "blue";
+	context.fillText("S1",150,centFemY - 40);
+	
+	// Female D Measurement line
+	context.beginPath();
+	context.moveTo(centFemLX - rad,centFemY);
+	context.lineTo(centFemLX + rad,centFemY);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "blue";
+	context.fillText("D",centFemLX - 5,centFemY + 1);
+	
+	// Y measurement line
+	context.beginPath();
+	context.moveTo(leftEdge + femDoveSmWid,bottomEdgeF - 15);
+	context.lineTo(leftEdge + femDoveSmWid,bottomEdgeF - 25);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(leftEdge + femDoveSmWid,bottomEdgeF - 20);
+	context.lineTo(rightEdge - femDoveSmWid,bottomEdgeF - 20);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(rightEdge - femDoveSmWid,bottomEdgeF - 15);
+	context.lineTo(rightEdge - femDoveSmWid,bottomEdgeF - 25);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "blue";
+	context.fillText("Y",150,bottomEdgeF - 20);
+
+	
+	
+
+} //end of drawing
+
+// round
+// Rounds a number to a specified amount of digits.
+// Use Math.round() and template literals to round the number to the specified number 
+// of digits. Omit the second argument, decimals to round to an integer.
+const round = (n, decimals = 0) => Number(`${Math.round(`${n}e${decimals}`)}e-${decimals}`);
+function degToRad(deg)
+{
+	return deg * Math.PI /180;
+}
+
+function calcDoveF() {
+
+	const s1 = parseFloat(document.getElementById("s1").value);
+	const diam = parseFloat(document.getElementById("rodDiam").value);
+	
+	let rad = degToRad(30);
+		
+	let y = s1 + diam * (1/(Math.tan(rad)) + 1)
+	
+	document.getElementById("dovetail").value = round(y,3);
+
+} //end of function
+
+function calcDoveM() {
+
+	const s2 = parseFloat(document.getElementById("s2").value);
+	const diam = parseFloat(document.getElementById("rodDiamM").value);
+	const ht = parseFloat(document.getElementById("ht").value);
+
+	let rad = degToRad(30);		
+	let x = s2 + 2 * ht * (Math.tan(rad)) - diam * (1/(Math.tan(rad)) + 1)
+	
+	document.getElementById("dovetailM").value = round(x,3);
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>Measuring Dovetails</h1>
+<h2>Using Rods to Measure Dovetails</h2><br />
+
+<canvas id="drawingCanvas" width="300" height="300"></canvas>
+
+<p>
+	This calculator uses two rods to measure dovetails. The male and mating female 
+	dovetails must both be measured with a  pair of equal diameter rods. This calculator 
+	is based on Mike Kidd's article in the December 2022/January 2023 issue of Machinist's 
+	Workshop.
+</p>
+
+<p>	
+	Two rods of identical diameter are placed in the sides of a male dovetail. (Dovetail 
+	angles are assumed to be 60&deg;.) The width measured across the rods, the height of 
+	the dovetail, and the diameter of the rods is sufficient information to calculate 
+	the width at the top of the dovetail. Similarly the width at the bottom of the 
+	female dovetail is calculated using the distance between the rods and their diameter. 
+	The equations used are shown below. 
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>X</mi>
+		<mo>=</mo>
+		<msub>
+			<mi>S</mi>
+			<mn>2</mn>
+		</msub>
+		<mo>+</mo>
+		<mn>2</mn>
+		<mo> &InvisibleTimes; </mo>
+		<mi>H</mi>
+		<mo> &InvisibleTimes; </mo>
+		<mfenced>
+			<mrow>
+				<mi>tan</mi>
+				<mn>30</mn>
+				<mi>&deg;</mi>
+			</mrow>
+		</mfenced>
+		<mo>-</mo>
+		<mi>D</mi>
+		<mo> &InvisibleTimes; </mo>
+		<mfenced>
+			<mrow>
+				<mfrac>
+					<mn>1</mn>
+					<mrow>
+						<mi>tan</mi>
+						<mn>30</mn>
+						<mi>&deg;</mi>
+					</mrow>
+				</mfrac>
+				<mo>+</mo>
+				<mn>1</mn>
+			</mrow>
+		</mfenced>
+	</mrow>
+</math>
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>Y</mi>
+		<mo>=</mo>
+		<msub>
+			<mi>S</mi>
+			<mn>1</mn>
+		</msub>
+		<mo>+</mo>
+		<mi>D</mi>
+		<mo> &InvisibleTimes; </mo>
+		<mfenced>
+			<mrow>
+				<mfrac>
+					<mn>1</mn>
+					<mrow>
+						<mi>tan</mi>
+						<mn>30</mn>
+						<mi>&deg;</mi>
+					</mrow>
+				</mfrac>
+				<mo>+</mo>
+				<mn>1</mn>
+			</mrow>
+		</mfenced>
+	</mrow>
+</math>
+
+<p>
+	X is the width of the male dovetail and Y is the width at the bottom of the female 
+	dovetail.
+</p>
+
+<p class="note">
+	The female dovetail is usually cut 0.006" wider than the male for a clearance fit.
+</p>
+
+<p>
+	Enter the information for either the female or the male calculator and hit the 
+	button. 
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Female Calculator</legend>
+		<label for="s1">Measured S<sub>1</sub></label>
+		<input type="text" id="s1" placeholder="1.00" autofocus><br/>
+		<label for="rodDiam">Rod Diameter</label>
+		<input type="text" id="rodDiam" placeholder="0.250"><br/>
+		<br/>
+		<input type="button" value="Calculate Dovetail Width" onclick="calcDoveF()"/><br/>
+		<label for="dovetail">Dovetail Width at Base</label>
+		<input type="text" id="dovetail"><br/>
+</fieldset>
+<br/>
+<fieldset>
+	<legend>Male Calculator</legend>
+		<label for="s2">Measured S<sub>2</sub></label>
+		<input type="text" id="s2" placeholder="1.00" autofocus><br/>
+		<label for="rodDiamM">Rod Diameter</label>
+		<input type="text" id="rodDiamM" placeholder="0.250"><br/>
+		<label for="ht">Dovetail Height</label>
+		<input type="text" id="ht" placeholder="0.30"><br/>
+		<br/>
+		<input type="button" value="Calculate Dovetail Width" onclick="calcDoveM()"/><br/>
+		<label for="dovetailM">Dovetail Width at Top</label>
+		<input type="text" id="dovetailM"><br/>
+</fieldset>
+
+
+<div>
+
+</div>
+
+<hr />
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>December 8, 2022</p>
+</footer>
+</html>

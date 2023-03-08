@@ -1,0 +1,223 @@
+<html>
+<head>
+<title> Calculations on circles & chords</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 0 3px 10px;
+	}
+	img.bigImage {
+		margin:0 5px 5px 0;
+		height: 34%;
+		width: 60%;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+</style>
+<script type="text/javascript">
+<!--
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function sind(num) {
+	return Math.sin(rpd * num);
+}
+
+function cosd(num) {
+	return Math.cos(rpd * num);
+}
+
+function rss2(a,b) {
+	return Math.sqrt(a*a + b*b);
+}
+
+function acsd(num) {
+	// DPR*acos((ABS(a)<1) ? (a) : SGN(a))
+	if (num<1) {
+		return dpr * Math.acos(abs(num));
+	}
+	else {
+		return drp * Math.acos(sgn(num));
+	}
+}
+
+function vang(arr1,arr2) {
+	// cos(theta) = dot product / product of the vector lengths
+	// cos(theta) = (u1v1 + u2v2 + ...)/(sqrt(u1^2 + u2^2 + ...) * sqrt(v1^2 + v2^2 + ...))
+	var i;
+	var dp = 0;
+	var sqSide1 = 0;
+	var sqSide2 = 0;
+	var theta;
+	for (i in arr1) {
+		dp = dp + arr1[i] * arr2[i];
+		sqSide1 = sqSide1 + arr1[i] * arr1[i];
+		sqSide2 = sqSide2 + arr2[i] * arr2[i];
+	}
+	theta = acsd(dp/(Math.sqrt(sqSide1) * Math.sqrt(sqSide2)));
+	return theta;
+}
+
+
+function findBoth() {
+
+	var rad = parseFloat(document.getElementById("radius").value);
+	var vee = parseFloat(document.getElementById("vee").value);
+	var doc = 0;
+	
+	var sin = 0;
+	var cos = 0;
+	var versin = 0;
+	var exsec = 0;
+	var tan = 0;
+	
+	var theta = 90 - vee/2;
+	sin = sind(theta);
+	cos = cosd(theta);
+	tan = sin/cos;
+	
+	exsec = 1/cos - 1;
+	versin = 1 - cos;
+	
+	var chord = rad * 2 * sin;
+	var chordDepth = rad * versin;
+	var veeDepth = rad * exsec;
+	cos = rad * cos;
+	tan = rad * tan;
+	
+	document.getElementById("sine").value = chord.toFixed(4);
+	document.getElementById("cosine").value = cos.toFixed(4);
+	document.getElementById("versine").value = chordDepth.toFixed(4);
+	document.getElementById("exsecant").value = veeDepth.toFixed(4);
+	document.getElementById("tangent").value = tan.toFixed(4);
+
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>Circle in a Vee</h1>
+<h2>Calculations for Balls and Shafts Sitting in Vee Grooves</h2><br />
+
+
+<p> This calculator is useful for determining chord length and associated parameters 
+	given angle and radius. It can be used for determining how deep a ball will sit in a 
+	vee groove. It is similar to the Calc Hex Dimensions tool. The essence of this 
+	calculator are the two trigonometry functions: versine and exsecant. For a unit 
+	circle the versine is the depth of a chord from the circle's circumference and the 
+	exsecant is the length of a line from the circle's circumference to the vertex of 
+	the external angle defined by the chord.</p>
+
+<br />
+<img class="bigImage" src="file:///Users/johnmcdonald/Documents/Metalworking/Notebook/images/Trig fxns.tiff" alt="Trigonometry functions" />
+<br />
+
+<p> This calculator uses the fact that the trig functions defined on the unit circle can be multiplied by the 
+	radius to give dimensions of many different parts of a segmented circle. As seen in the picture above, 
+	twice the sine of the angle is the length of a chord. The versine is the depth of the chord and the 
+	exsecant is the length of a line from the circle to the vertex of the subtending angle (or vee depth). </p>
+	<br />
+	<math display='block'><mi>Chord Length</mi><mo>=</mo><mrow><mi>Radius</mi><mi>&times;</mi><mn>2</mn><mi>sin</mi><mo>(</mo><mi>&theta;</mi><mo>)</mo></mrow></math> 
+	<br />
+	<math display='block'><mi>Chord Depth</mi><mo>=</mo><mrow><mi>Radius</mi><mi>&times;</mi><mi>versin</mi><mo>(</mo><mi>&theta;</mi><mo>)</mo><mo>=</mo><mi>Radius</mi><mi>&times;</mi><mo>(</mo><mrow><mn>1</mn><mo>-</mo><mi>cos</mi><mo>(</mo><mi>&theta;</mi><mo>)</mo></mrow><mo>)</mo></mrow></math> 
+	<br />
+	<math display='block'><mi>Vee Depth</mi><mo>=</mo><mrow><mi>Radius</mi><mi>&times;</mi><mi>exsec</mi><mo>(</mo><mi>&theta;</mi><mo>)</mo><mo>=</mo><mi>Radius</mi><mi>&times;</mi><mo>(</mo><mfrac><mn>1</mn><mrow><mi>cos</mi><mo>(</mo><mi>&theta;</mi><mo>)</mo></mrow></mfrac><mo>-</mo><mn>1</mn><mo>)</mo></mrow></mrow></math> 
+	<br />
+<hr />
+<br />
+<form name="Parameters">
+<label>Radius of Round Stock or Ball = </label>
+<input type="text" name="radius" id="radius" value="0.125" size="12" /><br />
+<br />
+<label>Total Angle of Vee Groove = </label>
+<input type="text" name="vee" id="vee" value="60" size="12"/><br />
+<hr />
+<br /><input type="button" value="Calculate Parameters" onclick="findBoth()"/><br />
+<br />
+<label>Chord Length = </label>
+<input type="text" name="sine" id="sine" readOnly="True" size="12"/><br />
+<label>Center to Chord Length = </label>
+<input type="text" name="cosine" id="cosine" readOnly="True" size="12"/><br />
+<label>Chord Depth = </label>
+<input type="text" name="versine" id="versine" size="12"/><br />
+<label>Vee Depth = </label>
+<input type="text" name="exsecant" id="exsecant" readOnly="True" size="12"/><br />
+<label>Vee Vertex to Circle Tangent Length = </label>
+<input type="text" name="tangent" id="tangent" readOnly="True" size="12"/><br />
+<br>
+</form>
+<hr />
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>August 13, 2016</p>
+</footer>
+</html>

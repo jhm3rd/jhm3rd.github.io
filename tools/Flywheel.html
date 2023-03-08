@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Tapered Spoke Flywheels</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="flywheel, spoke, tapered, calculation, metalwork"/>
+	<meta name="description" content="Determine correct angles and distances to cut tapered spoke wheels"/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+
+
+window.onload = function() {
+	var canvas = document.getElementById("drawingCanvas");
+	var context = canvas.getContext("2d");
+	
+	var centerXBig = 250;
+	var centerYBig = 300;
+	var radiusBig = 200;
+	var startingAngleBig = 1.05 * Math.PI;
+	var endingAngleBig = 1.96 * Math.PI;
+	
+	context.lineWidth = 2;
+	
+	// Outer arc
+	context.arc(centerXBig, centerYBig, radiusBig, startingAngleBig, endingAngleBig);
+	context.stroke();
+	
+	// Drill hole centers arcs
+	var radiusDH = 170;
+	var startingAngleCH = 1.08 * Math.PI;
+	var endingAngleCH = 1.93 * Math.PI;
+	context.beginPath();
+	context.lineWidth = 0.5;
+	context.arc(centerXBig, centerYBig, radiusDH, startingAngleCH, endingAngleCH);
+	context.stroke();
+	
+	var radiusDHC = 70;
+	context.beginPath();
+	context.arc(centerXBig, centerYBig, radiusDHC, startingAngleCH, endingAngleCH);
+	context.stroke();
+	
+	// Radius centerlines
+	context.beginPath();
+	context.lineWidth = 0.5;
+	context.moveTo(centerXBig,centerYBig);
+	context.lineTo(centerXBig,centerYBig-radiusBig);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(centerXBig,centerYBig);
+	context.lineTo(61,230);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(centerXBig,centerYBig);
+	context.lineTo(439,230);
+	context.stroke();	
+	
+	// Drilled holes
+	
+	var drillRadSm = 15;
+	context.beginPath();
+	context.lineWidth = 0.5;
+	context.arc(100,220,drillRadSm, 1.01*Math.PI, 1.00*Math.PI);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(400,220,drillRadSm, 1.01*Math.PI, 1.00*Math.PI);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(228,132,drillRadSm, 1.01*Math.PI, 1.00*Math.PI);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(272,132,drillRadSm, 1.01*Math.PI, 1.00*Math.PI);
+	context.stroke();
+	
+	var drillRadLg = 25;
+	context.beginPath();
+	context.arc(212, 243, drillRadLg, 1.01*Math.PI, 1.00*Math.PI);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(288, 243, drillRadLg, 1.01*Math.PI, 1.00*Math.PI);
+	context.stroke();
+	
+	// Drilled hole enhanced arcs
+	
+	context.lineWidth = 2;
+	context.beginPath();
+	context.arc(212, 243, drillRadLg, 2.01*Math.PI, 0.71*Math.PI);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(288, 243, drillRadLg, 0.31*Math.PI, 1.01*Math.PI);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(100,220,drillRadSm, 0.51*Math.PI, 1.21*Math.PI);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(400,220,drillRadSm, 1.81*Math.PI, 0.51*Math.PI);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(228,132,drillRadSm, 1.45*Math.PI, 1.95*Math.PI);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(272,132,drillRadSm, 1.01*Math.PI, 1.60*Math.PI);
+	context.stroke();
+
+
+	// Sides of opening between spokes
+	
+	context.beginPath();
+	context.lineWidth = 2;
+	context.moveTo(200,265);
+	context.lineTo(94,234);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(300,265);
+	context.lineTo(406,234);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(237,245);
+	context.lineTo(243,130);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(263,245);
+	context.lineTo(257,130);
+	context.stroke();
+	
+	// Arcs of openings between spokes
+	
+	var radiusOpen = 184.5;
+	context.beginPath();
+	context.lineWidth = 2;
+	context.arc(centerXBig, centerYBig, radiusOpen, 1.16*Math.PI, 1.46*Math.PI);
+	context.stroke();
+
+	context.beginPath();
+	context.arc(centerXBig, centerYBig, radiusOpen, 1.54*Math.PI, 1.84*Math.PI);
+	context.stroke();
+
+// Dimension lines and labels
+
+	context.strokeStyle = "green";
+	context.lineWidth = 0.5
+	context.beginPath();
+	context.moveTo(231,262);
+	context.lineTo(141,152);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("W", 176, 197);
+	
+	context.beginPath();
+	context.moveTo(centerXBig, centerYBig);
+	context.lineTo(272,132);
+	context.stroke();
+
+	var theta = '\u0398';
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText(theta, 251, 230);
+	
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('2', 258, 233);
+	
+	context.beginPath();
+	context.moveTo(centerXBig, centerYBig);
+	context.lineTo(288,243);
+	context.stroke();
+
+	theta = '\u0398';
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText(theta, 255, 270);
+
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('1', 262, 273);
+	
+	context.beginPath();
+	context.moveTo(centerXBig, centerYBig);
+	context.lineTo(230,50);
+	context.stroke();	
+	
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("Milling table axis", 230, 70);
+	
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('\u03A6', 240, 100);
+
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('r', 273, 132);
+
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('2', 277, 135);
+	
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('r', 288, 247);
+
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('1', 292, 250);
+	
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('R', 320, 275);
+
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('1', 327, 278);
+	
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('R', 415, 250);
+
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('2', 422, 253);
+	
+	context.beginPath();
+	context.moveTo(288, 243);
+	context.lineTo(centerXBig,243);
+	context.stroke();	
+	
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("d", 271, 240);
+
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('1', 275, 243);
+	
+	context.beginPath();
+	context.moveTo(272, 132);
+	context.lineTo(centerXBig,132);
+	context.stroke();	
+
+	context.beginPath();
+	context.font = "bold 12 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("d", 258, 130);
+
+	context.beginPath();
+	context.font = "bold 10 px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText('2', 263, 133);
+	
+} //end of drawing
+
+// Get user input
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+var nSpokes;
+var innerRad;
+var outerRad;
+var innerDiam;
+var outerDiam;
+
+var theta1 = 0;	// angle between spokes
+var innerHoleRad = 0;
+var outerHoleRad = 0;
+
+var phi = 0;
+var phil=0;
+var phis=0;
+var phif=20;
+var dphi=1;
+var qmin=1.E9;
+var x = 0;
+var sep = 0;
+var spoke1 = 0;
+var spoke2 = 0;
+var w =0;
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function sind(angle) {
+	return Math.sin(rpd*angle);
+}
+
+function getInput() {
+
+	var offset = document.getElementById("offset").value;
+	var angle = document.getElementById("angle").value;
+	nSpokes = parseInt(document.getElementById("spokes").value); // number of spokes
+	innerRad = parseFloat(document.getElementById("innerRad").value); // radius of inner hole circle, r1 in Klotz
+	outerRad = parseFloat(document.getElementById("outerRad").value); // radius of outer hole circle, r2 in Klotz
+	innerDiam = parseFloat(document.getElementById("innerDiam").value); // diameter of inner holes, d1 in Klotz
+	outerDiam = parseFloat(document.getElementById("outerDiam").value); // diameter of outer holes, d2 in Klotz
+	outerHoleRad = 0.5*outerDiam; // radius of outer holes, s2 in Klotz
+	innerHoleRad = 0.5*innerDiam; // radius of inner holes, s1 in Klotz
+	
+	theta1 = 180/nSpokes;
+	
+	if (offset != "") {
+		offset = parseFloat(offset);
+		genOutput(offset,true);
+	}
+	else if (angle != "") {
+		genOutput(parseFloat(angle),false);
+	}
+	else {
+		alert("You must enter either d2 or &Theta;2");
+	}
+} // end function getInput()
+
+
+function minimize(theta2) {
+	var q = 0;
+	for (p=phis; p<=phif; p+=dphi) {
+		q = abs(innerRad * sind(theta1 + p) - innerHoleRad - (outerRad * sind(theta2 + p) - outerHoleRad));
+		if (q < qmin) {
+			qmin = q;
+			phi = p;
+		}
+	}
+}
+
+function printToPg(name) {
+
+	var div = document.getElementsByTagName("div")[0];
+	var paragS = document.createElement("p");
+	var paragRI = document.createElement("p");
+	var paragRO = document.createElement("p");
+	var paragDI = document.createElement("p");
+	var paragDO = document.createElement("p");
+	var paragDSO = document.createElement("p");
+	var paragASI = document.createElement("p");
+	var paragASO = document.createElement("p");
+	var paragAO = document.createElement("p");
+	var paragISW = document.createElement("p");
+	var paragOSW = document.createElement("p");
+	var paragW = document.createElement("p");
+	var paragPX = document.createElement("p");
+	var pPXText = "";
+	
+	
+	paragS.appendChild(document.createTextNode("Number of spokes = " + nSpokes.toFixed(0)));
+	paragRI.appendChild(document.createTextNode("Radius on which inner holes are located (R1) = " + innerRad.toFixed(3)));
+	paragRO.appendChild(document.createTextNode("Radius on which outer holes are located (R2) = " + outerRad.toFixed(3)));
+	paragDI.appendChild(document.createTextNode("Diameter of inner holes (2*r1) = " + innerDiam.toFixed(3)));
+	paragDO.appendChild(document.createTextNode("Diameter of outer holes (2*r2) = " + outerDiam.toFixed(3)));
+	paragDSO.appendChild(document.createTextNode("Distance from spoke CL to outer hole center (d2) = " + offset.toFixed(3)));
+	paragASI.appendChild(document.createTextNode("Angle from spoke CL to inner hole center (theta1) = " + theta1.toFixed(3)));
+	paragASO.appendChild(document.createTextNode("Angle from spoke CL to outer hole center (theta2) = " + theta2.toFixed(3)));
+	paragAO.appendChild(document.createTextNode("Angle between 2 outer holes in same web space = " + sep.toFixed(3)));
+	paragISW.appendChild(document.createTextNode("Inner spoke width = " + spoke1.toFixed(3)));
+	paragOSW.appendChild(document.createTextNode("Outer spoke width = " + spoke2.toFixed(3)));
+	paragW.appendChild(document.createTextNode("Minimum radial web length (W) = " + w.toFixed(3)));
+
+	pPXText = "Assuming that a spoke CL is initially aligned with the mill y axis, the rotary table must be rotated phi = " + phi.toFixed(3) +"\xB0 to bring the spoke edge parallel to the mill y axis. The table must then be offset by x = " + x.toFixed(3) + " in plus half the cutter diameter."
+	paragPX.appendChild(document.createTextNode(pPXText));
+	
+	if (name != "") {
+		var header = document.createElement("h3");
+		header.appendChild(document.createTextNode(name));
+		div.appendChild(header);
+	}
+	
+	div.appendChild(paragS);
+	div.appendChild(paragRI);
+	div.appendChild(paragRO);
+	div.appendChild(paragDI);
+	div.appendChild(paragDO);
+	div.appendChild(paragDSO);
+	div.appendChild(paragASI);
+	div.appendChild(paragASO);
+	div.appendChild(paragAO);
+	div.appendChild(paragISW);
+	div.appendChild(paragOSW);
+	div.appendChild(paragW);
+	div.appendChild(paragPX);
+	
+	
+
+
+	var tablI, rowI;
+	var t = theta1;
+	tablI = document.createElement("table");
+	tablI.createTHead();
+	rowI = tablI.tHead.insertRow(-1);
+	rowI.insertCell(0);
+	rowI.cells[0].innerHTML = 'Rotary table settings (\xB0) for the inner holes';
+	rowI = tablI.tHead.insertRow(-1);
+	rowI.insertCell(0);
+	rowI.cells[0].innerHTML = ' ';
+	tablI.appendChild(document.createElement('tbody'));
+	while (t < 360) {
+		rowI = tablI.tBodies[0].insertRow(-1);
+		rowI.insertCell(0);
+		rowI.cells[0].innerHTML = t.toFixed(2);
+		t=t + 2 * theta1;
+	}
+	
+	div.appendChild(tablI);
+	
+	var tablO, rowO;
+	var k = 0;
+	t = theta2;
+	tablO = document.createElement("table");
+	tablO.createTHead();
+	rowO = tablO.tHead.insertRow(-1);
+	rowO.insertCell(0);
+	rowO.cells[0].innerHTML = 'Rotary table settings (\xB0) for the outer holes';
+	rowO = tablO.tHead.insertRow(-1);
+	rowO.insertCell(0);
+	rowO.cells[0].innerHTML = ' ';
+	tablO.appendChild(document.createElement('tbody'));
+	while (t < 360) {
+		rowO = tablO.tBodies[0].insertRow(-1);
+		rowO.insertCell(0);
+		rowO.cells[0].innerHTML = t.toFixed(2);
+		if (k) {
+			t=t + 2 * theta2;
+		}
+		else {
+			t = t + sep;
+			k = Math.pow(k,1);
+		}
+	}
+	div.appendChild(tablO);
+
+}
+
+function genOutput(offAngle,flag) {
+	w = outerRad - innerRad + outerHoleRad + innerHoleRad;
+		
+	if (flag){
+		theta2=asnd(offAngle/outerRad);
+		offset = offAngle;
+	}
+	else {
+		offset=outerRad*sind(offAngle);
+		theta2 = offAngle;
+	}
+	minimize(theta2);
+	q = innerRad * sind(theta1 + phi) - innerHoleRad - (outerRad * sind(theta2 + phi) - outerHoleRad);
+	if (abs(phi - phil) > 0.01) {
+		phil = phi;
+		phis = phi - dphi;
+		phif = phi + dphi;
+		dphi = dphi/10;
+		minimize(theta2);
+	}
+	x = innerRad * sind(theta1 + phi) - innerHoleRad;
+	sep = 2 * (theta1 - theta2);
+	spoke1 = 2 * (innerRad * sind(theta1) - innerHoleRad);
+	spoke2 = 2 * (outerRad * sind(theta2) - outerHoleRad);
+	
+	printToPg("Exact Angle Solution");
+	
+	theta2 = Math.round(theta2);
+	phi = Math.round(phi);
+	
+	// problem with next line ??
+	innerRad = outerRad * (sind(theta2 + phi) + (innerHoleRad - outerHoleRad)/outerRad)/sind(theta1 + phi);
+	w = outerRad - innerRad + innerHoleRad + outerHoleRad;
+	x = innerRad * sind(theta1 + phi) - innerHoleRad;
+	sep = 2 * (theta1 - theta2);
+	offset = outerRad * sind(theta2);
+	spoke1 = 2 * (innerRad * sind(theta1) - innerHoleRad);
+	spoke2 = 2 * (outerRad * sind(theta2) - outerHoleRad);
+	
+	printToPg("Nearest Integral Angle Solution");
+	
+} //end function genOutput
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Tapered Spoke Flywheels</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">I like to make 
+tapered spoke flywheels for my engines because I think they look rather elegant. 
+Since most of my engine models are small, I machine the flywheels from solid stock 
+rather than fabricating them from separate pieces.</blockquote>
+
+<blockquote>Starting with a cylindrical blank on the lathe, I machine a reduced
+thickness web that separates the central hub from the rim.  Then I mount this
+blank on the rotary table and define the corners of the cutouts with holes
+drilled through the web.  After these holes are drilled, I use a milling cutter
+to machine away the material defined by the holes in the web - what remains are
+the tapered spokes.</blockquote>
+
+<blockquote>The included .jpg image <small>[copied into picture below]</small> should make clear how this 
+process works and what the associated calculations are.</blockquote>
+
+<blockquote>The calculations are tricky and error-prone - especially those for
+offsetting the rotary table to cut along the spoke edge.  I wrote a program to
+do all the calculations and produce an output file to print and take to the
+shop.  Note that the important angle, phi, is found by solving a
+transcendental equation by iteration - something to try one's patience if done
+by hand but a piece of cake for a computer.</blockquote>
+
+<blockquote>For an arbitrary choice of spoke dimensions, the angles for drilling
+the outer holes in the web can get to be messy as the first part of the
+solution obtained with the defaults will show.  Since the exact spoke
+dimensions are seldom critical, the program also generates a solution in which
+the angles for the outer holes are integer values and adjusts the other
+dimensions to suit this choice.  Just ignore this solution and live with the
+messy angles if you're finicky about the spoke proportions.</blockquote>
+
+<blockquote>The spoke tapering can be defined in two ways.  Either the offset of
+the outer hole from the spoke centerline (d<sub>2</sub> in the diagram) or the angle of
+the outer hole relative to the spoke centerline (&Theta;<sub>2</sub> in the diagram) can be
+specified.  The program allows you to use either method.</blockquote>
+
+<blockquote>Although the diagram shows the inner and outer holes as different
+diameters, this is not required.  The defaults are set up for the case where
+the inner and outer holes are the same diameter and the tapering is
+accomplished by angling the outer holes seven degrees away from the spoke
+centerline.</blockquote>
+
+<blockquote>As with most of my programs, no attempt is made to check for
+unreasonable inputs.  Your construction sketch should be examined for problems
+such as overlapping holes, etc.  If you find real errors in the program,
+contact me at mklotz@alum.mit.edu.
+</blockquote>
+
+<canvas id="drawingCanvas" width="500" height="410"></canvas>
+<br/>
+
+<dl>
+	<dt>N = Number of spokes</dt>
+	<dt>&Theta;<sub>1</sub> = angle from spoke center line to center of large drill hole</dt>
+	<dt>&Theta;<sub>2</sub> = angle from spoke center line to center of small drill hole</dt>
+	<dt>&Phi; = angle from spoke center line to milling table axis (rotary table 0&deg;)</dt>
+	<dt>r<sub>1</sub> = radius of large drill hole</dt>
+	<dt>r<sub>2</sub> = radius of small drill hole</dt>
+	<dt>R<sub>2</sub> = radius of small drill hole circle</dt>
+	<dt>R<sub>1</sub> = radius of large drill hole circle</dt>
+	<dt>d<sub>1</sub> = &perp; distance from large drill hole to spoke center line</dt>
+	<dt>d<sub>2</sub> = &perp; distance from small drill hole to spoke center line</dt>
+	<dt>angle between 2 small holes in same web <math xmlns='http://www.w3.org/1998/Math/MathML' display='inline'>
+		<mo>=</mo><mo>(</mo><msub><mi>&Theta;</mi><mn>1</mn></msub><mo>-</mo><msub>
+		<mi>&Theta;</mi><mn>2</mn></msub><mo>)</mo></math></dt>
+	<dt>x = distance from milling table axis to milling line</dt>
+</dl>
+<br/>
+<br/>
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<msub>
+		<mi>&Theta;</mi>
+		<mn>1</mn>
+	</msub>
+	<mo>=</mo>
+	<mfrac>
+		<mn>180</mn>
+		<mi>N</mi>
+	</mfrac>
+</math>
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<msub>
+		<mi>&Theta;</mi>
+		<mn>1</mn>
+	</msub>
+	<mo>=</mo>
+	<mfrac>
+		<msub>
+			<mi>d</mi>
+			<mn>1</mn>
+		</msub>
+		<msub>
+			<mi>R</mi>
+			<mn>1</mn>
+		</msub>
+	</mfrac>
+</math>
+
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<msub>
+		<mi>R</mi>
+		<mn>1</mn>
+	</msub>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mo>(</mo>
+	<msub>
+		<mi>&Theta;</mi>
+		<mn>1</mn>
+	</msub>
+	<mo>+</mo>
+	<mi>&Phi;</mi>
+	<mo>)</mo>
+	<mo>-</mo>
+	<msub>
+		<mi>r</mi>
+		<mn>1</mn>
+	</msub>
+	<mo>-</mo>
+	<mo>[</mo>
+	<msub>
+		<mi>R</mi>
+		<mn>2</mn>
+	</msub>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mo>(</mo>
+	<msub>
+		<mi>&Theta;</mi>
+		<mn>2</mn>
+	</msub>
+	<mo>+</mo>
+	<mi>&Phi;</mi>
+	<mo>)</mo>
+	<mo>-</mo>
+	<msub>
+		<mi>r</mi>
+		<mn>2</mn>
+	</msub>
+	<mo>]</mo>
+	<mo>=</mo>
+	<mn>0</mn>
+</math>
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mtext>Above eqn is used to solve for (or approximate) &Phi;.</mtext>
+</math>
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mi>x</mi>
+	<mo>=</mo>
+	<msub>
+		<mi>R</mi>
+		<mn>1</mn>
+	</msub>
+	<mi>sin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mo>(</mo>
+	<msub>
+		<mi>&Theta;</mi>
+		<mn>1</mn>
+	</msub>
+	<mo>+</mo>
+	<mi>&Phi;</mi>
+	<mo>)</mo>
+	<mo>-</mo>
+	<msub>
+		<mi>r</mi>
+		<mn>1</mn>
+	</msub>
+</math>
+
+<br/>
+
+<fieldset>
+	<legend>Input first five parameters and either d<sub>2</sub>, outer hole offset, or &Theta;<sub>2</sub>, outer hole offset angle</legend>
+		<label for="spokes">Number of spokes</label>
+		<input id="spokes" placeholder="6" autofocus><br/>
+		<label for="innerRad">Radius of inner hole circle (in)</label>
+		<input id="innerRad" placeholder="0.440"><br/>
+		<label for="outerRad">Radius of outer hole circle (in)</label>
+		<input id="outerRad" placeholder="1.367"><br/>
+		<label for="innerDiam">Diameter of inner hole (in)</label>
+		<input id="innerDiam" placeholder="0.1875"><br/>
+		<label for="outerDiam">Diameter of outer hole (in)</label>
+		<input id="outerDiam" placeholder="0.1875"><br/>
+		<label for="offset">Outer Hole Offset (in)</label>
+		<input id="offset" placeholder="0.125"><br/>
+		<label for="angle">Outer Hole Offset Angle (&deg;)</label>
+		<input id="angle" placeholder="7"><br/>
+		<input type="button" value="Calculate Flywheel Parameters" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+<div id="addedTable">
+</div>
+<br/>
+<hr />
+<footer>
+<p>Based on FLYWHEEL.c at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Radius Calculator</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="radius, angle, error, calculation, metalwork"/>
+	<meta name="description" content="Determine correct angle and milling cutter size for a radius cut"/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 250px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {border-collapse:collapse; table-layout:fixed; width:100%;}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word;}
+</style>
+<script type="text/javascript">
+<!--
+	var rpd = Math.PI / 180;
+	var dpr = 57.3;
+	var sa = Number(0); // Make it a Number object to use the toFixed() method upon output
+	var r = Number(0);
+	
+	var R = Number(0);
+	var E = Number(0);
+	var D = Number(0);
+	var rR = Number(r+R);
+	var w = Number(0);
+
+function GetDimensions() {
+	var tempAngle = Number(0);
+	var test;
+	w = parseFloat(document.getElementById("cutWidth").value);
+	R = parseFloat(document.getElementById("desRad").value);
+	E = parseFloat(document.getElementById("err").value);
+	test = (document.getElementById("cutDepth").value);
+	if (test == ""){
+		D = 0;
+	}
+	else {
+		D = parseFloat(document.getElementById("cutDepth").value);
+	}
+	if (D != 0){
+		w=R*Math.sin(dpr*Math.acos(Math.abs(1-D/R))*rpd);		//half width of cut
+	}
+	else if (w != 0){
+		theta=Math.asin(0.5*w/R); 
+		D=R*(1-Math.cos(theta));
+	}
+	else {
+		alert("LEARN TO READ INSTRUCTIONS!");
+	}
+	
+	document.getElementById("depthCut").value = D.toFixed(4);
+	document.getElementById("widthCut").value = w.toFixed(4);
+
+	sa=1/Math.sqrt(1+8*(E/R)*(R*R/(D*D))); // sine of minimum angle of inclination at specified error
+	
+	tempAngle = dpr*Math.asin(Math.abs(sa));
+	
+	document.getElementById("mia").value = tempAngle.toFixed(2);
+	
+	// exact radius of cutter at minimum angle alpha
+	r=R*((2+(D/R)*(1/(sa*sa)-1))/(2/sa));	
+	
+	document.getElementById("cd").value = 2*r.toFixed(4);
+	
+	
+	document.getElementById("cutterRange").value = "> " + 2*r.toFixed(4) + " and < " + 2*R.toFixed(4);
+	rR = r + R;
+	document.getElementById("cutDiam").value = rR.toFixed(4);
+	
+} //end of function
+
+function CompleteCalc() {
+	var du = Number(parseFloat(document.getElementById("cutDiam").value));
+	var alpha = Number(0);
+	var ru = 0.5*du;
+	var sb = 0;
+	var sbAngle = Number(0);
+	var fmAngle = Number(0);
+	
+	if ((ru <= r) || (ru >= R)){
+		alert("You must enter a cutter diameter between " + 2*r.toFixed(4) + " and " + 2*R.toFixed(4))
+	}
+	else {
+		sa = (D/ru)/(1-Math.sqrt(1-2*(R*D/(ru*ru))+(D/ru)*(D/ru)));
+		alpha = dpr*Math.asin(Math.abs(sa));
+		
+		document.getElementById("afv").value = alpha.toFixed(2);
+		
+		sb = (R-Math.sqrt(R*R-w*w))/(ru-Math.sqrt(ru*ru-w*w));
+		sbAngle = dpr*Math.asin(Math.abs(sb));
+		
+		document.getElementById("checkAfv").value = sbAngle.toFixed(2);
+		
+		fmAngle = dpr*Math.asin(Math.abs(ru/R));
+		document.getElementById("firstAfv").value = fmAngle.toFixed(2);
+		
+		E = (R/8)*(D*D/(R*R))*(1/(sa*sa)-1);
+		document.getElementById("cutter").value = du.toFixed(4);
+		document.getElementById("secError").value = E.toFixed(4);
+
+
+	} //end of else
+
+}  //end of function CompleteCalc
+// -->
+
+</script>
+
+
+</head>
+<body>
+
+<form name="Countersink">
+
+<h1>Non-Standard Radius Calculations</h1>
+<h3>Steven Horace</h3><br />
+
+<p>
+If you tilt an endmill off vertical and then use it to cut a shallow
+groove in a workpiece, it will cut a radiused groove with a radius different
+from the half-diameter of the endmill.  Machinists use this trick to cut
+odd-sized radii when a cutter of the required diameter is not to hand.  A
+typical application might be recessing the bottom of rifle scope mounts to fit
+a barrel/receiver radius.
+</p>
+
+<p>
+The calculations that relate groove radius and depth, endmill diameter
+and tilt off vertical are complicated and non-intuitive.  Thankfully, Steve
+Horace has beaten the problem to death.  In his writeup below, Steve supplies
+three methods of making the required calculations.  I've programmed the most
+complex (and most accurate) third method.  As a check it calculates, internally, the
+width of the cut and solves Steve's second relation.  The first method is
+trivial enough to carry out on a scientific calculator and requires no program.
+</p>
+
+<p>
+Questions regarding the technique should be addressed to Steve.  He's
+the expert.  Questions regarding the program itself should be addressed to me
+(mklotz@alum.mit.edu).
+</p>
+
+<p>
+For those of you who have back issues of HSM (Home Shop Machinist
+magazine), pg.10 of the May/June 1988 issue has a treatise on deriving Steve's
+second relation.
+</p>
+
+<fieldset>
+	<legend>Enter radius, error, and either depth or width of cut</legend>
+		<label for="desRad">Desired Radius</label>
+		<input id="desRad" placeholder=".5625" autofocus><br>
+		<label for ="err">Allowable Error</label>
+		<input id="err" placeholder="0.01"><br>
+		<label for="cutDepth">Depth of Cut</label>
+		<input id="cutDepth"><br>
+		<label for="cutWidth">Width of Cut</label>
+		<input id="cutWidth"><br>
+</fieldset>
+<br>
+<input type="button" value="Calculate Dimensions" onclick="GetDimensions()"/>
+<p><em>Always refresh browser window before using this button a second time!</em></p><br />
+
+Depth of Cut (in) =
+<input type="text" name="depthCut" id="depthCut" value="" size="25"/><br />
+Width of Cut (in) =
+<input type="text" name="widthCut" id="widthCut" value="" size="25"/><br />
+Minimum inclination angle (deg) =
+<input type="text" name="mia" id="mia" value="" size="25"/><br />
+Cutter diameter at minimum angle (in) =
+<input type="text" name="cd" id="cd" value="" size="25"/><br />
+Cutter diameter to use must be 
+<input type="text" name="cutterRange" id="cutterRange" value="" size="25"/><br />
+<hr />
+
+Cutter diameter you plan to use [within above range] (in) =
+<input type="text" name="cutDiam" id="cutDiam" value="" size="25"/><br />
+<br>
+<input type="button" value="Complete Calculations" onclick="CompleteCalc()"/><br /><br />
+Angle from vertical to cutter axis (deg) =
+<input type="text" name="afv" id="afv" value="" size="25"/><br />
+Using Steve's second method, we get, as a check:
+<input type="text" name="checkAfv" id="checkAfv" value="" size="25"/><br />
+Steve's first method yields (deg):
+<input type="text" name="firstAfv" id="firstAfv" value="" size="25"/><br />
+Using a cutter of diameter 
+<input type="text" name="cutter" id="cutter" value="" size="15"/>
+results in the following error:
+<input type="text" name="secError" id="secError" value="" size="25"/><br />
+<hr />
+
+<h3>
+Listed below are three methods for getting a non-standard radius from a mill
+cutter. </h3>
+
+<p>The first is for a rough approximation, the second for a closer approximation,
+and the third for setting the error you are willing to accept.</p>
+
+<p>* denotes multiplication, / denotes division, [] denotes expotientals (squares
+and square roots),
+() and {} denote groupings of operators</p>
+
+<h3>Method 1</h3>
+<p>R=radius desired, r=radius of cutter, R must be greater than r </p>
+<p>Formula: r/R = sine of angle from vertical to cutter axis</p>
+
+<h3>Method 2</h3>
+<p>R = radius desired, r = radius of cutter, W = half-width of cut, R
+must be greater than r</p>
+
+<p>Sine of angle from vertical to cutter axis =</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+
+  <mfrac>
+  	<mrow>
+  		<mi>R</mi>
+  		<mo>-</mo>
+  		<msqrt>
+  			<mfenced>
+  			<mrow>
+  				<msup>
+  					<mi>R</mi>
+  					<mn>2</mn>
+  				</msup>
+  				<mo>-</mo>
+  				<msup>
+  					<mi>W</mi>
+  					<mn>2</mn>
+  				</msup>
+  			</mrow>
+  			</mfenced>
+  		</msqrt>
+  	</mrow>
+  	<mrow>
+  		<mi>r</mi>
+  		<mo>-</mo>
+  		<msqrt>
+  			<mfenced>
+  			<mrow>
+  				<msup>
+  					<mi>r</mi>
+  					<mn>2</mn>
+  				</msup>
+  				<mo>-</mo>
+  				<msup>
+  					<mi>W</mi>
+  					<mn>2</mn>
+  				</msup>
+  			<mrow>
+  			</mfenced>
+  		</msqrt>
+  	</mrow>
+  </mfrac>
+
+</math>
+
+<h3>Method 3</h3>
+<p>First the deviation from the ideal radius must be defined, and then
+the  depth of the cut, and the ideal radius desired.  </p>
+
+<p>Let E = error allowable in cut, D = depth of cut, R = radius desired, alpha =
+angle from  vertical to set cutter, and r = radius of cutter.  Find alpha and
+r with D,R and E known.    All dimensions in inches and decimal inches.</p>
+
+<p>Calculate D from the geometry of the job.  </p>
+
+
+<p><b>Formula 1</b> provides the sine of the angle from vertical to cutter axis </p>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+
+  <mi>sin</mi>
+  <mfenced>
+  	<mi>alpha</mi>
+  </mfenced>
+  <mo>=</mo>
+  <mfrac>
+  	<mrow>
+  		<mfrac bevelled='true'>
+  			<mi>D</mi>
+  			<mi>r</mi>
+  		</mfrac>
+  	</mrow>	
+  	<mrow>
+  		<mn>1</mn>
+  		<mo>-</mo>
+  		<msqrt>
+  		<mfenced>
+  			<mrow>
+  			<mn>1</mn>
+  			<mo>-</mo>
+  			<mfrac>
+  				<mrow>
+  					<mn>2</mn>
+  					<mi>R</mi>
+  					<mi>D</mi>
+  				</mrow>
+  				<mrow>
+  					<msup>
+  						<mi>r</mi>
+  						<mn>2</mn>
+  					</msup>
+  				</mrow>
+  			</mfrac>
+  			<mo>+</mo>
+  			<msup>
+  				<mfenced>
+  					<mfrac bevelled='true'>
+  						<mi>D</mi>
+  						<mi>r</mi>
+  					</mfrac>
+  				</mfenced>
+  				<mn>2</mn>
+  			</msup>
+  			</mrow>
+  		</mfenced>
+  		</msqrt>
+  	</mrow>
+  </mfrac>
+
+</math>
+
+
+<p><b>Formula 2</b> gives the exact radius of cutter at minimum angle alpha.</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+
+	<mi>r</mi>
+	<mo>=</mo>
+	<mrow>
+		<mi>R</mi>
+		<mo>&times;</mo>
+		<mfrac>
+			<mrow>
+				<mn>2</mn>
+				<mo>+</mo>
+				<mfrac>
+					<mi>D</mi>
+					<mi>R</mi>
+				</mfrac>
+				<mo>&times;</mo>
+				<mfenced>
+				<mrow>
+					<mfenced>
+						<mfrac>
+							<mn>1</mn>
+							<mrow>
+								<msup>
+									<mi>sin</mi>
+									<mn>2</mn>
+								</msup>
+								<mfenced>
+									<mi>alpha</mi>
+								</mfenced>
+							</mrow>
+						</mfrac>
+					</mfenced>
+					<mo>-</mo>
+					<mn>1</mn>
+				</mrow>
+				</mfenced>
+			</mrow>
+			<mrow>
+				<mfrac>
+					<mn>2</mn>
+					<mrow>
+						<mi>sin</mi>
+						<mfenced>
+							<mi>alpha</mi>
+						</mfenced>
+					</mrow>
+				</mfrac>
+			</mrow>
+		</mfrac>
+	</mrow>
+
+
+</math>
+
+<p><b>Formula 3</b> is the error in the radius.</p>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+
+	<mrow>
+		<mi>E</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mi>R</mi>
+			<mn>8</mn>
+		</mfrac>
+		<mo>&times;</mo>
+		<mfrac>
+			<msup>
+				<mi>D</mi>
+				<mn>2</mn>
+			</msup>
+			<msup>
+				<mi>R</mi>
+				<mn>2</mn>
+			</msup>
+		</mfrac>
+		<mo>&times;</mo>
+		<mfenced>
+		<mrow>
+			<mfrac>
+				<mn>1</mn>
+				<mrow>
+					<msup>
+						<mi>sin</mi>
+						<mn>2</mn>
+					</msup>
+					<mfenced>
+						<mi>alpha</mi>
+					</mfenced>
+				</mrow>
+			</mfrac>
+			<mo>-</mo>
+			<mn>1</mn>
+		</mrow>
+		</mfenced>
+	</mrow>
+
+</math>
+
+
+<p><b>Formula 4</b> gives the sine of the minimum angle of inclination at the specified error</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+
+	<mrow>
+		<mi>sin</mi>
+		<mfenced>
+			<mi>alpha</mi>
+		</mfenced>
+		<mo>=</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mrow>
+				<msqrt>
+					<mrow>
+						<mn>1</mn>
+						<mo>+</mo>
+						<mn>8</mn>
+						<mo>&times;</mo>
+						<mfrac>
+							<mi>E</mi>
+							<mi>R</mi>
+						</mfrac>
+						<mo>&times;</mo>
+						<mfrac>
+							<msup>
+								<mi>R</mi>
+								<mn>2</mn>
+							</msup>
+							<msup>
+								<mi>D</mi>
+								<mn>2</mn>
+							</msup>
+						</mfrac>
+					</mrow>
+				</msqrt>
+			</mrow>
+		</mfrac>
+	</mrow>
+
+</math>
+
+<p>Procedure: Select the D, R and E for the job.  E is calculated from the width
+and radius of the cut.</p>
+
+<p>Next, calculate an angle using formula 4.</p>
+
+<p>Then, use Formula 2 to find the cutter radius for that angle.  It will
+normally not be a  standard size. </p>
+
+<p>Now, select an available cutter larger than the size found, but smaller than
+the radius desired.  </p>
+
+<p>Compute the new angle alpha for the available cutter using Formula 1. </p>
+
+<p>Formula 3 will calculate the exact error if needed.</p>
+
+<p>When to use which method depends on the accuracy required and tools available.
+If a tool close  to the desired size is available, either method 1 or 2 will
+give good results.  If the need is  for a 6" radius and  the largest cutter is
+3.5" radius, method 3 will give best results.</p>
+
+<p>Set up the work in the mill at the angle required and cut until the full
+surface is radiused.   Be careful to be on center before cutting, and to have
+the work level left to right.</p>
+
+<blockquote>
+<p>Horace K. B. "Steve" Steven, Jr.</p>
+<p>Engineer, Surface Ship Test Section</p>
+<p>Code 223, Bldg 19, NNSY</p>
+<p>SUPSHIP Portsmouth, VA 23709</p>
+<p>email: StevenHK@supship.navy.mil, Phone: 757 396 4001 x 2113</p>
+<p>FAX 757 396 4055, efax 208 379 9699</p>
+</blockquote>
+
+</form>
+<hr />
+<footer>
+<p>Based on RADIUS.c at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

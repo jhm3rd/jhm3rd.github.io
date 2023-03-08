@@ -1,0 +1,453 @@
+<html>
+<head>
+<title> Cutting Hemispheres on the Lathe</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+window.onload = function() {
+	var canvas = document.getElementById("drawingCanvas");
+	var context = canvas.getContext("2d");
+	
+	var centerX = 150;
+	var centerY = 150;
+	var radius = 100;
+	var stockLen = 125;
+	var startingAngle = 1.56 * Math.PI;
+	var endingAngle = 1.559 * Math.PI;
+	var stepX = 20;
+	var stepY = 5;
+	var vertOffset = Math.cos(Math.PI/6)*radius;
+	var horizOffset = Math.sin(Math.PI/6)*radius;
+	
+	context.lineWidth = 1;
+	
+	// Circle
+	context.arc(centerX, centerY, radius, startingAngle, endingAngle);
+	context.stroke();
+	
+	// Step measurement line
+	context.beginPath();
+	context.moveTo(centerX + stepX,260);
+	context.lineTo(centerX + 2*stepX,260);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(centerX + stepX,270);
+	context.lineTo(centerX + stepX,250);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,250);
+	context.lineTo(centerX + 2*stepX,270);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("Step size", 150, 285);
+	
+	context.lineWidth = 2;
+	context.strokeStyle = "black";
+		
+	centerX = centerX + stepX;
+	
+	// Top side of stock
+	context.beginPath();
+	context.moveTo(centerX - stockLen,centerY - radius);
+	context.lineTo(centerX,centerY - radius);
+	context.stroke();
+	
+	// Bottom side of stock
+	context.beginPath();
+	context.moveTo(centerX - stockLen,centerY + radius);
+	context.lineTo(centerX,centerY + radius);
+	context.stroke();
+	
+	// First step down and right
+	context.beginPath();
+	context.moveTo(centerX,centerY - radius);
+	context.lineTo(centerX,centerY - radius + stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX,centerY - radius + stepY);
+	context.lineTo(centerX + stepX,centerY - radius + stepY);
+	context.stroke();
+	
+	// Second step down and right
+	context.beginPath();
+	context.moveTo(centerX + stepX,centerY - radius + stepY);
+	context.lineTo(centerX + stepX,centerY - radius + 3*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + stepX,centerY - radius + 3*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 3*stepY);
+	context.stroke();
+	
+	// Third step down and right
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 3*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 6*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 6*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 6*stepY);
+	context.stroke();
+	
+	// Fourth step down and right
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 6*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 12*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 12*stepY);
+	context.lineTo(centerX + 4*stepX,centerY - radius + 12*stepY);
+	context.stroke();
+	
+	// Fifth step down
+	context.beginPath();
+	context.moveTo(centerX + 4*stepX,centerY - radius + 12*stepY);
+	context.lineTo(centerX + 4*stepX,centerY - radius + 28*stepY);
+	context.stroke();
+	
+	// Sixth step left and down
+	context.beginPath();
+	context.moveTo(centerX + 4*stepX,centerY - radius + 28*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 28*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 28*stepY);
+	context.lineTo(centerX + 3*stepX,centerY - radius + 34*stepY);
+	context.stroke();
+	
+	// Seventh step left and down
+	context.beginPath();
+	context.moveTo(centerX + 3*stepX,centerY - radius + 34*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 34*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 34*stepY);
+	context.lineTo(centerX + 2*stepX,centerY - radius + 37*stepY);
+	context.stroke();
+	
+	// Eighth step left and down
+	context.beginPath();
+	context.moveTo(centerX + 2*stepX,centerY - radius + 37*stepY);
+	context.lineTo(centerX + 1*stepX,centerY - radius + 37*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX + 1*stepX,centerY - radius + 37*stepY);
+	context.lineTo(centerX + 1*stepX,centerY - radius + 39*stepY);
+	context.stroke();
+	
+	// Ninth step left and down
+	context.beginPath();
+	context.moveTo(centerX + 1*stepX,centerY - radius + 39*stepY);
+	context.lineTo(centerX,centerY - radius + 39*stepY);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(centerX,centerY - radius + 39*stepY);
+	context.lineTo(centerX,centerY - radius + 40*stepY);
+	context.stroke();
+	
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("Radius", 130, 155);
+	
+	// Radius dimension line
+	context.beginPath();
+	context.moveTo(centerX - stepX,centerY);
+	context.lineTo(centerX - stepX + radius,centerY);
+	context.stroke();
+	
+} //end of drawing
+
+function makeTable() {
+
+	var radius = document.getElementById("radius").value;
+	var stepSize = document.getElementById("stepSize").value;
+	var wholeRadius = radius * 1000; // use a whole number for convenience
+	var numOfSteps = wholeRadius % (1000 * stepSize);
+	var precision = document.getElementById("precision").value;
+	
+	if (precision == "")
+	{
+		precision = 3;
+	} // end if
+	
+	var y = new Number();
+	var carriage = new Number();
+	var crossSlide = new Number();
+		
+	var x;
+	var stepNum = 0;
+			
+	var div = document.getElementsByTagName("div")[0];
+	var tablI, rowI;
+	
+	tablI = document.createElement("table");
+	tablI.createTHead();
+	rowI = tablI.tHead.insertRow();
+	var headCell = rowI.insertCell(0);
+	headCell.setAttribute('colSpan', '5');
+	headCell.innerHTML = 'Cutting a Hemisphere of Radius ' + radius + " with Step Size " + stepSize;
+
+	tablI.appendChild(document.createElement('tbody'));
+	rowI = tablI.tBodies[0].insertRow();
+	var brkCell = rowI.insertCell(0);
+	brkCell.setAttribute('colSpan', '3');
+	brkCell.innerHTML = ' ';
+	
+	rowI = tablI.tBodies[0].insertRow();
+	var cell0 = rowI.insertCell(0);
+	cell0.innerHTML = "Step #";
+	var cell1 = rowI.insertCell(1);
+	cell1.innerHTML = "x";
+	var cell2 = rowI.insertCell(2);
+	cell2.innerHTML = "y";
+	var cell3 = rowI.insertCell(3);
+	cell3.innerHTML = "Carriage travel to left";
+	var cell4 = rowI.insertCell(4);
+	cell4.innerHTML = "Cross slide cutting travel";
+	
+	for (var counter = wholeRadius; counter >= 0; counter -= (1000 * stepSize)) { //loop over the steps in increments of stepSize
+	
+		x = counter/1000;
+		y = Math.sqrt( Math.pow(radius, 2) - Math.pow(x, 2) );
+		y = y.toPrecision(precision);
+		carriage = radius - x;
+		carriage = carriage.toPrecision(precision);
+		crossSlide = radius - y;
+		crossSlide = crossSlide.toPrecision(precision);
+		
+		stepNum += 1;
+
+		rowI = tablI.tBodies[0].insertRow();
+		cell0 = rowI.insertCell(0);
+		cell0.innerHTML = stepNum;			// put the step number in first cell
+		cell1 = rowI.insertCell(1);
+		cell1.innerHTML = x;	// put x in second cell
+		cell2 = rowI.insertCell(2);
+		cell2.innerHTML = y;	// put y in third cell
+		cell3 = rowI.insertCell(3);
+		cell3.innerHTML = carriage;	// put the carriage travel in third cell
+		cell4 = rowI.insertCell(4);
+		cell4.innerHTML = crossSlide;	// put the cross slide travel in fourth cell
+	}	// end for i
+	
+	div.appendChild(tablI);
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>Hemisphere cutting calculator</h1>
+<h2>Turning a hemisphere on the end of your stock</h2><br />
+
+<canvas id="drawingCanvas" width="300" height="300"></canvas>
+
+<p>
+	This calculator produces a table of carriage and cross slide movements. With this 
+	table an operator can use a lathe  equipped with the cutting tool of choice to 
+	mimic a ball cutter cutting a hemisphere on the end of a part. The calculator will 
+	produce this table using the chosen step size for either roughing out a ball or for 
+	producing a ball that requires minimal filing. 
+</p>
+
+<p>	
+	The program needs two parameters to produce the table of cuts: the radius of the 
+	desired hemisphere (e.g., 0.250) and the step size (e.g., 0.010). Both should be 
+	entered in decimal form. (Entering fractions will produce an error of some type, 
+	dependent on your browser.) The program assumes that the stock to be cut has the 
+	same radius (will also work with square or hexagonal stock) as the planned 
+	hemisphere (as in the picture to the left). The default precision is 0.001, but 
+	this can be changed if desired.
+</p>
+
+<p class=note>
+	The x's and y's may be of value for a lathe equipped with DROs on both axes.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter the following data for your planned hemisphere:</legend>
+		<label for="radius">Radius of Desired Hemisphere</label>
+		<input type="text" id="radius" placeholder="0.250" autofocus><br/>
+		<label for="stepSize">Planned Step Size</label>
+		<input type="text" id="stepSize" placeholder="0.010"><br/>
+		<label for="precision">Desired Precision (optional)</label>
+		<input tupe="text" id="precision" placeholder="3"><br/>
+		<br/>
+		<input type="button" value="Calculate Cutting Table" onclick="makeTable()"/>
+</fieldset>
+
+<p class=note>
+	Reload the browser window/tab between calculations if you don't want successive 
+	calculations appended.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>October 29, 2017</p>
+</footer>
+</html>

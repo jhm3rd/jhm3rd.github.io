@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Tempering</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="temper, metalwork"/>
+	<meta name="description" content="Tempering temperatures."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word;}
+  	
+  	td.right {
+  		text-align: right;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Tempering Colors and Temperatures</h1>
+<br/>
+
+
+<br/>
+
+<table cellspacing="5" border="2" cellpadding="5">
+
+<tr>
+<th>Temper Color</th>
+<th>&deg;F</th>
+<th>Common Uses</th>
+</tr>
+<tr><td>FAINT YELLOW</td>		<td>420</td>	<td>KNIVES,HAMMERS</td></tr>
+<tr><td>VERY PALE YELLOW</td>		<td>430</td>	<td>REAMERS</td></tr>
+<tr><td>LIGHT YELLOW</td>		<td>440</td>	<td>LATHE TOOLS, SCRAPERS, MILLING CUTTERS, REAMERS</td></tr>
+<tr><td>PALE STRAW YELLOW</td>		<td>450</td>	<td>TWIST DRILLS FOR HARD USE</td></tr>
+<tr><td>STRAW YELLOW</td>			<td>460</td>	<td>DIES, PUNCHES, BITS, REAMERS</td></tr>
+<tr><td>DEEP STRAW YELLOW</td>		<td>470</td></tr>
+<tr><td>DARK YELLOW</td>			<td>480</td>	<td>TWIST DRILLS, LARGE TAPS</td></tr>
+			<tr><td></td>	<td>485</td>	<td>KNURLS</td></tr>
+<tr><td>YELLOW BROWN</td>			<td>490</td></tr>
+<tr><td>BROWN YELLOW</td>			<td>500</td>	<td>AXES, WOOD CHISELS, DRIFTS, TAPS >= 1/2", NUT TAPS, DIES</td></tr>
+<tr><td>SPOTTED RED BROWN</td>		<td>510</td></tr>
+<tr><td>BROWN PURPLE</td>			<td>520</td>	<td>TAPS <= 1/4"</td></tr>
+<tr><td>LIGHT PURPLE</td>			<td>530</td></tr>
+<tr><td>FULL PURPLE</td>			<td>540</td>	<td>COLD CHISELS, CENTER PUNCHES</td></tr>
+<tr><td>DARK PURPLE</td>			<td>550</td></tr>
+<tr><td>FULL BLUE</td>			<td>560</td>	<td>SCREWDRIVERS, SPRINGS, GEARS</td></tr>
+<tr><td>DARK BLUE</td>			<td>570</td></tr>
+<tr><td>MEDIUM BLUE</td>			<td>600</td>	<td>SCRAPERS, SPOKESHAVES</td></tr>
+<tr><td>LIGHT BLUE</td>			<td>640</td></tr>
+<tr><td>RED-VISIBLE AT NIGHT</td>		<td>750</td></tr>
+<tr><td>RED-VISIBLE AT TWILIGHT</td>		<td>885</td></tr>
+<tr><td>RED-VISIBLE IN DAYLIGHT</td>		<td>975</td></tr>
+<tr><td>RED-VISIBLE IN SUNLIGHT</td>		<td>1075</td></tr>
+<tr><td>DARK RED</td>			<td>1290</td></tr>
+<tr><td>DULL CHERRY RED</td>			<td>1475</td></tr>
+<tr><td>CHERRY RED</td>			<td>1650</td></tr>
+<tr><td>BRIGHT CHERRY RED</td>		<td>1830</td></tr>
+<tr><td>ORANGE RED</td>			<td>2010</td></tr>
+<tr><td>ORANGE YELLOW</td>			<td>2190</td></tr>
+<tr><td>YELLOW WHITE</td>			<td>2370</td></tr>
+<tr><td>WHITE</td>				<td>2550</td></tr>
+<tr><td>BRILLIANT WHITE</td>			<td>2730</td></tr>
+<tr><td>BLUE WHITE</td>			<td>2900</td></tr>
+<tr><td>ACETYLENE FLAME</td>			<td>4080</td></tr>
+<tr><td>INDUCTION FURNACE</td>		<td>5450</td></tr>
+<tr><td>ELECTRIC ARC LIGHT</td>		<td>7200</td></tr>
+
+</table>
+
+</form>
+<hr />
+<footer>
+<p>Based on data at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

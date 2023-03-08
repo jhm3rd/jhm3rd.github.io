@@ -1,0 +1,290 @@
+<html>
+<head>
+<title>Gear Cutting Calculator for the Sherline Dividing Head</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table th {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function calcOffsets()
+{
+	var rackThrow = parseFloat(document.getElementById("throw").value);
+	var dp = parseFloat(document.getElementById("dp").value);
+	var numTeeth = parseFloat(document.getElementById("numTeeth").value);
+	var rackLen = parseFloat(document.getElementById("rackLen").value);
+	var div = document.getElementsByTagName("div")[0];
+	var list = "<table><tr><th>Cut Number</th><th>Rack Length</th></tr>";
+	
+	var toothOff = new Number(0);
+	var od = new Number(0);
+	var df = new Number(0);
+	
+	toothOff = rackThrow/numTeeth;
+	od = (2 + numTeeth)/dp;
+	df = 2.157/dp;
+	
+	document.getElementById("toothOff").value = toothOff.toFixed(4);
+	document.getElementById("od").value = od.toFixed(4);
+	document.getElementById("df").value = df.toFixed(4);
+	
+		var x = new Number(0);
+	
+	for (var i = 0; i <= numTeeth; i ++ )
+	{
+		x = rackLen - (rackThrow/numTeeth * i)
+		list = list + "<tr><td>" + i + "</td><td>" + x.toFixed(3) + "</td></tr>"
+	}
+	
+	list = list + "</table>"
+	
+	div.innerHTML = list;
+
+}	// end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Gear Cutting Calculator for the Sherline Dividing Head
+</h1>
+
+<p>
+	The Sherline dividing head uses rack offsets to rotate the dividing head precise 
+	amounts. Using this calculator is essential to avoid accumulating error in the 
+	successive rotations of the head and the workpiece. 
+</p>
+
+<p>	
+	The calculator returns a list of offsets for the dividing head rack based on the 
+	DP and number of teeth of the desired gear. The following table shows the correct 
+	gear cutter based on the number of gear teeth.
+</p>
+
+<table>
+	<tr>
+		<th>Number of Teeth</th>
+		<th>Cutter Number</th>
+	</tr>
+	<tr>
+		<td>135 to Rack</td>
+		<td>1</td>
+	</tr>
+	<tr>
+		<td>55 to 134</td>
+		<td>2</td>
+	</tr>
+	<tr>
+		<td>35 to 54</td>
+		<td>3</td>
+	</tr>
+	<tr>
+		<td>26 to 34</td>
+		<td>4</td>
+	</tr>
+	<tr>
+		<td>21 to 25</td>
+		<td>5</td>
+	</tr>
+	<tr>
+		<td>17 to 20</td>
+		<td>6</td>
+	</tr>
+	<tr>
+		<td>14 to 16</td>
+		<td>7</td>
+	</tr>
+	<tr>
+		<td>12 to 13</td>
+		<td>8</td>
+	</tr>
+</table>
+
+
+<p class=note>
+	Refresh the page between calculations!
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Fill out the form and hit the button:</legend>
+		<label for="throw">Throw of Indexing Head</label>
+		<input type="text" id="throw" placeholder="4.712"><br/>
+		<label for="dp">Diametral Pitch</label>
+		<input type="text" id="dp" placeholder="30" autofocus><br/>
+		<label for="numTeeth">Number of Teeth on Gear</label>
+		<input type="text" id="numTeeth" placeholder="40"><br/>
+		<label for="rackLen">Length of Exposed Rack</label>
+		<input type="text" id="rackLen" placeholder="6.000"><br/><br/>
+		<hr/><br/>
+		<label for="toothOff">Offset per Tooth</label>
+		<input type="text" id="toothOff" readOnly="True"><br/>
+		<label for="od">Outer Diameter (OD)</label>
+		<input type="text" id="od" readOnly="True"><br/>
+		<label for="df">Depth + Clearance (D+f)</label>
+		<input type="text" id="df" readOnly="True"><br/>
+		<br/>
+		<input type="button" value="Calculate Offsets" onclick="calcOffsets()"/>
+		<br/>
+		<br/>
+</fieldset>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>January 14, 2018</p>
+</footer>
+</html>

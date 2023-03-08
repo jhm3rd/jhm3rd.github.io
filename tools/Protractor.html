@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Protractor</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="protractor, sinebar, angle, calculation, metalwork"/>
+	<meta name="description" content="A unique protractor for accurately measuring angles."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+window.onload = function() {
+	var canvas = document.getElementById("drawingCanvas");
+	var context = canvas.getContext("2d");
+	
+	var pinRad = 15;
+	var R = 275;
+	var barLen = 330;
+	var barWidth = 50;
+	var tailHt = 40;
+	var tailWidth = 75;
+	var movPinX = 275;
+	var movPinY = 75;
+	var fixPinX = 350;
+	var fixPinY = 85;
+	var openPinX = 43;
+	var openPinY = 200
+	var hingeLocX = 275;
+	var hingeLocY = 350;
+	var startingAnglePin = 1.01 * Math.PI;
+	var endingAnglePin = 1.00 * Math.PI;
+	
+	context.lineWidth = 2;
+		
+	// Pin hole center arcs
+	context.beginPath();
+	context.arc(fixPinX, fixPinY, pinRad, startingAnglePin, endingAnglePin);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(movPinX, movPinY, pinRad, startingAnglePin, endingAnglePin);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(43, 200, pinRad, startingAnglePin, endingAnglePin);
+	context.stroke();
+	
+	// Bar lines
+	
+	context.lineWidth = 2;
+	
+	context.beginPath();
+	context.moveTo(390,375);
+	context.lineTo(390,375-barLen);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo((fixPinX-hingeLocX)/2+hingeLocX,hingeLocY-15);
+	context.lineTo((fixPinX-hingeLocX)/2+hingeLocX,375-barLen);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo((fixPinX-hingeLocX)/2+hingeLocX,375-barLen);
+	context.lineTo(390,375-barLen);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo((fixPinX-hingeLocX)/2+hingeLocX,hingeLocY-15);
+	context.lineTo((fixPinX-hingeLocX)/2+hingeLocX-tailWidth,hingeLocY-15);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo((fixPinX-hingeLocX)/2+hingeLocX-tailWidth,hingeLocY-15);
+	context.lineTo((fixPinX-hingeLocX)/2+hingeLocX-tailWidth,375);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo((fixPinX-hingeLocX)/2+hingeLocX-tailWidth,375);
+	context.lineTo(390,375);
+	context.stroke();
+
+	// Radius arc
+	
+	context.lineWidth = 0.5;
+	context.strokeStyle = "red";
+	
+	context.beginPath();
+	context.arc(hingeLocX, hingeLocY, 275, 1.05 * Math.PI, 1.75 * Math.PI);
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(hingeLocX, hingeLocY, 100, 1.18 * Math.PI, 1.59 * Math.PI);
+	context.stroke();
+	
+	// Dimension lines
+
+	context.beginPath();
+	context.moveTo(hingeLocX, hingeLocY);
+	context.lineTo(movPinX, movPinY);
+	context.stroke();
+		
+	context.beginPath();
+	context.moveTo(hingeLocX, hingeLocY);
+	context.lineTo(fixPinX, fixPinY);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(hingeLocX, hingeLocY);
+	context.lineTo(openPinX, openPinY);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(fixPinX, fixPinY);
+	context.lineTo(openPinX, openPinY);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(fixPinX, fixPinY);
+	context.lineTo(movPinX,movPinY);
+	context.stroke();
+
+	context.strokeStyle = "blue";
+
+	context.beginPath();
+	context.moveTo(fixPinX-14, fixPinY+3);
+	context.lineTo(fixPinX-37, fixPinY-52);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(openPinX+14, openPinY-3);
+	context.lineTo(openPinX-9, openPinY-58);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(fixPinX-14, fixPinY-2);
+	context.lineTo(fixPinX-4, fixPinY-72);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(movPinX+14, movPinY+2);
+	context.lineTo(movPinX+24, movPinY-68);
+	context.stroke();
+
+	context.strokeStyle = "red";
+
+	context.beginPath();
+	context.moveTo(openPinX-8, openPinY-56);
+	context.lineTo(fixPinX-36, fixPinY-50);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(movPinX+22, movPinY-58);
+	context.lineTo(fixPinX-4, fixPinY-62);
+	context.stroke();
+	
+// Arrows
+	context.beginPath();
+	context.moveTo(openPinX-8, openPinY-56);
+	context.lineTo(openPinX, openPinY-64);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(openPinX-8, openPinY-56);
+	context.lineTo(openPinX+3, openPinY-55);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(fixPinX-36, fixPinY-50);
+	context.lineTo(fixPinX-46, fixPinY-51);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(fixPinX-36, fixPinY-50);
+	context.lineTo(fixPinX-44, fixPinY-42);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(movPinX+22, movPinY-58);
+	context.lineTo(movPinX+32, movPinY-61);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(movPinX+22, movPinY-58);
+	context.lineTo(movPinX+31, movPinY-52);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(fixPinX-4, fixPinY-62);
+	context.lineTo(fixPinX-12, fixPinY-68);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(fixPinX-4, fixPinY-62);
+	context.lineTo(fixPinX-13, fixPinY-58);
+	context.stroke();
+
+// Dimension labels
+
+	context.font = "18px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+
+	context.beginPath();
+	context.fillText("D", (fixPinX-openPinX)/2, fixPinY-10);
+	
+	context.beginPath();
+	context.fillText("\u03B4", (movPinX-fixPinX)/2+movPinX+81, (movPinY-fixPinY)/2+movPinY-70);
+	
+	context.beginPath();
+	context.fillText("R", 255, 195);
+	
+	context.beginPath();
+	context.fillText("R", 325, 195);
+	
+	context.beginPath();
+	context.fillText("R", 148, 245);
+	
+	context.beginPath();
+	context.fillText("\u03B8", 235, 260);
+	
+	context.beginPath();
+	context.fillText("\u03B6", 282, 255);
+	
+} //end of drawing
+// Get user input
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function sind(num) {
+	return Math.sin(rpd * num);
+}
+
+function cosd(num) {
+	return Math.cos(rpd * num);
+}
+
+function rss2(a,b) {
+	return Math.sqrt(a*a + b*b);
+}
+
+function acsd(num) {
+	// DPR*acos((ABS(a)<1) ? (a) : SGN(a))
+	if (num<1) {
+		return dpr * Math.acos(abs(num));
+	}
+	else {
+		return drp * Math.acos(sgn(num));
+	}
+}
+
+function vang(arr1,arr2) {
+	// cos(theta) = dot product / product of the vector lengths
+	// cos(theta) = (u1v1 + u2v2 + ...)/(sqrt(u1^2 + u2^2 + ...) * sqrt(v1^2 + v2^2 + ...))
+	var i;
+	var dp = 0;
+	var sqSide1 = 0;
+	var sqSide2 = 0;
+	var theta;
+	for (i in arr1) {
+		dp = dp + arr1[i] * arr2[i];
+		sqSide1 = sqSide1 + arr1[i] * arr1[i];
+		sqSide2 = sqSide2 + arr2[i] * arr2[i];
+	}
+	theta = acsd(dp/(Math.sqrt(sqSide1) * Math.sqrt(sqSide2)));
+	return theta;
+}
+
+function getInput() {
+	var theta;
+	var distance;
+	var zeta;
+	var r = parseFloat(document.getElementById("radPin").value); 			
+	var d = parseFloat(document.getElementById("pinDiam").value);
+	var delta = parseFloat(document.getElementById("pinSep").value);
+	
+	var pinDist = document.getElementById("pinDist").value;
+	var angle = document.getElementById("angle").value;
+	
+	zeta = 2 * asnd(0.5 * (d + delta)/r);
+	
+	if (pinDist != "") {
+		pinDist = parseFloat(pinDist);
+		theta = 2 * asnd(0.5 * (d + pinDist)/r)-zeta;
+		document.getElementById("output").value = theta.toFixed(4) + '\xB0';
+	}
+	else if (angle != "") {
+		angle = parseFloat(angle);
+		distance = 2 * r * sind(0.5 * (angle + zeta)) - d;
+		document.getElementById("output").value = distance.toFixed(4) + ' in';
+	}
+	else {
+		alert("Enter either measured pin distance or angle.");
+	}
+	
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Sinebar-Like Protractor</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">A sinebar is the preferred way to accurately set or measure an angle.  On the
+other hand, a protractor is a very handy tool in a number of applications - not
+only metalworking but woodworking as well.  Wouldn't it be nice if we could
+combine the accuracy of the sinebar approach with the convenience of the
+protractor?</blockquote>
+
+<blockquote>As an experiment, I tried doing this and it worked out well for my purposes. 
+Some of you may want to explore the idea further and the included program will
+be helpful if you do.</blockquote>
+
+<blockquote>I hinged two bars together with an offset, half-lap hinge such that when fully
+"closed" the edges of the two bars were parallel and in contact along their
+length.  With this sort of hinge, the measuring surfaces of the two bars are
+always in the same plane - unlike the case where two bars are hinged together
+by simply drilling a hole through both and dropping in a hinge pin.</blockquote>
+
+<blockquote>I made a high quality hinge consisting of reamed holes in the bars with a close
+fitting pin that had a protruding threaded section.  A lock nut on the threaded
+part clamps the two (half-lapped) bars together when tightened.  The hinge pin
+is also centerdrilled so that locating the hinge axis with a center finder is
+done easily.</blockquote>
+
+<blockquote>At a fixed radius from the hinge axis, I drilled the bars and mounted two
+precision pins - denoted by the '.'s in the crude ascii diagram above.
+Although it's not clear from this crude diagram the distance from the hinge
+axis to the center of *each* pin is the *same* (known) radius.  The included
+protrac.jpg diagram will make this clearer. [Replaced with image below&mdash;jhmiii]</blockquote>
+
+<blockquote>Now, the idea is that, by measuring the distance between the two pins (say
+with a vernier caliper) we can set or calculate the angle formed between the
+two bars.  The process is analogous to hinging a sinebar in the middle and
+setting the included angle by adjusting the distance between the two sinebar
+rolls.</blockquote>
+
+<blockquote>On my experimental model the pin diameter was small enough (i.e., less than
+the bar width) that the pins did not touch when the protractor is fully
+closed.  At a zero angle, there is a finite gap between the two pins.  This
+gap must be accounted for in the calculations.</blockquote>
+
+<blockquote>If I've left out some dimension you need to know, contact me and I'll add 
+	it. mklotz@alum.mit.edu.</blockquote>
+	
+<canvas id="drawingCanvas" width="500" height="410"></canvas>
+
+<dl>
+	<dt class=indent>R = radius (hinge center to moveable pin center)</dt>
+	<dt class=indent>d = pin diameter</dt>
+	<dt class=indent>&delta; = pin separation when protractor is closed</dt>
+	<dt class=indent>&zeta; = angle between pins when protractor is closed</dt>
+	<dt class=indent>&theta; = protractor angle</dt>
+	<dt class=indent>D = pin separation to form angle &theta;</dt>
+</dl>
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mi>&zeta;</mi>
+	<mo>=</mo>
+	<mn>2</mn>
+	<mi>arcsin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mfenced>
+		<mfrac>
+			<mrow>
+				<mi>d</mi>
+				<mo>+</mo>
+				<mi>&delta;</mi>
+			</mrow>
+			<mrow>
+				<mn>2</mn>
+				<mi>R</mi>
+			</mrow>
+		</mfrac>
+	</mfenced>
+</math>
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mi>&theta;</mi>
+	<mo>=</mo>
+	<mn>2</mn>
+	<mi>arcsin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mfenced>
+		<mfrac>
+			<mrow>
+				<mi>d</mi>
+				<mo>+</mo>
+				<mi>D</mi>
+			</mrow>
+			<mrow>
+				<mn>2</mn>
+				<mi>R</mi>
+			</mrow>
+		</mfrac>
+	</mfenced>
+	<mo>-</mo>
+	<mi>&zeta;</mi>
+</math>
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mi>D</mi>
+	<mo>=</mo>
+	<mn>2</mn>
+	<mi>R</mi>
+	<mi>arcsin</mi>
+	<mo>&#x2061;<!--FUNCTION APPLICATION--></mo>
+	<mfenced>
+		<mfrac>
+			<mrow>
+				<mi>&theta;</mi>
+				<mo>+</mo>
+				<mi>&zeta;</mi>
+			</mrow>
+			<mrow>
+				<mn>2</mn>
+			</mrow>
+		</mfrac>
+	</mfenced>
+	<mo>-</mo>
+	<mi>d</mi>
+</math>
+</br>
+
+<p class=note>
+	The defaults are for the protractor made in 
+	<a href="tools/Protractor & sine bar.html">Protractor & sine bar</a>.
+</p>
+
+
+<fieldset>
+	<legend>Enter the measurements of your sinebar-like protractor</legend>
+		<label for="radPin">Radius on which pins are mounted (in)</label>
+		<input type="text" id="radPin" placeholder="3.043" autofocus><br/>
+		<label for="pinDiam">Pin diameter (in)</label>
+		<input type="text" id="pinDiam" placeholder=".250"><br/>
+		<label for="pinSep">Pin separation when protractor is closed (in)</label>
+		<input type="text" id="pinSep" placeholder=".323"><br/>
+</fieldset>
+<fieldset>
+	<legend>Enter either pin separation or angle</legend>
+		<label for="pinDist">Measured pin separation (in)</label>
+		<input type="text" id="pinDist" placeholder="1.0"><br/>
+		<label for="angle">Measured angle (&deg;)</label>
+		<input type="text" id="angle" placeholder="15.0"><br/>
+		<input type="button" value="Calculate Angle/Distance" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+<fieldset>
+	<legend>Predicted output</legend>
+		<label for="output">Either angle or pin distance</label>
+		<input type="text" id="output" readOnly = "True"><br/>
+</fieldset>
+<br/>
+<hr />
+<footer>
+<p>Based on PROTRAC.C at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

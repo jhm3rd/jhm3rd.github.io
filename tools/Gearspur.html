@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Gear Calculations</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="gear, diametral, pitch, calculation, metalwork"/>
+	<meta name="description" content="Determine parameters needed for accurate gear cutting."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 1000px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 0 3px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 250px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {border-collapse:collapse; table-layout:fixed; width:100%;}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word;}
+</style>
+<script type="text/javascript">
+<!--
+
+// Global variables
+	var N;		// teeth on gear
+	var P = new Number();     // diametral pitch
+	var OD = new Number();		// outside diameter
+	var A = new Number();		// addendum
+	var D = new Number();		// dedendum
+	var W = new Number();		// whole depth
+	var CP = new Number();		// circular pitch
+	var T = new Number();		// tooth thickness
+	var PD = new Number();		// pitch diameter
+	var module = new Number();			// module
+		
+function GetParameters() {
+	var k = 0;
+	var units = "";
+	
+	OD = parseFloat(document.getElementById("outDiam").value);
+	N = parseInt(document.getElementById("nTeeth").value);
+	P = parseFloat(document.getElementById("diamPitch").value);
+	module = parseFloat(document.getElementById("mod").value);
+	PD = parseFloat(document.getElementById("pDiam").value);
+	
+	units = document.getElementById("units").value;
+	
+	if (OD) {
+		k++;
+		if (units == "mm") {OD /= 25.4;}
+	}
+	
+	if (N) {
+		k++;
+	}
+	
+	if (k<2 && P) {
+		k++;
+	}
+
+	if (k<2 && module) {
+		k++;
+		P = 25.4/module;
+	}
+	
+	if (k<2 && PD) {
+		k++;
+		if (units == "mm") {PD /= 25.4;}
+	}
+	
+	if (k < 2) {
+		alert("At least two data items must be provided.");
+	}
+	else {
+		Calculate();
+	}
+} // end GetParameters()
+
+function Calculate() {
+	var bSc = 0;
+
+	if (N && OD) {
+		P=(N+2.)/OD;
+		PD=N/P;
+	}
+	else if (P && N) {
+		OD=(N+2.)/P;
+		PD=N/P;
+	}
+	else if (P && OD) {
+		N=P*OD-2;
+		PD=N/P;
+	}
+	else if (PD && N) {
+		P=N/PD;
+		OD=(N+2.)/P;
+	}
+	else if (PD && OD) {
+		N=2.*PD/(OD-PD);
+		P=N/PD;
+	}
+	else if (PD && P) {
+		N=P*PD;
+		OD=(N+2.)/P;
+	}
+
+	A=1/P;
+	if (P <= 20) {
+		W = 2.2/P+.002;
+	}
+	else {
+		W=2.157/P;
+	}
+	
+	D = W-A;
+	CP = Math.PI/P;
+	T = 0.48*CP;
+	module = 25.4/P;
+
+	document.getElementById("in").value = "Imperial (in)";
+	document.getElementById("dpi").value = P.toFixed(4);
+	document.getElementById("modi").value = module.toFixed(4);
+	document.getElementById("nTeethi").value = N;
+	document.getElementById("odi").value = OD.toFixed(4);
+	document.getElementById("pdi").value = PD.toFixed(4);
+	document.getElementById("addi").value = A.toFixed(4);
+	document.getElementById("dedi").value = D.toFixed(4);
+	document.getElementById("wdi").value = W.toFixed(4);
+	document.getElementById("cpi").value = CP.toFixed(4);
+	document.getElementById("tti").value = T.toFixed(4);
+
+	document.getElementById("mm").value = "Metric (mm)";
+	document.getElementById("dpm").value = P.toFixed(4);
+	document.getElementById("modm").value = module.toFixed(4);
+	document.getElementById("nTeethm").value = N;
+		OD *= 25.4;
+	document.getElementById("odm").value = OD.toFixed(4);
+		PD *= 25.4;
+	document.getElementById("pdm").value = PD.toFixed(4);
+		A *= 25.4;
+	document.getElementById("addm").value = A.toFixed(4);
+		D *= 25.4;
+	document.getElementById("dedm").value = D.toFixed(4);
+		W *= 25.4;
+	document.getElementById("wdm").value = W.toFixed(4);
+		CP *= 25.4;
+	document.getElementById("cpm").value = CP.toFixed(4);
+		T *= 25.4;
+	document.getElementById("ttm").value = T.toFixed(4);
+	
+	if (N >= 12) {bSc = 8;}
+	if (N >= 14) {bSc = 7;}
+	if (N >= 17) {bSc = 6;}
+	if (N >= 21) {bSc = 5;}
+	if (N >= 26) {bSc = 4;}
+	if (N >= 35) {bSc = 3;}
+	if (N >= 55) {bSc = 2;}
+	if (N >= 135) {bSc = 1;}
+	document.getElementById("bsc").value = bSc;
+
+} // end function Calculate()
+// -->
+</script>
+
+
+</head>
+<body>
+
+<form name="Gear">
+
+<h1>Gear Calculations</h1>
+<h3>Select the measuring system of choice:</h3><br />
+
+<label for="units">Units:</label> 
+<select id="units" name="units">
+	<option value="in">Imperial</option>
+	<option value="mm">Metric</option>
+</select>
+
+<h3>Enter whatever data you know.</h3>
+<fieldset>
+	<legend>You must enter at least 2 items</legend>
+		<label for="outDiam">Outer Diameter:</label>
+		<input id="outDiam" placeholder="4" autofocus><br>
+		<label for ="nTeeth">Number of Teeth:</label>
+		<input id="nTeeth" placeholder="30"><br>
+		<label for="diamPitch">Diametral Pitch:</label>
+		<input id="diamPitch" placeholder="10" autofocus><br>
+		<label for ="mod">Module:</label>
+		<input id="mod" placeholder="3"><br>
+		<label for="pDiam">Pitch Diameter:</label>
+		<input id="pDiam" placeholder="3.75" autofocus><br>
+</fieldset>
+<br>
+<input type="button" value="Calculate Parameters" onclick="GetParameters()"/><br /><br />
+<hr />
+
+<h3>Parameters for cutting the gear</h3><br />
+
+<table>
+	<tr>
+		<th scope="col">Units</th>
+		<th scope="col">Diametral Pitch</th>
+		<th scope="col">Module</th>
+		<th scope="col"># of Teeth</th>
+		<th scope="col">Outside Diameter</th>
+		<th scope="col">Pitch Diameter</th>
+		<th scope="col">Addendum</th>
+		<th scope="col">Dedendum</th>
+		<th scope="col">Whole Depth</th>
+		<th scope="col">Circular Pitch</th>
+		<th scope="col">Tooth Thickness</th>
+	</tr>
+	<tr>
+		<td><input type="text" name="in" id="in" value="" size="10"/></td>
+		<td><input type="text" name="dpi" id="dpi" value="" size="10"/></td>
+		<td><input type="text" name="modi" id="modi" value="" size="10"/></td>
+		<td><input type="text" name="nTeethi" id="nTeethi" value="" size="10"/></td>
+		<td><input type="text" name="odi" id="odi" value="" size="10"/></td>
+		<td><input type="text" name="pdi" id="pdi" value="" size="10"/></td>
+		<td><input type="text" name="addi" id="addi" value="" size="10"/></td>
+		<td><input type="text" name="dedi" id="dedi" value="" size="10"/></td>
+		<td><input type="text" name="wdi" id="wdi" value="" size="10"/></td>
+		<td><input type="text" name="cpi" id="cpi" value="" size="10"/></td>
+		<td><input type="text" name="tti" id="tti" value="" size="10"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="mm" id="mm" value="" size="10"/></td>
+		<td><input type="text" name="dpm" id="dpm" value="" size="10"/></td>
+		<td><input type="text" name="modm" id="modm" value="" size="10"/></td>
+		<td><input type="text" name="nTeethm" id="nTeethm" value="" size="10"/></td>
+		<td><input type="text" name="odm" id="odm" value="" size="10"/></td>
+		<td><input type="text" name="pdm" id="pdm" value="" size="10"/></td>
+		<td><input type="text" name="addm" id="addm" value="" size="10"/></td>
+		<td><input type="text" name="dedm" id="dedm" value="" size="10"/></td>
+		<td><input type="text" name="wdm" id="wdm" value="" size="10"/></td>
+		<td><input type="text" name="cpm" id="cpm" value="" size="10"/></td>
+		<td><input type="text" name="ttm" id="ttm" value="" size="10"/></td>
+	</tr>
+	
+</table>
+	<br />
+	B & S cutter number used to cut this gear = 
+	<input type="text" name="bsc" id="bsc" value="0" size="25"/><br />
+
+</form>
+<hr />
+<footer>
+	<p>Based on GEARSPUR.c at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+	<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+	<p>John H. McDonald, III</p>
+	<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

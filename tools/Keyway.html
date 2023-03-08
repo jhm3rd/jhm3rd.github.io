@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Keyway Calculator</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="keyway, depth, calculation, metalwork"/>
+	<meta name="description" content="Determine correct dimensions for a keyway"/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 600px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 250px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {border-collapse:collapse; table-layout:fixed; width:100%;}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word;}
+</style>
+<script type="text/javascript">
+<!--
+
+window.onload = function() {
+	var canvas = document.getElementById("drawingCanvas");
+	var context = canvas.getContext("2d");
+	
+	var centerX = 150;
+	var centerY = 150;
+	var radius = 100;
+	var startingAngle = 1.56 * Math.PI;
+	var endingAngle = 1.44 * Math.PI;
+	
+	context.lineWidth = 2;
+	
+	// Shaft
+	context.arc(centerX, centerY, radius, startingAngle, endingAngle);
+	context.stroke();
+	
+	// Keyway rectangle
+	context.beginPath();
+	context.strokeRect(130,34,40,40);
+	
+	context.lineWidth = 1;
+	context.strokeStyle = "black";
+		
+	// Missing arc
+	context.beginPath();
+	context.arc(centerX, centerY, radius, endingAngle, startingAngle);
+	context.stroke();
+	
+	// Diameter = D
+	context.beginPath();
+	context.moveTo(50,255);
+	context.lineTo(250,255);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(50,245);
+	context.lineTo(50,265);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(250,245);
+	context.lineTo(250,265);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("D", 145, 265);
+	
+	// Line to bottom of box = M
+	context.beginPath();
+	context.moveTo(150,74);
+	context.lineTo(150,250);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("M", 130, 155);
+	
+	// Width of rectangle = K
+	context.beginPath();
+	context.moveTo(130,24);
+	context.lineTo(170,24);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("K", 150, 10);
+	
+	// Height of rectangle = H
+	context.beginPath();
+	context.moveTo(180,34);
+	context.lineTo(180,74);
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "black";
+	context.fillText("H", 185, 40);
+
+	// Height above arc = R
+	context.beginPath();
+	context.moveTo(150,34);
+	context.lineTo(150,49);
+	context.strokeStyle = "red";
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "red";
+	context.fillText("R", 156, 36);
+
+	// Height below arc = Q
+	context.beginPath();
+	context.moveTo(150,49);
+	context.lineTo(150,74);
+	context.strokeStyle = "green";
+	context.stroke();
+	
+	context.beginPath();
+	context.font = "bold 12px Arial";
+	context.textBaseline = "top";
+	context.fillStyle = "green";
+	context.fillText("Q", 136, 56);
+
+	
+	//context.moveTo(10,10);
+	//context.lineTo(400,40);
+	//context.stroke();
+} //end of drawing
+	
+	
+
+function GetDimensions() {
+	var d = parseFloat(document.getElementById("shaftDiam").value);
+	var k = parseFloat(document.getElementById("kWidth").value);
+	var h = parseFloat(document.getElementById("kHeight").value);
+	var x = 0;
+	var y = 0;
+	var m = Number(0);
+	var n = Number(0);
+	var q = Number(0);
+	var r = Number(0);
+	
+	x=Math.sqrt(d*d-k*k); 
+	y=0.5*(d-x); 
+	m=d-(y+0.5*h); 
+	n=m+h; 
+	q=d-m; 
+	r=h-q;
+	
+	document.getElementById("diam").value = d;
+	document.getElementById("kw").value = k;
+	document.getElementById("kh").value = h;
+	document.getElementById("ksd").value = m.toFixed(4);
+	document.getElementById("kwd").value = n.toFixed(4);
+	document.getElementById("dcs").value = q.toFixed(4);
+	document.getElementById("dch").value = r.toFixed(4);
+} //end of function
+
+// -->
+</script>
+
+<style type="text/css">
+	canvas {
+		border: 1px dashed black;
+	}
+</style>
+
+</head>
+<body>
+
+<form name="Countersink">
+
+<h1>Keyway Calculations</h1><br />
+
+<table cellspacing="5" border="2" cellpadding="5">
+
+<tr>
+<th>Shaft Diameter</th>
+<th>Recommended Key Size</th>
+</tr>
+<tr>
+<td>0.3125-0.4375</td>
+<td>0.0625-0.1250</td>
+</tr>
+<tr>
+<td>0.4375-0.5000</td>
+<td>0.0625-0.1562</td>
+</tr>
+<tr>
+<td>0.5000-0.8750</td>
+<td>0.0938-0.3125</td>
+</tr>
+<tr>
+<td>0.8750-1.1250</td>
+<td>0.1250-0.4375</td>
+</tr>
+<tr>
+<td>1.1250-1.1500</td>
+<td>0.1562-0.5000</td>
+</tr>
+<tr>
+<td>1.5000-2.0000</td>
+<td>0.1875-0.5000</td>
+</tr>
+</table>
+<br>
+<canvas id="drawingCanvas" width="300" height="300"></canvas>
+
+<p>
+Another excellent B. Vaughan contribution to take all the pain out of calculating depths of cut for keyways and keyseats so they're correctly centered on the shaft-hub intersection line.</p>
+<br />
+<fieldset>
+	<legend>You must enter at least 2 items</legend>
+		<label for="shaftDiam">Shaft Diameter (in):</label>
+		<input id="shaftDiam" placeholder="1.5" autofocus><br>
+		<label for ="kWidth">Key Width (in):</label>
+		<input id="kWidth" placeholder="0.25"><br>
+		<label for="kHeight">Key Height (in):</label>
+		<input id="kHeight" placeholder="0.25"><br>
+</fieldset>
+<br>
+<input type="button" value="Calculate Dimensions" onclick="GetDimensions()"/><br /><br />
+
+<fieldset>
+	<legend>You must enter at least 2 items</legend>
+		<label for="diam">Shaft diameter (D) =</label>
+		<input id="diam"><br>
+		<label for ="kw">Key width (K) =</label>
+		<input id="kw"><br>
+		<label for="kh">Key height (H) =</label>
+		<input id="kh"><br>
+		<label for="ksd">Keyseat depth (M) =</label>
+		<input id="ksd"><br>
+		<label for ="kwd">Keyway depth (N) =</label>
+		<input id="kwd"><br>
+		<label for="dcs">Depth of cut in shaft (Q) =</label>
+		<input id="dcs"><br>
+		<label for="dch">Depth of cut in hub (R) =</label>
+		<input id="dch"><br>
+</fieldset>
+
+</form>
+<hr />
+<footer>
+<p>Based on KEYWAY.c at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

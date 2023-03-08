@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Osborne</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="center, edgefinder, error, round, calculation, metalwork"/>
+	<meta name="description" content="Process to find the center of round stock with an edgefinder."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+// Get user input
+
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+function cosd(num) {
+	return Math.cos(num * rpd);
+}
+
+function rss2(a,b) {
+	return Math.sqrt(a * a + b * b);
+}
+
+function getInput() {
+	var i;
+	var diam = parseFloat(document.getElementById("diam").value); 	
+	var delta1 = parseFloat(document.getElementById("offset").value);
+	var delta2;
+	var rad;
+	var theta;
+	var err;
+	var div = document.getElementsByTagName("div")[0];
+
+	
+	var tabl = document.createElement("table");
+	tabl.createTHead();
+	var row = tabl.tHead.insertRow(-1);
+	row.insertCell(0);
+	row.cells[0].innerHTML = "Radial Error";
+	row.insertCell(0);
+	row.cells[0].innerHTML = "Delta 2";
+	row.insertCell(0);
+	row.cells[0].innerHTML = "Delta 1";
+	row.insertCell(0);
+	row.cells[0].innerHTML = "Iteration";
+	tabl.appendChild(document.createElement("tbody"));
+	
+	rad = 0.5 * diam;
+	for (i=0; i<6; i++) {
+		theta = asnd(delta1/rad);
+		delta2 = rad * (1 - cosd(theta));
+		err = rss2(delta1,delta2);
+		
+		row = tabl.tBodies[0].insertRow(-1);
+		row.insertCell(0);
+		row.cells[0].innerHTML = err.toFixed(10);
+		row.insertCell(0);
+		row.cells[0].innerHTML = delta2.toFixed(10);
+		row.insertCell(0);
+		row.cells[0].innerHTML = delta1.toFixed(10);
+		row.insertCell(0);
+		row.cells[0].innerHTML = i + 1;
+		
+		delta1 = delta2;
+	}
+	div.appendChild(tabl);
+}
+
+/*
+	tablO = document.createElement("table");
+	tablO.createTHead();
+	rowO = tablO.tHead.insertRow(-1);
+	rowO.insertCell(0);
+	rowO.cells[0].innerHTML = 'Rotary table settings (\xB0) for the outer holes';
+	rowO = tablO.tHead.insertRow(-1);
+	rowO.insertCell(0);
+	rowO.cells[0].innerHTML = ' ';
+	tablO.appendChild(document.createElement('tbody'));
+	while (t < 360) {
+		rowO = tablO.tBodies[0].insertRow(-1);
+		rowO.insertCell(0);
+		rowO.cells[0].innerHTML = t.toFixed(2);
+		if (k) {
+			t=t + 2 * theta2;
+		}
+		else {
+			t = t + sep;
+			k = Math.pow(k,1);
+		}
+	}
+	div.appendChild(tablO);
+
+*/
+
+/*
+int i,j,k;
+dbl diam,rad,del1,del2,theta,err;
+
+puts ("OSBORNE MANEUVER\n");
+
+vin ("Workpiece diameter",&diam,"lf",2.,"");
+vin ("Initial offset",&del1,"lf",.1,"");
+rad=0.5*diam;
+printf ("\n");
+
+for (i=0 ; i<6 ; i++)
+{
+theta=ASND(del1/rad);
+del2=rad*(1.-COSD(theta));
+err=RSS2(del1,del2);
+printf ("iteration: del1,del2,error= %d: %.8lf, %.8lf, %.8lf\n",i+1,del1,del2,err);
+del1=del2;
+}
+*/
+// -->
+
+</script>
+
+</head>
+<body>
+
+<form name="Data">
+
+<h1>Osborne Maneuver and Associated Error</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">In his book, "Home 
+Machinist's Bedside Reader #2 (pg. 159)", Guy Lautard describes the "Osborne Maneuver" 
+for accurately centering round stock in the milling machine using nothing more than an 
+edge finder.</blockquote>
+
+<blockquote>It works like this.  Accurately measure the diameter of the stock. 
+For description purposes, let's assume that the y axis is along the 12-6
+o'clock line of the stock and the x axis is along the 3-9 o'clock line. Align
+the edge finder by eye to the 3 o'clock position and locate the edge of the
+workpiece. Now move by half the diameter towards the center of the stock along
+the x axis.  Now, use the y axis controls to find the edge of the stock near
+the 12 o'clock position.  Move half the diameter towards the center of the
+stock along the y axis.</blockquote>
+
+<blockquote>Now do it again.  Use the x axis controls to find the edge of the
+stock near the 3 o'clock position.  Move half the diameter towards the center
+of the stock along the x axis.  Use the y axis controls to find the edge of the
+stock near the 12 o'clock position.  Move half the diameter towards the center
+of the stock along the y axis.</blockquote>
+
+<blockquote>As you repeat this procedure again and again you will approach the
+center of the stock with ever increasing accuracy.  (In mathematical terms,
+the procedure converges to the center of the stock.)</blockquote>
+
+<blockquote>The question becomes, "How often do I have to do this?".  The answer
+is, "Probably fewer times than you think!".  I wrote OSBORNE.EXE to examine
+how fast the process converges.  For example:</blockquote>
+
+<blockquote>I got tired of rederiving the equations needed to make the calculations
+associated with this procedure so I wrote the included program.  Given the
+description above, the program should be self-explanatory.  If not, email me
+at mklotz@alum.mit.edu.</blockquote>
+
+<fieldset>
+	<legend>Osborne Maneuver Input</legend>
+		<label for="diam">Workpiece diameter</label>
+		<input id="diam" placeholder="2" autofocus><br/>
+		<label for="offset">Initial offset</label>
+		<input id="offset" placeholder="0.1"><br/>
+		<input type="button" value="Calculate Link Parameters" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+
+<div id="addedTable">
+</div>
+
+<blockquote>Here we have a 2 (we'll say inch but units don't matter) diameter
+workpiece and we initially aligned with an error of 0.1".  That is to say, we
+initially aligned by eye to the x axis at the 3 o'clock position with an error
+of 0.1".  If your eyes are that bad, you need better glasses!  After the first
+iteration we're still 0.1" off the x axis (del1), but we're within 0.005"
+(del2) of being on the y axis.  Our radial error (distance from the center of
+the workpiece) is the root-sum-squared of del1 and del2 or 0.100126".  On the
+second iteration, del1 becomes the del2 of the previous iteration and that
+puts us within 0.0000126 on the x axis.  The iterations continue in this
+fashion with del1 always becoming the del2 of the previous iteration.</blockquote>
+
+<blockquote>As you can see, even with a hideous initial error we've converged to a
+nearly unmeasurable error after only three iterations.  You can use the
+program to experiment with other combinations of workpiece diameter and
+initial error.  Personally, I do it twice and don't worry about it.</blockquote>
+
+<br/>
+<hr />
+<footer>
+<p>Based on OSBORNE.C at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

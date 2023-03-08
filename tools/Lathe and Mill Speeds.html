@@ -1,0 +1,277 @@
+<html>
+<head>
+<title>Speeds for the Lathe and Mill</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function calcRPM() {
+
+	var diam = document.getElementById("diameter").value;
+	var sfm = document.getElementById("SFM").value;
+	var cutterNum = document.getElementById("flutes").value;
+	
+	if (cutterNum == "") {
+		cutterNum = 1;
+	}
+	
+	var rpm;
+	
+	rpm = cutterNum*3.82*sfm/diam;
+	
+	var precision = 4;
+	
+	var y = new Number();
+
+	y = rpm;
+	rpm = y.toPrecision(precision);		
+	
+	document.getElementById("RPM").value = rpm;
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>Speeds for the Lathe and Mill</h1>
+<h2>Given the SFM, what RPM should be used</h2><br />
+
+<p>
+	This calculator returns the RPM (revolutions per minute) for a given SFM (surface 
+	feet per minute) entered. There is a simple formula 
+	for these calculations:
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mi>RPM</mi>
+				<mo>=</mo>
+				<mfrac>
+					<mrow>
+						<mn>3.82</mn>
+						<mi>&#xd7;</mi>
+						<mi>SFM</mi>
+					</mrow>
+					<mrow>
+						<mi>Diameter</mi>
+					</mrow>
+				</mfrac>
+			</mrow>
+		</math>
+
+<p>	
+	To use the calculator simply enter the SFM desired and the diameter of your part 
+	(for lathe work) or the diameter of your milling cutter (for milling). The following 
+	table displays some common SFM recommendations.
+</p>
+
+<table>
+	<tr>
+		<th>Material</th>
+		<th>Recommended SFM (HSS)</th>
+		<th>Recommended SFM (Carbide)</th>
+	</tr>
+	<tr>
+		<td>Mild steel</td>
+		<td>90</td>
+		<td>180</td>
+	</tr>
+	<tr>
+		<td>Tool steel</td>
+		<td>50</td>
+		<td>100</td>
+	</tr>
+	<tr>
+		<td>Aluminum & brass</td>
+		<td>150</td>
+		<td>300</td>
+	</tr>
+	<tr>
+		<td>Bronze</td>
+		<td>100</td>
+		<td>200</td>
+	</tr>
+	<tr>
+		<td>Stainless steel</td>
+		<td>40</td>
+		<td>80</td>
+	</tr>
+</table>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter the following data:</legend>
+		<label for="diameter">Diameter of Work or Cutter</label>
+		<input type="text" id="diameter" placeholder="1.0" autofocus><br/>
+		<label for="SFM">Desired SFM</label>
+		<input type="text" id="SFM" placeholder="90"><br/>
+		<label for="flutes">If Milling Enter Number of Flutes (or inserts)</label>
+		<input type="text" id="flutes" placeholder="2"><br/>
+		<br/>
+		<input type="button" value="Calculate RPM" onclick="calcRPM()"/>
+		<br/>
+		<br/>
+		<label for="RPM">RPM = </label>
+		<input type="text" name="RPM" id="RPM" value="" size="12"/><br />
+		<br/>
+</fieldset>
+
+<p class=note>
+	It is recommended that you select an RPM that is less than or equal to that shown 
+	above.
+</p>
+
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>October 29, 2017</p>
+</footer>
+</html>

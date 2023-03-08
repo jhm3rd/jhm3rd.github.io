@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Two Gear Calculations</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="gear, diametral, pitch, calculation, metalwork"/>
+	<meta name="description" content="Determine parameters needed for accurate gear cutting."/>
+<style type="text/css">
+	body {
+		/*margin-left: 40px;*/
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		/*max-width: 900px;*/
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2,h3 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 0 3px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 100px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		margin-left: 20 px;
+  	}
+  	table td {
+  		border: solid 1px #fab; 
+  		width: 9%; 
+  		word-wrap: break-word;
+  	}
+  	fieldset {
+  		width: 90%;
+  	}
+  	p {
+  		width: 90%;
+  	}
+</style>
+<script type="text/javascript">
+<!--
+
+function GetParameters() {
+	var NG=2;		// number of gears
+	var NT = new Array(NG);		// teeth on gear
+	var P = parseFloat(document.getElementById("diamPitch").value);		// diametral pitch
+	var phi = parseFloat(document.getElementById("pressAngle").value);	// pressure angle (deg)
+	var gratio;		// gear ratio
+	var OD = new Array(NG);		// outside diameter
+	var A = new Array(NG);		// addendum
+	var D = new Array(NG);		// dedendum
+	var W = new Array(NG);		// whole depth
+	var CP = new Array(NG);		// circular pitch
+		CP.push (new Number());
+		CP.push (new Number());
+	var T = new Array(NG);		// tooth thickness
+	var PD = new Array(NG);		// pitch diameter
+	var RB = new Array(NG);		// base circle radius
+	var RP = new Array(NG);		// tooth profile radius
+	var CD;			// center distance 
+	
+	var tempNum = new Number();
+	
+	var rpd = Math.PI / 180;
+	var i;
+	
+	NT[0] = parseInt(document.getElementById("nTeeth1").value);
+	NT[1] = parseInt(document.getElementById("nTeeth2").value);
+	
+	gratio=Math.max(NT[0],NT[1])/Math.min(NT[0],NT[1]);
+	
+	for (i=0 ; i<NG ; i++)
+	{
+		OD[i] = (NT[i]+2)/P;
+		A[i] = 1/P;
+		D[i] = 1.2/P;
+		W[i] = 2.2/P;
+		CP[i] = Math.PI/P;
+		T[i] = 0.48*CP[i];
+		PD[i] = NT[i]/P;
+		RB[i] = 0.5*PD[i]*Math.cos(phi*rpd);
+		RP[i] = 0.5*PD[i]*Math.sin(phi*rpd);
+	}
+	CD=0.5*(PD[0]+PD[1]);
+
+	document.getElementById("gearRatio").value = gratio;
+	document.getElementById("dPitch").value = P;
+	document.getElementById("mia").value = phi;
+	document.getElementById("cd").value = CD + " in; " + CD*25.4 + " mm";
+	
+	document.getElementById("gNum1").value = "1 (in)";
+	document.getElementById("numTeeth1").value = NT[0];
+	document.getElementById("outDiam1").value = OD[0].toFixed(4);
+	document.getElementById("add1").value = A[0].toFixed(4);
+	document.getElementById("ded1").value = D[0].toFixed(4);
+	document.getElementById("wholeD1").value = W[0].toFixed(4);
+	document.getElementById("circPit1").value = CP[0].toFixed(4);
+	document.getElementById("toothThick1").value = T[0].toFixed(4);
+	document.getElementById("pd1").value = PD[0].toFixed(4);
+	document.getElementById("bcr1").value = RB[0].toFixed(4);
+	document.getElementById("tpr1").value = RP[0].toFixed(4);
+
+	document.getElementById("gNum1m").value = "1 (mm)";
+	document.getElementById("numTeeth1m").value = NT[0];
+	tempNum = OD[0]*25.4;
+	document.getElementById("outDiam1m").value = tempNum.toFixed(4);
+	tempNum = A[0]*25.4;
+	document.getElementById("add1m").value = tempNum.toFixed(4);
+	tempNum = D[0]*25.4;
+	document.getElementById("ded1m").value = tempNum.toFixed(4);
+	tempNum = W[0]*25.4;
+	document.getElementById("wholeD1m").value = tempNum.toFixed(4);
+	tempNum = CP[0]*25.4;
+	document.getElementById("circPit1m").value = tempNum.toFixed(4);
+	tempNum = T[0]*25.4;
+	document.getElementById("toothThick1m").value = tempNum.toFixed(4);
+	tempNum = PD[0]*25.4;
+	document.getElementById("pd1m").value = tempNum.toFixed(4);
+	tempNum = RB[0]*25.4;
+	document.getElementById("bcr1m").value = tempNum.toFixed(4);
+	tempNum = RP[0]*25.4;
+	document.getElementById("tpr1m").value = tempNum.toFixed(4);
+
+	document.getElementById("gNum2").value = "2 (in)";
+	document.getElementById("numTeeth2").value = NT[1];
+	document.getElementById("outDiam2").value = OD[1].toFixed(4);
+	document.getElementById("add2").value = A[1].toFixed(4);
+	document.getElementById("ded2").value = D[1].toFixed(4);
+	document.getElementById("wholeD2").value = W[1].toFixed(4);
+	document.getElementById("circPit2").value = CP[1].toFixed(4);
+	document.getElementById("toothThick2").value = T[1].toFixed(4);
+	document.getElementById("pd2").value = PD[1].toFixed(4);
+	document.getElementById("bcr2").value = RB[1].toFixed(4);
+	document.getElementById("tpr2").value = RP[1].toFixed(4);
+
+	document.getElementById("gNum2m").value = "2 (in)";
+	document.getElementById("numTeeth2m").value = NT[1];
+	tempNum = OD[1]*25.4;
+	document.getElementById("outDiam2m").value = tempNum.toFixed(4);
+	tempNum = A[1]*25.4;
+	document.getElementById("add2m").value = tempNum.toFixed(4);
+	tempNum = D[1]*25.4;
+	document.getElementById("ded2m").value = tempNum.toFixed(4);
+	tempNum = W[1]*25.4;
+	document.getElementById("wholeD2m").value = tempNum.toFixed(4);
+	tempNum = CP[1]*25.4;
+	document.getElementById("circPit2m").value = tempNum.toFixed(4);
+	tempNum = T[1]*25.4;
+	document.getElementById("toothThick2m").value = tempNum.toFixed(4);
+	tempNum = PD[1]*25.4;
+	document.getElementById("pd2m").value = tempNum.toFixed(4);
+	tempNum = RB[1]*25.4;
+	document.getElementById("bcr2m").value = tempNum.toFixed(4);
+	tempNum = RP[1]*25.4;
+	document.getElementById("tpr2m").value = tempNum.toFixed(4);
+
+}
+// -->
+</script>
+
+
+</head>
+<body>
+
+<form name="Gear">
+
+<h1>Two Gear Calculations</h1>
+<p><em>Adapted from an article "Spur Gears and Pinions" by John A. Cooper
+in "Machinist's Workshop", 4/99, Volume 12, Number 2, pg.8</em></p>
+<p>
+	John Cooper wrote one of the best articles on homeshop gear making I've
+seen.  For those of you who haven't seen it yet, the reference is:</p>
+
+	<blockquote>
+	<p>"Spur Gears and Pinions" by John A. Cooper
+	"Machinist's Workshop", 4/99, Volume 12, Number 2, pg.8</p>
+	</blockquote>
+
+<p>	I've never made a gear but I have several projects on the burner that
+require same and his article was so well written and complete that I'm
+encouraged to undertake what has always seemed a most challenging task.</p>
+
+<p>	John includes all the required calculations in his article and really
+nothing more seems to be required.  Despite his thoroughness, I thought it
+would be nice to write a program to implement the calculations.  Not only does
+the program simplify things and minimize errors, but it writes a nice data file
+that one can print and carry to the shop for reference.  It's another good
+example of the computer helping to save time and avoid mistakes.</p>
+
+<p>	Operation of the program should be self-explanatory.  It's programmed
+with a set of defaults that correspond to the example that John used in his
+article.  For those of you who may not completely comprehend all the values
+computed, John has provided a most explanatory diagram on pg. 11 of the
+article.  Your shop notebook should definitely contain a copy of this article!</p>
+
+<p>DP = diametral pitch = teeth/pitch diameter (in)</p>
+<p>Mod(ule) = pitch diameter (mm)/# of teeth</p>
+
+<p>Therefore:</p>
+
+<p>DP = 25.4/Mod</p>
+
+<fieldset>
+	<legend>Required Input</legend>
+		<label for="nTeeth1">Enter the number of teeth on gear 1:</label>
+		<input id="nTeeth1" placeholder="45" autofocus><br>
+		<label for ="nTeeth2">Enter the number of teeth on gear 2:</label>
+		<input id="nTeeth2" placeholder="20"><br>
+		<label for="diamPitch">Enter the Diametral Pitch (25.4/mod):</label>
+		<input id="diamPitch" placeholder="20"><br>
+		<label for ="pressAngle">Enter the Pressure Angle:</label>
+		<input id="pressAngle" placeholder="20"><br>
+</fieldset>
+
+<br />
+<input type="button" value="Calculate Parameters" onclick="GetParameters()"/><br /><br />
+
+<fieldset>
+	<legend>Parameters common to both gears</legend>
+		<label for="gearRatio">Gear Ratio = </label>
+		<input id="gearRatio"><br>
+		<label for ="dPitch">Diametral Pitch = </label>
+		<input id="dPitch"><br>
+		<label for ="mia">Pressure Angle (deg) = </label>
+		<input id="mia"><br>
+		<label for ="cd">Center Distance (in) = </label>
+		<input id="cd"><br>
+</fieldset>
+<br>
+</form>
+<h3>Parameters for individual gears</h3><br />
+
+<table>
+	<tr>
+		<th scope="col">Gear #</th>
+		<th scope="col"># of Teeth</th>
+		<th scope="col">Outside Diameter</th>
+		<th scope="col">Addendum</th>
+		<th scope="col">Dedendum</th>
+		<th scope="col">Total Depth</th>
+		<th scope="col">Circular Pitch</th>
+		<th scope="col">Tooth Width</th>
+		<th scope="col">Pitch Diameter</th>
+		<th scope="col">Base Circle Radius</th>
+		<th scope="col">Tooth Profile Radius</th>
+	</tr>
+	<tr>
+		<td><input type="text" name="gNum1" id="gNum1" value="" size="15"/></td>
+		<td><input type="text" name="numTeeth1" id="numTeeth1" value="" size="15"/></td>
+		<td><input type="text" name="outDiam1" id="outDiam1" value="" size="15"/></td>
+		<td><input type="text" name="add1" id="add1" value="" size="15"/></td>
+		<td><input type="text" name="ded1" id="ded1" value="" size="15"/></td>
+		<td><input type="text" name="wholeD1" id="wholeD1" value="" size="15"/></td>
+		<td><input type="text" name="circPit1" id="circPit1" value="" size="15"/></td>
+		<td><input type="text" name="toothThick1" id="toothThick1" value="" size="15"/></td>
+		<td><input type="text" name="pd1" id="pd1" value="" size="15"/></td>
+		<td><input type="text" name="bcr1" id="bcr1" value="" size="15"/></td>
+		<td><input type="text" name="tpr1" id="tpr1" value="" /></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="gNum1m" id="gNum1m" value="" size="15"/></td>
+		<td><input type="text" name="numTeeth1m" id="numTeeth1m" value="" size="15"/></td>
+		<td><input type="text" name="outDiam1m" id="outDiam1m" value="" size="15"/></td>
+		<td><input type="text" name="add1m" id="add1m" value="" size="15"/></td>
+		<td><input type="text" name="ded1m" id="ded1m" value="" size="15"/></td>
+		<td><input type="text" name="wholeD1m" id="wholeD1m" value="" size="15"/></td>
+		<td><input type="text" name="circPit1m" id="circPit1m" value="" size="15"/></td>
+		<td><input type="text" name="toothThick1m" id="toothThick1m" value="" size="15"/></td>
+		<td><input type="text" name="pd1m" id="pd1m" value="" size="15"/></td>
+		<td><input type="text" name="bcr1m" id="bcr1m" value="" size="15"/></td>
+		<td><input type="text" name="tpr1m" id="tpr1m" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="gNum2" id="gNum2" value="" size="15"/></td>
+		<td><input type="text" name="numTeeth2" id="numTeeth2" value="" size="15"/></td>
+		<td><input type="text" name="outDiam2" id="outDiam2" value="" size="15"/></td>
+		<td><input type="text" name="add2" id="add2" value="" size="15"/></td>
+		<td><input type="text" name="ded2" id="ded2" value="" size="15"/></td>
+		<td><input type="text" name="wholeD2" id="wholeD2" value="" size="15"/></td>
+		<td><input type="text" name="circPit2" id="circPit2" value="" size="15"/></td>
+		<td><input type="text" name="toothThick2" id="toothThick2" value="" size="15"/></td>
+		<td><input type="text" name="pd2" id="pd2" value="" size="15"/></td>
+		<td><input type="text" name="bcr2" id="bcr2" value="" size="15"/></td>
+		<td><input type="text" name="tpr2" id="tpr2" value="" size="15"/></td>
+	</tr>
+	<tr>
+		<td><input type="text" name="gNum2m" id="gNum2m" value="" size="15"/></td>
+		<td><input type="text" name="numTeeth2m" id="numTeeth2m" value="" size="15"/></td>
+		<td><input type="text" name="outDiam2m" id="outDiam2m" value="" size="15"/></td>
+		<td><input type="text" name="add2m" id="add2m" value="" size="15"/></td>
+		<td><input type="text" name="ded2m" id="ded2m" value="" size="15"/></td>
+		<td><input type="text" name="wholeD2m" id="wholeD2m" value="" size="15"/></td>
+		<td><input type="text" name="circPit2m" id="circPit2m" value="" size="15"/></td>
+		<td><input type="text" name="toothThick2m" id="toothThick2m" value="" size="15"/></td>
+		<td><input type="text" name="pd2m" id="pd2m" value="" size="15"/></td>
+		<td><input type="text" name="bcr2m" id="bcr2m" value="" size="15"/></td>
+		<td><input type="text" name="tpr2m" id="tpr2m" value="" size="15"/></td>
+	</tr>
+	
+</table>
+
+
+<hr />
+<footer>
+<p>Based on GEAR.c at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Vernier Scales</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="vernier, measure, calculation, metalwork"/>
+	<meta name="description" content="Determine correct lengths and subdivisions for a vernier scale."/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	li.comment {
+		font-variant: italics;
+		font-size: 80%;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 450px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 80px;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {border:solid 1px #fab; width:9%; word-wrap:break-word; text-align:center;}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+	
+// Get user input
+
+var dpr = 57.3; // 180/pi: degrees per radian
+var rpd = Math.PI/180; //radians per degree
+
+var nv = 0;
+
+
+function sgn(num) {
+	if (num!=0) {
+		if (num>0) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+	}
+	else {
+		return 0;
+	}
+}
+
+function abs(num) {
+	if (num>=0) {
+		return num;
+	}
+	else {
+		return -num;
+	}
+}
+
+function asnd(num) {
+	if (abs(num)<1) {
+		return dpr*Math.asin(num);
+	}
+	else {
+		return dpr*Math.asin(sgn(num));
+	}
+}
+
+
+function frac(q) {
+	var f = eval(q);
+	var a1 = 1;
+	var a2 = 0;
+	var an,x,z;
+	
+	while (abs(f) > 1.e-6) {
+		z  = 1/f;
+		x = Math.floor(z);
+		f = z - x;
+		an = x * a1 +a2;
+		a2 = a1;
+		a1 = an;
+	}
+	z = eval(q) * an;
+	a1 = 0; 
+	while (z > an) {
+		z = z - an;
+		a1++;
+	}
+	if (a1) {
+		return(a1 + "-" + z + "/" + an);
+	}
+	else {
+		return(z + "/" + an);
+	}
+}
+
+function getInput() {
+	
+	var msDist = 0;           // Marv's dm
+	var vernDist = "";        // Marv's del
+	var numSubsMain = 0;      // Marv's nm
+	var xlm = 0;
+	var xnv = 0;
+	var vernSpan = 0;			// Marv's tdv
+	var xlv = 0;
+	nv = 0;						// zero nv as it is saved between runs
+
+	msDist = parseFloat(document.getElementById("msDist").value);
+	numSubsMain = parseInt(document.getElementById("numSubsMain").value);
+	vernDist = document.getElementById("vernDist").value;
+	
+	document.getElementById("nrfDel").value = frac(vernDist);
+	xlm = msDist/numSubsMain;
+	xnv = xlm/eval(vernDist);
+	nv = Math.floor(xnv);
+	if (nv != xnv) {
+		alert("The number of vernier subdivisions is not an integer.");
+	}
+	else {
+		document.getElementById("xlm").value = xlm;
+		document.getElementById("nrfXlm").value = frac(xlm);
+		document.getElementById("nv").value = nv;
+		vernSpan = msDist - xlm;
+		document.getElementById("vernSpan").value = vernSpan;
+		
+	}
+	
+}
+
+function custom() {
+		
+		var xlv = 0;
+		// get input via dialog box and put in tdv
+		vernSpan = document.getElementById("vSpan2").value;
+		xlv = vernSpan/nv;
+		document.getElementById("xlv").value = xlv;
+		document.getElementById("nrfXlv").value = frac(xlv);
+}
+
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+
+<h1>Making Links</h1>
+<br/>
+<h3 class='minor'>from marv klotz</h3>
+<blockquote cite="http://www.myvirtualnetwork.com/mklotz/#help">	We've all used vernier calipers.  Isn't it clever how a second scale
+sliding next to the primary scale can allow one to read a measurement to a
+precision (not the same as accuracy!) smaller than that of the primary scale?</blockquote>
+
+<blockquote>I wanted to have this capability on a tool I built and so had to think
+out the process of designing verniers.  I don't do this often so I'd probably
+forget the process by the next time I needed to do it.  Not only does a program
+simplify the process of doing the calculations, it serves as a memory for what
+is needed and how the computations should be done.  Design it carefully once
+and you'll never have to rethink the problem.</blockquote>
+
+<blockquote>An example is the best way to describe the operation of the program.
+We'll use the defaults that are wired into the program as our example.</blockquote>
+
+<blockquote>Suppose you have a ruler marked off in inches.  Each inch is
+subdivided into eighths of an inch.  You'd like to build a sliding vernier
+that moves along this ruler and allows you to measure motion to the nearest
+thirty-second of an inch.  How long does the vernier scale need to be and
+how should it be subdivided to accomplish this?</blockquote>
+
+<blockquote>Run the program and get the following output (my comments, indicated
+below <em>[used italics instead]</em> with the brackets '/*  */' are not part of the program output).
+</blockquote>
+
+<br/>
+<hr/>
+<br/>
+<h3>Vernier Example: eighths</h3>
+ 
+<ul>
+	<li>default = 1.000000</li>
+	<li>{[d].dd or [d-]d/d (e.g. 1.5 or 1-1/2)}</li>
+	<li>distance spanned by one major division on main scale ?</li>
+	<li class=comment>The main scale has major divisions every inch</li>
+	<li>number of subdivisions of one major division on main scale [8] ?</li>
+	<li class=comment>and each inch is divided into eight subdivisions.</li>
+</ul>
+ 
+<ul>
+	<li>default = 0.031250</li>
+	<li>{[d].dd or [d-]d/d (e.g. 1.5 or 1-1/2)}</li>
+	<li>distance measured by one division on vernier scale ?</li>
+	<li class=comment>We'd like to measure thirty-seconds on the vernier.</li>
+	<li>Nearest Rational Fraction = 1/32</li>
+	<li class=comment>The program reports rational fractions for convenience. You can ignore this 
+	output if it's not relevant to your problem.</li>
+</ul>
+ 
+<ul>
+	<li>distance spanned by one division on main scale = 0.1250</li>
+	<li>Nearest Rational Fraction = 1/8</li>
+	<li class=comment>Program echoes input data</li>
+	<li>number of subdivisions required on vernier scale = 4</li>
+	<li class=comment>and tells you to divide the vernier scale into four (presumed equal) divisions.</li>
+</ul>
+ 
+<ul>
+	<li>a typical vernier scale would span a distance of 0.8750</li>
+	<li class=comment>The recommended total length of the vernier scale,</li>
+	<li>distance spanned by vernier scale [0.875] ?</li>
+	<li class=comment>but you can use any value that suits you - a longer scale may be easier
+	to subdivide accurately or you may have space constraints in your project
+	that prohibit using the 'typical' value.</li>
+</ul>
+ 
+<ul>
+	<li>distance spanned by one division on vernier scale = 0.2188</li>
+	<li>Nearest Rational Fraction = 7/32</li>
+	<li class=comment>Dividing a 7/8 long vernier scale into four divisions means that each
+	division is 7/32 in length.</li>
+</ul>
+<hr/>
+<h3>Vernier Example: tenths</h3>
+<p>Suppose our 1.0 major division were subdivided into tenths and we
+wanted to use the vernier to measure to the nearest 0.01.</p>
+ 
+<ul>
+	<li>default = 1.000000</li>
+	<li>{[d].dd or [d-]d/d (e.g. 1.5 or 1-1/2)}</li>
+	<li>distance spanned by one major division on main scale ?</li>
+	<li>number of subdivisions of one major division on main scale [8] ? 10</li>
+</ul>
+
+<ul> 
+	<li>default = 0.031250</li>
+	<li>{[d].dd or [d-]d/d (e.g. 1.5 or 1-1/2)}</li>
+	<li>distance measured by one division on vernier scale ? .01</li>
+	<li>Nearest Rational Fraction = 1/100</li>
+</ul>
+
+<ul> 
+	<li>distance spanned by one division on main scale = 0.1000</li>
+	<li>Nearest Rational Fraction = 1/10</li>
+	<li>number of subdivisions required on vernier scale = 10</li>
+</ul>
+
+<ul> 
+	<li>a typical vernier scale would span a distance of 0.9000</li>
+	<li>distance spanned by vernier scale [0.9] ?</li>
+</ul>
+ 
+<ul>
+	<li>distance spanned by one division on vernier scale = 0.0900</li>
+	<li>Nearest Rational Fraction = 9/100</li>
+</ul>
+
+<hr/>
+
+<p>Note that the program makes no assumption about the units of the
+quantities input.  You can design verniers for metric scales just as easily as
+for English scales, so long as you're consistent about your inputs.</p>
+
+<br/>
+<hr/>
+
+<h3>Vernier Design</h3>
+<fieldset>
+	<legend>Input the following parameters:</legend>
+		<label for="msDist">Distance spanned by one major division on main scale</label>
+		<input id="msDist" placeholder="1.0" autofocus><br/>
+		<label for="numSubsMain">Number of subdivisions of one major division on main scale</label>
+		<input id="numSubsMain" placeholder="8"><br/>
+		<label for="vernDist">Distance measured by one division on vernier scale Format: 1.03125 or 1-1/32 </label>
+		<input id="vernDist" placeholder="1/32"><br/>
+		<input type="button" value="Calculate Vernier Parameters" onclick="getInput()"/>
+</fieldset>
+<br/>
+<hr/>
+<br/>
+<fieldset>
+	<legend>Vernier Scale Parameters</legend>
+		<label for="nrfDel">Nearest rational fraction for vernier subdivision</label>
+		<input id="nrfDel" readOnly = "True"><br/>
+		<label for="xlm">Distance spanned by one division on main scale</label>
+		<input id="xlm" readOnly = "True"><br/>
+		<label for="nrfXlm">Nearest rational fraction for main subdivision</label>
+		<input id="nrfXlm" readOnly = "True"><br/>
+		<label for="nv">Number of subdivisions required on vernier scale</label>
+		<input id="nv" readOnly = "True"><br/>
+		<label for="vernSpan">Typical vernier scale would span a distance of</label>
+		<input id="vernSpan" readOnly = "True"><br/>
+</fieldset>
+<fieldset>
+	<legend>Custom Vernier: Enter Preferred Scale Size</legend>
+		<label for="vSpan2">Distance spanned by vernier scale</label>
+		<input id="vSpan2"><br/>
+		<label for="xlv">Distance spanned by one division on vernier scale</label>
+		<input id="xlv" readOnly = "True"><br/>
+		<label for="nrfXlm">Nearest rational fraction for vernier subdivision</label>
+		<input id="nrfXlv" readOnly = "True"><br/>
+		<input type="button" value="Determine Custom Dimension" onclick="custom()"/>
+</fieldset>
+<footer>
+<p>Based on LVERN.C at Marv Klotz's <a href="http://www.myvirtualnetwork.com/mklotz/#help">metalworking utilities.</a></p>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>August 16, 2016</p>
+</footer>
+</body>
+
+</html>
