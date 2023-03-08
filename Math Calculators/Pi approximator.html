@@ -1,0 +1,414 @@
+<html>
+<head>
+<title>Approximating &pi;</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+// Global variables
+
+var centerX = 300;			// center of circle on drawing canvas
+var centerY = 300;
+var radius = 275;			// radius of circle on drawing canvas
+
+var Canvas;					// need a place to store the canvas
+var Context;				// need a place to store the context
+
+
+window.onload = function()
+{	
+	var canvas = document.getElementById("drawingCanvas");
+	var context = canvas.getContext("2d");
+
+	context.lineWidth = 2;
+	
+	//	Square
+	context.beginPath();
+	context.moveTo(centerX - radius,centerY - radius);
+	context.lineTo(centerX + radius,centerY - radius);
+	context.stroke();
+	
+	context.beginPath();
+	context.moveTo(centerX + radius,centerY - radius);
+	context.lineTo(centerX + radius,centerY + radius);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(centerX + radius,centerY + radius);
+	context.lineTo(centerX - radius,centerY + radius);
+	context.stroke();
+
+	context.beginPath();
+	context.moveTo(centerX - radius,centerY + radius);
+	context.lineTo(centerX - radius,centerY - radius);
+	context.stroke();
+
+	//	Circle
+	context.beginPath();
+	context.arc(centerX, centerY, radius, 1.01 * Math.PI, 1.00 * Math.PI);
+	context.stroke();
+	
+	Canvas = canvas;
+	Context = context;
+
+}							// end of drawing
+
+function drawPt(x,y)
+{
+	// first need to normalize x and y
+	x = x*(radius*2)/100000 + 25;
+	y = y*(radius*2)/100000 + 25;
+	
+	Context.lineWidth = 1;
+	
+	Context.beginPath();
+	Context.moveTo(x,y)
+	Context.lineTo(x+1,y+1);
+	Context.stroke();
+}
+
+
+function approximate() {
+
+	var limit = parseInt(document.getElementById("limit").value);
+	var cirPtTracker = 0;	// tracks total points in circle
+	var hyp = 0;			// distance of random pt from circle center
+	var approxPi = 0;
+	var err = new Number(0);
+	
+	// define a square and inscribed circle
+	// need loop generating random points and determine which are in circle
+	
+	var rad = 50000;		// radius of inscribed circle
+							// square defined by points (0,0) and (100000,100000)
+	var randX = 0;
+	var randY = 0;
+							
+	for (var i = 1; i <= limit; i++)	// generate points and count those in circle
+	{
+		randX = Math.floor(Math.random() * 2 * rad);	// gives integer 0-100,000
+		randY = Math.floor(Math.random() * 2 * rad);
+		
+		drawPt(randX,randY);
+		
+		randX = randX - rad;		// normalize the points to the circle center
+		randY = randY - rad;
+		
+		hyp = Math.sqrt(randX * randX + randY * randY);
+		
+		if (hyp <= rad)
+		{
+			cirPtTracker++;
+		}
+	}
+	
+	approxPi = 4 * cirPtTracker / limit;
+	
+	document.getElementById("pic").value = cirPtTracker;
+	document.getElementById("approx").value = approxPi;
+	err = Math.abs(100 * (Math.PI - approxPi) / Math.PI);
+	
+	document.getElementById("error").value = err.toPrecision(3);
+	
+} //end of function, approximate
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Approximating <em>&pi;</em> By The Ratio of Areas
+</h1>
+	
+<p>
+	This is a unique way to approximate &pi; by using the ratio of a circle's area and 
+	the area of the square it is inscribed in. If <em>r</em> is 1/2 of the side of a 
+	square then the formulas for the area of the square and the area of the inscribed 
+	circle are:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<msub>
+			<mi>A</mi>
+			<mi>&#x25A1;</mi>
+		</msub>
+		<mo>=</mo>
+		<mn>4</mn>
+		<msup>
+			<mi>r</mi>
+			<mn>2</mn>
+		</msup>
+	</mrow>
+</math>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<msub>
+			<mi>A</mi>
+			<mi>&#x25CB;</mi>
+		</msub>
+		<mo>=</mo>
+		<mi>&pi;</mi>
+		<msup>
+			<mi>r</mi>
+			<mn>2</mn>
+		</msup>
+	</mrow>
+</math>
+
+<p>
+	The areas of the circle and the square can be approximated by randomly choosing 
+	points within the square and determining which fall also in the circle. The ratio 
+	of those points that fall in the circle to the total number of points (i.e. those 
+	falling in the square) leads to our approximation of <em>&pi;</em>.
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<msub>
+				<mi>A</mi>
+				<mi>&#x25CB;</mi>
+			</msub>
+			<msub>
+				<mi>A</mi>
+				<mi>&#x25A1;</mi>
+			</msub>
+		</mfrac>
+		<mo>=</mo>
+		<mfrac>
+			<mrow>
+				<mi>&pi;</mi>
+				<msup>
+					<mi>r</mi>
+					<mn>2</mn>
+				</msup>
+			</mrow>
+			<mrow>
+				<mn>4</mn>
+				<msup>
+					<mi>r</mi>
+					<mn>2</mn>
+				</msup>
+			</mrow>
+		</mfrac>
+	</mrow>
+</math>
+<br/>
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mn>4</mn>
+		<mfrac>
+			<msub>
+				<mi>A</mi>
+				<mi>&#x25CB;</mi>
+			</msub>
+			<msub>
+				<mi>A</mi>
+				<mi>&#x25A1;</mi>
+			</msub>
+		</mfrac>
+		<mo>=</mo>
+		<mi>&pi;</mi>
+	</mrow>
+</math>
+
+<canvas id="drawingCanvas" width="800" height="600"></canvas>
+
+<p class=note>
+	Enter the number of points for the calculator to return an approximation of 
+	<em>&pi;</em>. Reload the page to clear previous run's dots.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter the number of points to be chosen and hit the button:</legend>
+		<label for="limit">Number of Points</label>
+		<input type="text" id="limit" placeholder="2431" autofocus><br/>
+		<br/>
+		<input type="button" value="Approximate &pi;" onclick="approximate()"/>
+		<br/>
+		<br/>
+		<label for="pic">Points Inside Circle</label>
+		<input type="text" id="pic" readOnly="True"><br/>
+		<label for="approx">Approximation (<em>&pi;</em> = 3.14159265358979)</label>
+		<input type="text" id="approx" readOnly="True"><br/>
+		<label for="error">Percent Error</label>
+		<input type="text" id="error" readOnly="True"><br/>
+</fieldset>
+
+<p class=note>
+	There is a bug in Safari's implementation of JavaScript. When the program is run 
+	for any limit greater than about 20,000 (after reloading the page) the answer 
+	provided is 3. For values close to this limit repeated runs will eventually start 
+	producing correct answers. For higher values (>100,000) the incorrect value is 
+	always shown. This behaviour is not seen when the debugger is open and is not seen 
+	in Firefox. This error was fixed in one of the many Safari updates between Jan 2018 
+	and Oct 2019.
+</p>
+
+<br/>
+<hr />
+<br/>
+
+<div>
+
+</div>
+
+<br/>
+<hr/>
+
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 27, 2018</p>
+</footer>
+</html>

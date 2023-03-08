@@ -1,0 +1,374 @@
+<html>
+<head>
+<title>Prime Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+
+function isItPrime(n)	// separate numbers into digits and then compute the result
+						// keep factorions in a list to return to calling function
+{
+	var j;
+	var flag = 1;
+	
+	if (n % 2 == 0)
+	{
+		flag = 0;
+	}
+	
+	if (n == 2)
+	{
+		flag = 1;
+	}
+	
+	for (j=3; j<=Math.floor(Math.sqrt(n)); j+=2 )
+	{
+		if (n % j == 0)
+		{
+			flag = 0;
+			break;
+		}
+	}
+	
+	if (flag)
+	{
+		return 1;
+	}
+	else 
+	{
+		return 0;
+	}
+	
+} // end isItPrime 
+
+function calcPrimality() {
+
+	const n = parseInt(document.getElementById("n").value);
+	const singleOrList = document.getElementById("singleSeq").value;
+	const div = document.getElementsByTagName("div")[0];
+
+	switch (singleOrList)
+	{
+		case "C":
+			let result = "";
+			if (isItPrime(n))
+			{
+				result = n + " is Prime."
+			}
+			else
+			{
+				result = n + " is not Prime."
+			}
+			document.getElementById("prime").value = result;
+			break;
+		case "L":
+			let list = "2, 3";
+			let tot = 2;
+		
+			for (let i = 5; i <= n; i += 2 )
+			{
+				if (isItPrime(i))	// add it to the list
+				{
+					list = list + ", " + i;
+					tot = tot + 1;
+				}
+			}
+	
+			document.getElementById("prime").value = "Number of primes < or = " + n + " is " + tot + ".";
+			div.innerHTML = list;
+			break;
+	} // end switch
+
+} //end of function
+
+function calcPrimeGen()
+{
+	const n = parseInt(document.getElementById("lim").value);
+	const div = document.getElementsByTagName("div")[0];
+	let list = "";
+	let tot = 0;
+	let x = 0;
+	
+	for ( let i = 1; i <= n; i ++ )
+		{
+			x = Math.pow(i,2) - i + 41;
+			if (isItPrime(x))	// add it to the list
+			{
+				list = list + ", " + x;
+				tot = tot + 1;
+			}
+		}
+	
+		document.getElementById("percent").value = "Percentage of primes = " + 100*tot/n + ".";
+		
+		const len = list.length;
+		list = list.slice(2,len);
+		div.innerHTML = list;
+}	// end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Prime Number Calculator
+</h1>
+
+<p>
+	The natural numbers with only two divisors are called the primes. The largest known 
+	prime is 2<sup>82589933</sup> - 1 discovered on December 21, 2018. This is a 
+	Mersenne prime of the form M<sub>p</sub> = 2<sup>p</sup> - 1. 
+</p>
+
+<p>	
+	The calculator returns either a list of primes up to the limit input by the user or 
+	checks to see whether the number input is prime. 
+</p>
+
+<p class=note>
+	The limit is based solely on your patience. A limit of 1,000,000 takes about a 
+	second to calculate. But scrolling through the list of 78,498 primes takes 
+	significantly longer.
+</p>
+
+<p>
+	An interesting prime generating equation is the following:
+	
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<mi>f</mi>
+			<mo>(</mo>
+			<mi>n</mi>
+			<mo>)</mo>
+			<mo>=</mo>
+			<msup>
+				<mi>n</mi>
+				<mn>2</mn>
+			</msup>
+			<mo>-</mo>
+			<mi>n</mi>
+			<mo>+</mo>
+			<mn>41</mn>
+		</mrow>
+	</math>
+
+	For all <math xmlns='http://www.w3.org/1998/Math/MathML' display='inline'>
+	<mi>n</mi>
+	<mo>&#x2264;</mo>
+	<msup>
+		<mn>10</mn>
+		<mn>6</mn>
+	</msup>
+	</math>
+	22% of all <math xmlns='http://www.w3.org/1998/Math/MathML' display='inline'>
+	<mrow>
+		<mi>f</mi>
+		<mo>(</mo>
+		<mi>n</mi>
+		<mo>)</mo>
+	</mrow>
+	</math> are prime. The second input box will calculate these primes up to the 
+	specified limit.
+</p>
+
+<p class=note>
+	A limit of 100,000 takes about 40 seconds to calculate as many of the primes 
+	found by the equation are quite large, e.g. the largest: 9,999,100,061.
+</p>
+
+<p>
+	Of interest is the following prime, 357686312646216567629137. It is the longest 
+	left-truncatable prime: you always get a prime no matter how many leading digits 
+	you remove.
+</p>
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a limit and hit the button:</legend>
+		<label for="n">Limit</label>
+		<input type="text" id="n" placeholder="10" autofocus><br/>
+		<label for="singleSeq">Select either check or list:</label>
+		<select name="singleSeq" id="singleSeq">
+			<option value="C" selected>Check for primality</option>
+			<option value="L">List primes to limit</option>
+		</select><br/>
+		<br/>
+		<input type="button" value="Calculate Primes" onclick="calcPrimality()"/>
+		<br/>
+		<br/>
+		<label for="prime">Is It Prime?</label>
+		<input type="text" name="prime" id="prime" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<fieldset>
+	<legend>Prime generator function</legend>
+		<label for="lim">Limit</label>
+		<input type="text" id="lim" placeholder="10"><br/>
+		<br/>
+		<input type="button" value="Generate Primes via Equation" onclick="calcPrimeGen()"/><br/><br/>
+		<label for="percent">Percent primes</label>
+		<input type="text" name="percent" id="percent" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 14, 2018</p>
+</footer>
+</html>

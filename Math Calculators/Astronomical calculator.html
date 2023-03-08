@@ -1,0 +1,678 @@
+<html>
+<head>
+<title>Astronomical Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	img.inline {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 45%;
+		width: 65%;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+// Button functions
+
+function getEasterInput() {
+
+	const year = document.getElementById("easterYr").value;
+	
+	// var div = document.getElementsByTagName("div")[0];
+
+	const output = astro.calcEaster(year);
+	
+	document.getElementById("easDate").value = output;
+	
+// 	const dateArray = output.split(' '); // dateArray[0] = mnth
+// 	const mnth = astro.resolveMonthFmNum(dateArray[0]);		// returns month number
+// 	const day = dateArray[1].slice(0,dateArray[1].length-1);	// returns day
+// 	let easDate = new Date(year, mnth, day)
+// 	const easTime = parseInt(easDate.getTime());
+// 	const passTime = easTime - (24*3600*1000);
+// 	const passDate = new Date(passTime);
+
+	const passTime = astro.calcPassover(parseInt(year));
+	document.getElementById("passDate").value = passTime;
+
+}
+
+function getDOYInput() {
+	const dayMon = document.getElementById("monthDay").value;
+	
+	const leapYr = document.getElementById("leapYr").value;
+	
+	let output = astro.calcMonDay(dayMon);
+	
+	if (leapYr == "Y") {
+		output++;
+	}
+	
+	document.getElementById("doy").value = output;
+}
+
+function getJulianDay() {
+	const ymd = document.getElementById("ymd").value;
+	
+	let output = parseFloat(astro.calcJDfmLocal(ymd));
+	
+	document.getElementById("jd").value = astro.beautifyNum(output);
+	
+}
+
+function getGregorianDate() {
+	const jd = parseFloat(document.getElementById("juld").value);
+	
+	const output = astro.calcGD(jd);
+	
+	document.getElementById("gd").value = output;
+	
+}
+
+function getGreenDateTime()
+{
+	const localDT = document.getElementById("localDT").value;
+	
+	const inputDate = new Date(localDT);
+	const outputDate = inputDate.toUTCString();
+	
+	document.getElementById("gdt").value = outputDate;
+	
+}
+
+function getLocalDateTime()
+{
+	const greenDT = document.getElementById("greenDT").value;
+	
+	let outputDate = astro.gmtToLocal(greenDT);
+	
+	document.getElementById("ldt").value = outputDate;
+	
+}
+
+function getGST()
+{
+	const ut = document.getElementById("ut").value;
+	
+	let outputGST = astro.utToGST(ut);
+	const gstStr = outputGST[0] + "h " + outputGST[1] + "m " + outputGST[2] + "." + outputGST[3] + "s";
+	
+	document.getElementById("gst").value = gstStr;
+}
+
+function getUTfmGST()
+{
+	const gst = document.getElementById("fmGst").value;
+	
+	let outputUT = astro.gstToUT(gst);
+	
+	document.getElementById("toUt").value = outputUT;
+}
+
+function getLSTfmGST()
+{
+	const gst = document.getElementById("fmGST").value;
+	const longitude = document.getElementById("long").value;
+	
+	let outputLST = astro.gstToLST(gst,longitude);
+	const lstStr = outputLST[0] + "h " + outputLST[1] + "m " + outputLST[2] + "." + outputLST[3] + "s";
+	
+	document.getElementById("toLST").value = lstStr;
+}
+
+function getGSTfmLST()
+{
+	const lst = document.getElementById("fmLST").value;
+	const longitude = document.getElementById("longit").value;
+	
+	let outputGST = astro.lstToGST(lst,longitude);
+	
+	const gstStr = outputGST[0] + "h " + outputGST[1] + "m " + outputGST[2] + "." + outputGST[3] + "s";
+
+	
+	document.getElementById("toGST").value = gstStr;
+	
+}
+
+// -->
+</script>
+<script src="Astro.js"></script>
+
+</head>
+
+<body>
+<h1>
+	Astronomical Calculator 1: Time
+</h1>
+<h2>A Long List of Time Calculations</h2><br />
+
+<p>
+	Taken from "Practical Astronomy With Your Calculator or Spreadsheet" 4th ed. by 
+	P. Duffett-Smith and J. Zwart.
+</p>
+
+<h3 class="minor">Dates of Easter & Passover</h3>
+<p>
+	The first calculator computes the day Easter falls in any given year after 1582. This 
+	was the year that Pope Gregory XIII implemented his improvements on the Julian 
+	calendar. [Specifically, he dropped 10 days in October 1582 from the calendar and 
+	decreed that century years are only leap years if divisible 400.] By careful 
+	management of leap years the Gregorian calendar has an average length of year equal 
+	to 365.2425 days versus the Tropical year's 365.2422 days. The first day of 
+	Passover is 15 Nisan and is converted to the Gregorian Date below based on a formula 
+	by <a href="https://en.m.wikibooks.org/wiki/Mathematics_of_the_Jewish_Calendar/Gauss'_Formula_for_the_Date_of_Pesach">Gauss</a>. 
+</p>
+
+<p class="note">
+	Purim is Pesach - 30 days and Rosh Hashana is Pesach + 163 days.
+</p>
+
+<fieldset>
+	<legend>Enter a Year and hit Calculate Easter & Passover:</legend>
+		<label for="easterYr">Year</label>
+		<input type="text" id="easterYr" placeholder="2020" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate Easter & Passover" onclick="getEasterInput()"/>
+		<br/>
+		<br/>
+		<label for="easDate">Date of Easter</label>
+		<input type="text" name="easDate" id="easDate" value="" size="25"/><br />
+		<label for="passDate">Date of Passover</label>
+		<input type="text" name="passDate" id="passDate" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Day of Year</h3>
+
+<p>
+	In many astronomical calculations, we need to know the number of days in the year 
+	up to a particular date. We shall choose our starting point as 0 hours on 0 January, 
+	equivalent to the midnight between 30 and 31 December of the previous year. This 
+	might seem to be a peculiar choice, but you will see that it simplifies our 
+	calculations so is a good one to make. Midday on 3 January can then be expressed as 
+	January 3.5 since precisely three and a half days have elapsed since January 0.0.
+</p>
+
+<fieldset>
+	<legend>Enter a Month and Day, then hit Calc Day of Year:</legend>
+		<label for="monthDay">Month & Day</label>
+		<input type="text" id="monthDay" placeholder="September 4" autofocus><br/>
+		<label for="leapYr">Leap Year? (Yes or No):</label>
+		<select name="leapYr" id="leapYr">
+			<option value="N" selected>No</option>
+			<option value="Y">Yes</option>
+		</select><br/>
+		<br/>
+		<input type="button" value="Calc Day of Year" onclick="getDOYInput()"/>
+		<br/>
+		<br/>
+		<label for="doy">Day of Year</label>
+		<input type="text" name="doy" id="doy" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Julian Day from Gregorian Date</h3>
+<p>
+	It is sometimes necessary to express an instant of observation as so many days and a 
+	fraction of a day after a given fundamental epoch. Astronomers have chosen this 
+	fundamental epoch as the Greenwich mean noon of 1 January 4713 BCE, that is midday 
+	as 	measured on the Greenwich meridian on 1 January of that year. The number of days 
+	that have elapsed since that time is referred to as the Julian day number, or Julian 
+	date. For astronomical purposes, we want to count the years logically without the 
+	one year gap introduced with 1 BCE & 1 CE. Thus the year immediately preceding 1 CE 
+	is designated 0; the other years BCE are denoted by negative numbers, each of which 
+	has an absolute value which is one less than the BCE value. Thus 10 BCE corresponds 
+	to the astronomical year -9, and 4713 BCE corresponds to -4712.
+</p>
+
+<p>
+	The calculator below uses the local date/time you input and first converts it to 
+	UTC, that is the time at the Greenwich meridian. This time is then converted to the 
+	Julian date. If you desire to enter time as well as the date, it must be entered as 
+	a decimal part of the day, e.g. 4.75 would be the 4th at 18:00 (or 6 pm).
+</p>
+
+<fieldset>
+	<legend>Enter a Year, a Month and a Day, then hit Calc Julian Day:</legend>
+		<label for="ymd">Year, Month & Day</label>
+		<input type="text" id="ymd" placeholder="1955 September 4.25" autofocus><br/>
+		<br/>
+		<input type="button" value="Calc Julian Day" onclick="getJulianDay()"/>
+		<br/>
+		<br/>
+		<label for="jd">Julian Day</label>
+		<input type="text" name="jd" id="jd" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Gregorian Date from Julian Day</h3>
+
+<p>
+	It is sometimes necessary to convert a given Julian date into its counterpart in 
+	the Gregorian calendar, i.e. the calendar date at Greenwich. The method shown here 
+	works for all dates from 1 January 4713 BC. 
+</p>
+
+<fieldset>
+	<legend>Enter a Julian day, then hit Calc Gregorian Date:</legend>
+		<label for="juld">Month & Day</label>
+		<input type="text" id="juld" placeholder="2435354.667" autofocus><br/>
+		<br/>
+		<input type="button" value="Calc Gregorian Date" onclick="getGregorianDate()"/>
+		<br/>
+		<br/>
+		<label for="gd">Gregorian Date</label>
+		<input type="text" name="gd" id="gd" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Greenwich Date & Time from Local Date & Time</h3>
+
+<p>
+	This calculator uses the built-in functions in JavaScript to make this conversion. 
+</p>
+
+<fieldset>
+	<legend>Enter local date and time, then hit Calc Greenwich Date/Time:</legend>
+		<label for="localDT">Local Date and Time</label>
+		<input type="text" id="localDT" placeholder="September 4, 1955 13:30:30" autofocus><br/>
+		<br/>
+		<input type="button" value="Calc Greenwich Date/Time" onclick="getGreenDateTime()"/>
+		<br/>
+		<br/>
+		<label for="gdt">Greenwich Date & Time</label>
+		<input type="text" name="gdt" id="gdt" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Local Date & Time from Greenwich Date & Time</h3>
+
+<p>
+	Again the built-in functions in JavaScript make this conversion simple. In the entry 
+	field separate each date value by a space and each time value by a colon as shown by 
+	the placeholder.
+</p>
+
+<fieldset>
+	<legend>Enter Greenwich date and time, then hit Calc Local Date/Time:</legend>
+		<label for="greenDT">Greenwich Date and Time</label>
+		<input type="text" id="greenDT" placeholder="1955 September 4 13:30:30" autofocus><br/>
+		<br/>
+		<input type="button" value="Calc Greenwich Date/Time" onclick="getLocalDateTime()"/>
+		<br/>
+		<br/>
+		<label for="ldt">Local Date & Time</label>
+		<input type="text" name="ldt" id="ldt" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3>Sidereal Time</h3>
+
+<p>
+	Universal time (UT), and therefore the local civil time in any part of the world, 
+	is related to the apparent motion of the Sun around the Earth. Roughly speaking, 
+	we may take 1 solar day as the time between two successive passages of the Sun 
+	across the meridian as observed at a particular place. Astronomers are interested, 
+	however, in the motion of the stars; in particular they need to use a clock whose 
+	rate is such that any star is observed to return to the same position in the sky 
+	after exactly 24 hours have elapsed according to the clock. Such a clock is called 
+	a sidereal clock and its time, being regulated by the stars, is called sidereal 
+	time (ST). Solar time, of which UT is an example, is not the same as sidereal time 
+	because during the course of 1 solar day the Earth moves nearly 1 degree along its 
+	orbit round the Sun. Hence, the Sun appears progressively displaced against the 
+	background of stars when viewed from the Earth; turning that around, the stars 
+	appear to move with respect to the Sun. Any clock, therefore, which keeps time by 
+	the Sun does not do so by the stars.
+</p>
+
+<p>
+	There are about 365.25 solar days in the year, the time taken by the Sun to return 
+	to the same position with respect to the background of stars. During this period, 
+	the Earth makes about 366.25 revolutions around its own axis; there are therefore 
+	this many sidereal days in the year. Each sidereal day is thus slightly shorter than 
+	the solar day, 24 hours of sidereal time corresponding to 23h 56m 04s of solar time. 
+	Universal time and Greenwich sidereal time agree at one instant every year at the 
+	autumnal equinox (around 22 September). Thereafter, the difference between them 
+	grows in the sense that sidereal time runs faster than universal time, until exactly 
+	half a year later the difference is 12 hours. After 1 year, the times again agree. 
+	The formal definition of sidereal time is that it is the hour angle of the vernal 
+	equinox.
+</p>
+
+<h3 class="minor">Conversion of UT to Greenwich Sidereal Time (GST)</h3>
+
+<p>
+	The following calculator is accurate to 0.1 second. If minutes and/or seconds are 
+	0, then enter zero's between colons as needed.
+</p>
+
+<fieldset>
+	<legend>Enter Universal date and time, then hit Calc GST:</legend>
+		<label for="ut">Greenwich Date and Time</label>
+		<input type="text" id="ut" placeholder="1955 September 4 13:30:30.35" autofocus><br/>
+		<br/>
+		<input type="button" value="Calc GST" onclick="getGST()"/>
+		<br/>
+		<br/>
+		<label for="gst">Greenwich Sidereal Time</label>
+		<input type="text" name="gst" id="gst" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Conversion of Greenwich Sidereal Time to Universal Time (GST to UT)</h3>
+
+<p>
+	Here we deal with the reverse problem of the previous section, namely that of 
+	converting a given GST into the corresponding UT. The problem is complicated, 
+	however, by the fact that the sidereal day is slightly shorter than the solar 
+	day so that on any given calendar date a small range of sidereal times occurs 
+	twice. This range is about 3m 56s long, the sidereal times corresponding to UT 0h 
+	to 0h 3m 56s occurring again from UT 23h 56m 04s to midnight. The method given 
+	here correctly converts sidereal times in the former interval, but not in the 
+	latter.
+</p>
+
+<fieldset>
+	<legend>Enter Greenwich Sidereal date and time, then hit Calc UT:</legend>
+		<label for="fmGst">Greenwich Sidereal Date and Time</label>
+		<input type="text" id="fmGst" placeholder="1955 September 4 13:30:30.35" autofocus><br/>
+		<br/>
+		<input type="button" value="Calc UT" onclick="getUTfmGST()"/>
+		<br/>
+		<br/>
+		<label for="toUt">Greenwich Time</label>
+		<input type="text" name="toUt" id="toUt" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Conversion of Greenwich Sidereal Time to Local Sidereal Time (GST to LST)</h3>
+
+<p>
+	The Greenwich sidereal time discussed in the previous sections is the sidereal time 
+	correct for observations made on the Greenwich meridian, longitude 0&deg;. It is in 
+	fact the local sidereal time (LST) for the Greenwich meridian. As you move west or 
+	east from longitude 0&deg;, however, the local sidereal time gets earlier or later 
+	respectively because the hour angle of the vernal equinox, which defines the local 
+	sidereal time, changes. You can calculate your local sidereal time, given the 
+	Greenwich sidereal time, very easily as the difference between the two times in 
+	hours is simply the geographical longitude in degrees divided by 15. Longitudes 
+	west give local sidereal times earlier than GST, and longitudes east later. You 
+	should express longitudes E as positive numbers, and longitudes W as negative 
+	numbers. 
+</p>
+
+<fieldset>
+	<legend>Enter Greenwich Sidereal time & longitude, then hit Calc LST:</legend>
+		<label for="fmGST">Greenwich Sidereal Time</label>
+		<input type="text" id="fmGST" placeholder="13:30:30.35" autofocus><br/>
+		<label for="long">Longitude</label>
+		<input type="text" id="long" placeholder="-86.166096"><br/>
+		<br/>
+		<input type="button" value="Calc LST" onclick="getLSTfmGST()"/>
+		<br/>
+		<br/>
+		<label for="toLST">Local Sidereal Time</label>
+		<input type="text" name="toLST" id="toLST" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Conversion of Local Sidereal Time to Greenwich Sidereal Time (LST to GST)</h3>
+
+<p>
+	This problem is the reverse of that treated above, namely, given the local sidereal 
+	time at a particular place, what is the corresponding Greenwich sidereal time?
+</p>
+
+<fieldset>
+	<legend>Enter Local Sidereal time & longitude, then hit Calc GST:</legend>
+		<label for="fmLST">Local Sidereal Time</label>
+		<input type="text" id="fmLST" placeholder="13:30:30.35" autofocus><br/>
+		<label for="longit">Longitude</label>
+		<input type="text" id="longit" placeholder="-86.166096"><br/>
+		<br/>
+		<input type="button" value="Calc GST" onclick="getGSTfmLST()"/>
+		<br/>
+		<br/>
+		<label for="toGST">Greenwich Sidereal Time</label>
+		<input type="text" name="toGST" id="toGST" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Ephemeris time (ET) and terrestrial time (TT)</h3>
+
+<p>
+	Universal and sidereal times are both tied directly to the period of the rotation 
+	of the Earth about its polar axis. The Earth is being used in effect as the balance 
+	wheel of a cosmic clock whose tick defines the length of the day. With the advent 
+	of extremely accurate atomic clocks, however, it has become apparent that the Earth's 
+	rotation is not strictly uniform but shows small erratic fluctuations which are not 
+	well understood. UT and ST, being reckoned by this irregular cosmic clock, are 
+	therefore not strictly uniform either. Astronomers need a system of time that is 
+	uniform since the theories of celestial mechanics assume that such a quantity exists. 
+	For example, two solid bodies in orbit about one another far away from any external 
+	influences should have an unchanging orbital period when measured on a regular 
+	clock. Before 1984, astronomers adopted ephemeris time (ET) for this purpose. It 
+	was calculated from the motion of the Moon and assumed to be uniform. Nowadays, 
+	atomic clocks provide the most uniform measure of time, and since 1984 terrestrial 
+	time (TT) has been used instead of ET. (In fact TT was called TDT, for terrestrial 
+	dynamic time, until renamed and slightly redefined by the International Astronomical 
+	Union in 1991.) TT is tied to the atomic time scale, TAI (see Section 9), by the 
+	equation:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>TT</mi>
+		<mo>=</mo>
+		<mrow>
+			<mi>TAI</mi>
+			<mo>+</mo>
+			<mn>32.184</mn>
+			<mtext>s</mtext>
+		</mrow>
+	</mrow>
+</math>
+
+<p>
+	The constant offset of 32.184 seconds was chosen to make TT equal to ET at the 
+	beginning of 1984. ET itself was chosen to agree as nearly as possible with the 
+	measure of universal time during the nineteenth century, and it is unlikely that 
+	TT will differ by more than a few minutes in the twenty-first. The primary unit of 
+	ET was the length of the tropical year at 1900 January 0.5 ET which contained 
+	31,556,925.974 7 ephemeris seconds. The primary unit of TAI, and hence TT, is the 
+	SI second, defined to be the duration of 9,192,631,770 periods of the radiation 
+	corresponding to the transition between two hyperfine levels of the ground state 
+	of the caesium 133 atom. We need not be too concerned by all this since very high 
+	accuracy is not the aim of the book. In almost every case we can take ET = TT = UT 
+	without noticing the difference. Only when calculating the motion of the Moon, and 
+	predicting eclipses (Section 71), will it pay us to take account of the difference 
+	between ET/TT and UT. In January 2010 this was 66.07 seconds, UT being behind TT; 
+	that is:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>TT</mi>
+		<mo>-</mo>
+		<mi>UT</mi>
+		<mo>=</mo>
+		<mi>&Delta;</mi>
+		<mi>T</mi>
+		<mo>=</mo>
+		<mn>66.07</mn>
+		<mtext>s</mtext>
+	</mrow>
+</math>
+
+<p>
+	Below is a graph showing the variation of &Delta;T since 1620.
+</p>
+
+<img class=inline src="Ephemeris time.png" alt="Variation in delta T" width="1472" height="888">
+
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 5, 2018</p>
+</footer>
+</html>

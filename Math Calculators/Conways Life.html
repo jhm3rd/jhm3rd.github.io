@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Game of Life</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="keyway, depth, calculation, metalwork"/>
+	<meta name="description" content="Determine correct dimensions for a keyway"/>
+<script type="text/javascript">
+<!--
+
+
+// Need to create at least three arrays; one for the state of each cell in the grid currently,
+	// one for the next grid state, and one for the coordinates of each cell in the picture.
+	// A two-dimensional array is defined as an array of arrays.
+	// This can be initialized by pushing a new array onto the array.
+	// Is the best way to manage the coordinates by an n-array of n-arrays of 2-arrays?
+	// An alternative is to define a 2-dimensional array that contains a custom defined object.
+		// This object would hold three pieces of info; the state of the cell, the x-coordinate of the cell,
+		// and the y-coordinate of the cell. So only one array contains all of the info.
+		// An instance of this object would be pushed into each cell of the 2-D array.
+		// Don't know if this array and group overhead will slow things down.
+		// Can use every and filter methods to iterate over the array.
+	// An additional alternative is to just use multiple long strings and math to select the correct info.
+	// Thinking about this overnight also brought up the possibility of calculating the coordinates 
+		// from the row and column numbers on the fly. Would this be faster than accessing another array?
+	
+function printStateToScreen(userSize, radius, startingAngle, endingAngle)
+	{	
+		var canvas = document.getElementById("drawingCanvas");
+		var context = canvas.getContext("2d");
+		var i;
+		var j;
+
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.lineWidth = 1;
+
+		for (i = 0; i < userSize; i++) {
+			for (j = 0; j < userSize; j++){
+				centerX = grid[i][j].getxCoord();
+				centerY = grid[i][j].getyCoord();
+	
+
+				// drawing the counter
+				context.beginPath();
+				context.arc(centerX, centerY, radius, startingAngle, endingAngle);
+				if (grid[i][j].getCurState()==1)
+				{
+					context.strokeStyle = "black";
+					context.fillStyle = "black";
+				}
+				else
+				{
+					context.strokeStyle = "white";
+					context.fillStyle = "white";
+				}
+				context.fill();
+				context.stroke();
+	
+			} // end of for j
+		} // end of for i
+	} // end of function printStateToScreen
+	
+	function updateCurNext(userSize)
+	{
+	var i;
+	var j;
+	
+	for (i = 0; i < userSize; i++) {
+		for (j = 0; j < userSize; j++){
+			grid[i][j].setCurState(grid[i][j].getNextState());
+			grid[i][j].setNextState(0); // clear the next state just to be sure
+		}
+	}
+	}
+	function generateNextState(userSize)
+	{
+	var i;
+	var j;
+	for (i = 0; i < userSize; i++) {
+		for (j = 0; j < userSize; j++) {
+			neighbors = 0; // zero neighbors at each pass
+			
+			// have put in the correct logic to wrap these right-left and top-bottom
+			// check for left = 0 and then use cells on right side and to the right (and top and bottom)
+				// need special case for top and bottom cells
+			// check for right = userSize-1 and then use cells on the left side and to the left (and top and bottom)
+			// check for top = 0 and then use cells on bottom side and to the bottom (and left and right)
+			// check for bottom = userSize-1 and then use cells on top side and to the top (and left and right)
+			// 1 2 3
+			// 4    5
+			// 6 7 8
+			
+			if (i==0)
+			{ // cell is on the left side of the grid
+				if (grid[i+1][j].getCurState() == 1) neighbors++; // 5; right
+				if (grid[userSize - 1][j].getCurState() == 1) neighbors++; // 4; far side
+								
+				if (j==0) 
+				{ // top left corner
+					if (grid[userSize - 1][userSize-1].getCurState() == 1) neighbors++; // 1; bottom right		
+					if (grid[i][userSize - 1].getCurState() == 1) neighbors++; // 2; bottom
+					if (grid[i+1][userSize - 1].getCurState() == 1) neighbors++; // 3; bottom	
+
+					if (grid[i+1][userSize-1].getCurState() == 1) neighbors++; // 6; down on right		
+					if (grid[i+1][j].getCurState() == 1) neighbors++; // 7; below
+					if (grid[i+1][j+1].getCurState() == 1) neighbors++; // 8; below right	
+				}
+				else if (j==userSize-1)
+				{ // bottom left corner
+					if (grid[userSize -1][j-1].getCurState() == 1) neighbors++; // 1; above on right side	
+					if (grid[i][j-1].getCurState() == 1) neighbors++; // 2; immediately above
+					if (grid[i+1][j-1].getCurState() == 1) neighbors++; // 3; above and to right	
+
+					if (grid[userSize - 1][0].getCurState() == 1) neighbors++; // 6; up and on right		
+					if (grid[i][0].getCurState() == 1) neighbors++; // 7; top and above
+					if (grid[i+1][0].getCurState() == 1) neighbors++; // 8; top and right	
+				}
+				else 
+				{ // all left side except corners
+					if (grid[userSize-1][j-1].getCurState() == 1) neighbors++; // 1; above and wrap right					
+					if (grid[i][j-1].getCurState() == 1) neighbors++; // 2; just above
+					if (grid[i+1][j-1].getCurState() == 1) neighbors++; // 3; just above right
+
+					if (grid[userSize-1][j+1].getCurState() == 1) neighbors++; // 6; below and wrap right
+					if (grid[i][j+1].getCurState() == 1) neighbors++; // 7; just below
+					if (grid[i+1][j+1].getCurState() == 1) neighbors++; // 8; just right below
+				}
+					
+			} // end if i == 0
+
+			else if (i==userSize-1)
+			{ // cell is on the right side of the grid
+				if (grid[0][j].getCurState() == 1) neighbors++; // 5; on left side
+				if (grid[i-1][j].getCurState() == 1) neighbors++; // 4; just to left
+								
+				if (j==0) 
+				{ // top right corner
+					if (grid[userSize - 2][userSize-1].getCurState() == 1) neighbors++; // 1; wrap to bottom right		
+					if (grid[userSize - 1][userSize-1].getCurState() == 1) neighbors++; // 2; wrap to bottom
+					if (grid[0][userSize - 1].getCurState() == 1) neighbors++; // 3; wrap to left and bottom	
+
+					if (grid[i-1][userSize-1].getCurState() == 1) neighbors++; // 6; down on right		
+					if (grid[i][j+1].getCurState() == 1) neighbors++; // 7;  just below
+					if (grid[0][j+1].getCurState() == 1) neighbors++; // 8; below and wrap right
+				}
+				else if (j==userSize-1)
+				{ // bottom right corner
+					if (grid[i-1][j-1].getCurState() == 1) neighbors++; // 1; above and left	
+					if (grid[i][j-1].getCurState() == 1) neighbors++; // 2; immediately above
+					if (grid[0][j-1].getCurState() == 1) neighbors++; // 3; wrap left and above	
+
+					if (grid[i-1][j-1].getCurState() == 1) neighbors++; // 6; up and on left		
+					if (grid[i-1][0].getCurState() == 1) neighbors++; // 7; left and wrapped to top
+					if (grid[0][0].getCurState() == 1) neighbors++; // 8; wrapped to left and top
+				}
+				else 
+				{ // all right side except corners
+					if (grid[i-1][j-1].getCurState() == 1) neighbors++; // 1; just above and left					
+					if (grid[i][j-1].getCurState() == 1) neighbors++; // 2; just above
+					if (grid[0][j-1].getCurState() == 1) neighbors++; // 3; above and wrap left
+
+					if (grid[i-1][j+1].getCurState() == 1) neighbors++; // 6; below left
+					if (grid[i][j+1].getCurState() == 1) neighbors++; // 7; just below
+					if (grid[0][j+1].getCurState() == 1) neighbors++; // 8; just below wrap left
+				}
+					
+			}
+			else if (j==0 && !(i==0) && !(i==userSize-1))
+			{ // cell is on the top side of the grid but not in a corner
+				if (grid[i+1][j].getCurState() == 1) neighbors++; // 5; right
+				if (grid[i - 1][j].getCurState() == 1) neighbors++; // 4; left
+								
+				if (grid[i-1][userSize-1].getCurState() == 1) neighbors++; // 1; above left	so wrap to bottom				
+				if (grid[i][userSize-1].getCurState() == 1) neighbors++; // 2; above so wrap to bottom
+				if (grid[i+1][userSize-1].getCurState() == 1) neighbors++; // 3; above right so wrap to bottom
+
+				if (grid[i-1][j+1].getCurState() == 1) neighbors++; // 6; below left
+				if (grid[i][j+1].getCurState() == 1) neighbors++; // 7; below
+				if (grid[i+1][j+1].getCurState() == 1) neighbors++; // 8; below right
+					
+			} // end if i == 0
+
+			else if (j==userSize-1 && !(i==0) && !(i==userSize-1))
+			{ // cell is on the bottom side of the grid but not in a corner
+				if (grid[0][j].getCurState() == 1) neighbors++; // 5; on left side
+				if (grid[i-1][j].getCurState() == 1) neighbors++; // 4; far side
+								
+				if (grid[i-1][j-1].getCurState() == 1) neighbors++; // 1; above and left					
+				if (grid[i][j-1].getCurState() == 1) neighbors++; // 2; above
+				if (grid[i+1][j-1].getCurState() == 1) neighbors++; // 3; above and right
+
+				if (grid[i-1][0].getCurState() == 1) neighbors++; // 6; below left
+				if (grid[i][0].getCurState() == 1) neighbors++; // 7; just below
+				if (grid[i+1][0].getCurState() == 1) neighbors++; // 8; just below wrap left
+					
+			}
+			else 
+			{
+				if (grid[i-1][j-1].getCurState() == 1) neighbors++; //left above
+				if (grid[i-1][j].getCurState() == 1) neighbors++; //left
+				if (grid[i-1][j+1].getCurState() == 1) neighbors++; //left below
+				if (grid[i][j-1].getCurState() == 1) neighbors++; //above
+				if (grid[i][j+1].getCurState() == 1) neighbors++; //below
+				if (grid[i+1][j-1].getCurState() == 1) neighbors++; //right above
+				if (grid[i+1][j].getCurState() == 1) neighbors++; //right
+				if (grid[i+1][j+1].getCurState() == 1) neighbors++; //right below
+			}
+			// var now = grid[i][j].getCurState();
+			if (grid[i][j].getCurState()==1)
+			{ // has counter
+				if (!(neighbors == 2 || neighbors == 3)) {
+					grid[i][j].setNextState(0);		// too few or too many neighbors so counter vanishes		
+				}
+				else {
+					grid[i][j].setNextState(1); // counter remains
+				}
+			} // end if
+			else 
+			{ // does not currently have a counter
+				if (neighbors == 3) {
+					grid[i][j].setNextState(1); // if exactly three neighbors around an empty cell then new counter
+				}
+				else {
+					grid[i][j].setNextState(0);
+				}
+			} // end else
+		} // end of j for loop
+	} // end of i for loop
+	} // end of function generateNextState
+	
+function playOneIter(userSize, radius, startingAngle, endingAngle)
+{
+		generateNextState(userSize);
+		printStateToScreen(userSize, radius, startingAngle, endingAngle);
+		updateCurNext(userSize);
+
+}
+
+function runLife()
+{
+	var userSize = parseInt(document.getElementById("gridSize").value);
+	var centerX = 0;
+	var centerY = 0;
+	var startingAngle = 0;
+	var endingAngle = 2 * Math.PI;
+	
+
+// define the reference type (constructor, methods, and properties) for the CellData object.
+
+function CellData (xCoordinate, yCoordinate, currentState, nexState)
+{
+	this.xCoord = xCoordinate;
+	this.yCoord = yCoordinate;
+	this.curState = currentState;
+	this.nextState = nexState;
+}
+
+CellData.prototype.getxCoord = function()
+{
+	return this.xCoord;
+}
+
+CellData.prototype.setxCoord = function(xCoordinate)
+{
+	this.xCoord = xCoordinate;
+}
+
+CellData.prototype.getyCoord = function()
+{
+	return this.yCoord;
+}
+
+CellData.prototype.setyCoord = function(yCoordinate)
+{
+	this.yCoord = yCoordinate;
+}
+
+CellData.prototype.getCurState = function()
+{
+	return this.curState;
+}
+
+CellData.prototype.setCurState = function(currentState)
+{
+	this.curState = currentState;
+}
+
+CellData.prototype.getNextState = function()
+{
+	return this.nextState;
+}
+
+CellData.prototype.setNextState = function(nexState)
+{
+	this.nextState = nexState;
+}
+
+// end of reference definition.
+
+// Create the 2-dimensional array that will hold all of the CellData objects.
+	// To access the data the first index will reference the parent 1-dimensional array. [horizontal]
+	// The second index will reference each of the arrays pushed into the parent array. [vertical]
+	// e.g. grid[13][5] Remember that array references begin at 0 not 1.
+	// The array method push returns the new length of the array.
+	
+	var iLength;
+	var jLength;
+	var i;
+	var j;
+	grid = new Array();
+	for (i = 0; i < userSize; i++) {
+		iLength = grid.push(new Array());
+		for (j = 0; j < userSize; j++) {
+			jLength = grid[i].push(new CellData());
+		}
+	} // end for loop giving a square array of arrays populated with CellData objects.
+
+// We should now have a two dimensional array (userSize in both dimensions) and 
+	// each cell in this array should contain an instance of the CellData object.
+	// Now we need to populate the objects with data.
+	// First determine the physical size of each cell on the screen assuming 
+	// we start with a picture size of 500 X 500.
+	
+	var pictureSize = 500;
+	var cellSize = pictureSize/userSize; 
+		// each cell is now a fraction of the picture size
+		// need to limit input to multiples of 10 less than 250 I expect
+		// so if painting area begins at pixel 0,0, then the nth cell begins 
+		// at n*cellSize,n*cellSize. (e.g., for userSize = 100 first cell runs 
+		// from 0,0 to 4,4 and the second cell runs from 5,5 to 9,9
+	
+	var radius = cellSize/2 - 0.1*cellSize;
+	
+	for (i = 0; i < userSize; i++) {
+		for (j = 0; j < userSize; j++){
+			grid[i][j].setxCoord(i*cellSize+radius); // coordinates locate the center of the cell
+			grid[i][j].setyCoord(j*cellSize+radius);
+			grid[i][j].setCurState(0);
+			grid[i][j].setNextState(0);
+		} // end of j for loop
+	} // end of i for loop
+	
+	// Now let us add in the starting configuration of occupied cells
+		// in the center of the grid = userSize/2,userSize/2
+	// +++
+	// +
+	// ++++++
+	//            +
+	//        +++
+	// 1405 generations
+	
+/*
+	grid[userSize/2-3][userSize/2-2].setCurState(1);
+	grid[userSize/2-2][userSize/2-2].setCurState(1);
+	grid[userSize/2-1][userSize/2-2].setCurState(1);
+	grid[userSize/2-3][userSize/2-1].setCurState(1);
+	grid[userSize/2-3][userSize/2].setCurState(1);
+	grid[userSize/2-2][userSize/2].setCurState(1);
+	grid[userSize/2-1][userSize/2].setCurState(1);
+	grid[userSize/2][userSize/2].setCurState(1);
+	grid[userSize/2+1][userSize/2].setCurState(1);
+	grid[userSize/2+2][userSize/2].setCurState(1);
+	grid[userSize/2+2][userSize/2+1].setCurState(1);
+	grid[userSize/2][userSize/2+2].setCurState(1);
+	grid[userSize/2+1][userSize/2+2].setCurState(1);
+	grid[userSize/2+2][userSize/2+2].setCurState(1);
+*/
+
+	//  +
+	//+++
+	// 9 generations and then repeating
+	/*
+	grid[userSize/2-3][userSize/2-2].setCurState(1);
+	grid[userSize/2-2][userSize/2-2].setCurState(1);
+	grid[userSize/2-1][userSize/2-2].setCurState(1);
+	grid[userSize/2-2][userSize/2-1].setCurState(1);
+	*/
+	
+	//  +
+	//    +
+	//+++
+	// glider
+	
+	grid[userSize/2-3][userSize/2-2].setCurState(1);
+	grid[userSize/2-2][userSize/2-2].setCurState(1);
+	grid[userSize/2-1][userSize/2-2].setCurState(1);
+	grid[userSize/2-1][userSize/2-1].setCurState(1);
+	grid[userSize/2-2][userSize/2].setCurState(1);
+	
+	//      +
+	//        +
+	// +     +
+	//  ++++
+	// spaceship
+/*	
+	grid[userSize/2-3][userSize/2-2].setCurState(1);
+	grid[userSize/2-2][userSize/2-2].setCurState(1);
+	grid[userSize/2-1][userSize/2-2].setCurState(1);
+	grid[userSize/2][userSize/2-2].setCurState(1);
+	grid[userSize/2-4][userSize/2-1].setCurState(1);
+	grid[userSize/2][userSize/2-1].setCurState(1);
+	grid[userSize/2][userSize/2].setCurState(1);
+	grid[userSize/2-1][userSize/2+1].setCurState(1);
+*/	
+	// now we are ready to roll;
+	
+	var userIter = parseInt(document.getElementById("iterations").value);
+	
+	printStateToScreen(userSize, radius, startingAngle, endingAngle); 
+	// print the starting configuration
+		// may want a delay here
+	var counter=0;
+	
+	for (counter=1; counter<=userIter; counter++)
+	{
+		window.setTimeout(playOneIter, 5, userSize, radius, startingAngle, endingAngle);
+	}
+	var neighbors = 0;
+	
+}
+	
+// Need a function to generate a black square from array cell location.
+// Need a function to generate a white square from array cell location.
+// Need a function to define the next state of a cell given its location in the array based on its nearest 8 neighbors, 
+	// remembering that the top and bottom rows are adjacent as are the left and right columns.
+// Define the size of the grid based on user input.
+	// Use a fixed display, but break the display up into squares sized by the displaySize/userGrid.
+// Define the number of iterations based on user input.
+// Need some way of allowing the user to define initial conditions.
+	// Maybe a pictorial list of interesting known shapes.
+// The drawing and the state determination routines need to be highly optimized.
+
+// Rules of the Game of Life
+	// If a counter has 2 or 3 neighbors it survives.
+	// If a counter has 4 or more neighbors it dies.
+	// If a counter has 0 or 1 neighbor it dies.
+	// If an empty cell has exactly 3 neighbors it gains a counter.
+
+
+
+// -->
+</script>
+
+<style type="text/css">
+	canvas {
+		border: 1px dashed black;
+	}
+</style>
+
+</head>
+<body>
+	<canvas id="drawingCanvas" width="500" height="500"></canvas>
+	<hr />
+	<br />
+	Enter grid size (factors of 10 and <= 250):
+	<input type="text" name="gridSize" id="gridSize" value="50" size="25"/><br />
+	Enter number of iterations:
+	<input type="text" name="iterations" id="iterations" value="50" size="25"/><br />
+	<input type="button" value="Play Life" onclick="runLife()"/><br /><br />
+
+<hr />
+<footer>
+See I. Stewart's "Dr. Stewart's Cabinet of Mathematical Curiosities" pg. 223.
+</footer>
+</body>
+
+</html>

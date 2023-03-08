@@ -1,0 +1,294 @@
+<html>
+<head>
+<title>Perfect Numbers</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function perfNum(limit) // this is non-recursive version of calculating Fibonacci numbers
+{
+	var summation = 1;
+	var i;
+	var factorList = "1"
+	var listing = "1: 1" + "<br/>";
+
+	for (i = 2; i <= limit; i++) // scan through numbers up to limit
+	{
+		for (j = 2; j <= i/2; j++) // test each i to determine if it is perfect
+		{
+			if (i % j == 0) // j is a factor of i
+			{
+				summation += j; // add it
+				factorList = factorList + ", " + j; // and save it in case i is perfect
+			}
+		}
+		if (summation == i) // i is perfect
+		{
+			listing = listing + i + ": " + factorList + "<br/>"; // append i & its factors to list
+		}
+		summation = 1; // initialize the variables for next round
+		factorList = "1";
+	}	
+	return listing;
+}
+
+function calcPN() {
+
+	var limit = document.getElementById("limit").value;
+	var div = document.getElementsByTagName("div")[0];
+
+	var list = "";
+	
+	list = perfNum(limit);
+	
+	div.innerHTML = list;
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Perfect Number Calculator
+</h1>
+<h2>Sum of factors equal the perfect number</h2><br />
+
+<p>
+	A perfect number is defined as any integer the sum of whose factors equal the number. 
+</p>
+
+<p class=note>
+	For some reason 1 is not considered a perfect number.
+</p>
+
+<p>	
+	The calculator returns the list of perfect numbers up to the limit set by  the 
+	user. To use the calculator simply enter the desired limit for the search.
+</p>
+
+<p>
+	From Wikipedia: Euclid proved that 2<sup>P-1</sup>(2<sup>P</sup>-1) is an even 
+	perfect number whenever 2<sup>P</sup>-1 is a prime number. These primes are also 
+	known as Mersenne primes. Mersenne primes are very rare: only 45 of the first 
+	2,270,720 primes yield a prime by this formula. Euler proved that all 
+	Mersenne primes yield all of the perfect numbers.
+</p>
+
+<p>
+	The following primes yield the first 45 perfect numbers: p = 2, 3, 5, 7, 13, 17, 19, 
+	31, 61, 89, 107, 127, 521, 607, 1279, 2203, 2281, 3217, 4253, 4423, 9689, 9941, 
+	11213, 19937, 21701, 23209, 44497, 86243, 110503, 132049, 216091, 756839, 859433, 
+	1257787, 1398269, 2976221, 3021377, 6972593, 13466917, 20996011, 24036583, 25964951, 
+	30402457, 32582657, and 37156667.
+</p>
+
+<p class=note>
+	Yes, most perfect numbers known are massively large numbers. This calculator takes 
+	about a 10 seconds to sieve through the first 100,000 numbers. 
+</p>
+
+<p>
+	for p = 2:	2<sup>1</sup>(2<sup>2</sup> - 1) = 6
+</p>
+<p>
+	for p = 3:	2<sup>2</sup>(2<sup>3</sup> - 1) = 28
+</p>
+<p>
+	for p = 5:	2<sup>4</sup>(2<sup>5</sup> - 1) = 496
+</p>
+<p>
+	for p = 7:	2<sup>6</sup>(2<sup>7</sup> - 1) = 8128
+</p>
+<p>
+	for p = 13: 2<sup>12</sup>(2<sup>13</sup> - 1) = 33,550,336
+</p>
+<p>
+	for p = 17: 2<sup>16</sup>(2<sup>17</sup> - 1) = 8,589,869,056
+</p>
+<p>
+	for p = 19: 2<sup>18</sup>(2<sup>19</sup> - 1) = 137,438,691,328
+</p>
+
+<p>
+	Also from Wikipedia: each even perfect number is the (2<sup>P</sup> - 1)th triangular 
+	number (and hence equal to the sum of the integers from 1 to 2<sup>P</sup> - 1). So, 
+	for example, 6 is the 3rd triangular and is the sum of 1,2, & 3. Similarly, 8128 is 
+	the 7th triangular number and is the sum of the numbers from 1 to 127.
+</p>
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a number and hit the button:</legend>
+		<label for="limit">Limit to Search</label>
+		<input type="text" id="limit" placeholder="10" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate Perfect Numbers" onclick="calcPN()"/>
+		<br/>
+</fieldset>
+
+<p class=note>
+	Reload the browser window/tab between calculations if you don't want successive 
+	calculations appended.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 5, 2017</p>
+</footer>
+</html>

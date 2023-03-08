@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Calculating Swatch Corners</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="Math,bezier,curves,swatch"/>
+	<meta name="description" content="Calculating swatch corners"/>
+
+
+<style type="text/css">
+	svg {
+		border: 1px solid;
+	}
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+		text-align: center;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	p.hebrew {
+		font-size: 24px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="text2"] {
+		width: 95px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+  	svg {
+  		border: 2px solid #000;
+  	}
+  	span.pp {
+  		color: red;
+  	}
+  	span.ppb {
+  		color: blue;
+  	}
+  	span.ppp {
+  		color: purple;
+  	}
+  	span.ppg {
+  		color: gray;
+  	}
+	span.ppo {
+		color: orange;
+	}
+	p.code	{
+		font-size: 100%;
+		margin-left: 20px;
+		color: blue;
+		line-height: 0.5;
+	}
+
+.red {
+	color: red;
+}
+
+.blue {
+	color: blue;
+}
+.yellow {
+	color: purple;
+}
+
+.green {
+	color: green;
+}
+
+
+</style>
+
+<script type="text/javascript">
+<!--
+
+function lineSVG(size,degRot,transX,transY)
+{
+	let svg = '<svg viewBox="0 0 50 50" width="50" height="50">';
+	
+	// curves from 5,5 to 45,10 and 5,5 to 35,40 as a first approximation
+	
+	svg = svg + '<polyline points="5 5, 10 10, 15 12, 30 15, 37 18, 45 20" stroke="black" fill="none"/>';
+	svg = svg + '<polyline points="5 5, 5 7, 5 10, 7 15, 15 29, 20 35, 25 38, 35 42" stroke="black" fill="none"/>';
+	
+	svg = svg + "</svg>";
+	
+	return svg;
+}
+
+function arcSVG(size,degRot,transX,transY)
+{
+	let svg = '<svg viewBox="0 0 50 50" width="50" height="50">';
+	
+	// A/a rx ry x-axis-rotation large-arc-flag sweep-flag x y
+	// Two radii, rx & ry, because an ellipse is drawn
+	// sweep-flag: 0 is ccw & 1 is cw
+	// x-axis-rotation is rotation relative to the x-axis
+	
+	svg = svg + '<path d = "M 45 20 A 8 3 20 0 1 5 5 A 6 4 35 0 0 35 42" stroke="black" fill="none" />';
+
+	svg = svg + "</svg>";
+	
+	return svg;
+}
+
+function bezSVG(size,degRot,transX,transY)
+{
+	let svg = '<svg viewBox="0 0 50 50" width="50" height="50">';
+	
+	// will start with two paths with Bézier curves instead of one path with both curves
+	// initially trying the same four Bézier points from Bezier curves.html
+	
+	svg = svg + '<path d = "M 3 14.6 C 8.6 20 20 25 45 15" stroke="black" fill="none" />';	// curve one
+	svg = svg + '<path d = "M 3 14.6 C 8.6 27.7 20 45 35 45" stroke="black" fill="none" />';	// curve two
+	
+	svg = svg + "</svg>";
+	
+	return svg;
+}
+
+function calcOutput(type)
+{
+	const size = parseFloat(document.getElementById("cornerSize").value);
+	const degRot = parseInt(document.getElementById("cornerDeg").value);
+	const transX = parseInt(document.getElementById("cornerTransX").value);
+	const transY = parseInt(document.getElementById("cornerTransY").value);
+	const div = document.getElementsByTagName("div")[1];
+	
+	if (type == "line")
+		formula = lineSVG(size,degRot,transX,transY);
+	else if (type == "arc")
+		formula = arcSVG(size, degRot, transX, transY);
+	else if (type == "bez")
+		formula = bezSVG(size, degRot, transX, transY);
+	div.innerHTML = formula;
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>Calculating Swatch Corners</h2>
+<h3 class='minor'>October 28, 2022</h3>
+
+
+<p class=first>
+	The goal of this calculator is to produce a nice representation of the corner of a 
+	swatch for use in Bézier curves II.html. Filling a swatch with small "words" will 
+	leave the corners of the swatch unfilled. A filler for these corners is needed. 
+	Ideally, a scalable and rotatable swatch corner will result from this work. It will 
+	be added to the Bézier curves II page to complete the next layer of that program. It 
+	is not yet clear whether a filled or open corner is best.
+</p>
+
+<p>
+	A number of potential approaches to producing a swatch corner have come to mind. The 
+	corner's two curves could be approximated by a series of short line segments, by 
+	arcs, or by Bézier curves. In any case an SVG path is probably the best route to 
+	introduce the elements of this corner. All three approaches will be examined to 
+	determine which looks, translates, scales, and rotates best.
+</p>
+
+<p>
+	The first attempt will use line segments. This will work, though not enough line 
+	segments have been used in the example below. This is difficult to get a decent look.
+</p>
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Create a Corner from Line Segments:</legend>
+		<label for="cornerSize">Size</label>
+		<input type="text" id="cornerSize" placeholder="1"><br/>
+		<label for="cornerDeg">Degrees of Rotation</label>
+		<input type="text" id="cornerDeg" placeholder="0"><br/>
+		<label for="cornerTrans">Translation</label>
+		<input type="text2" id="cornerTransX" placeholder="0">
+		<input type="text2" id="cornerTransY" placeholder="0"><br/>
+		<br/>
+		<input type="button" value="Render Corner" onclick="calcOutput('line')"/>
+		<br/>
+</fieldset>
+
+<hr />
+
+<p>
+	An attempt with an arc is next. There are two parts of the arc path that I don't 
+	completely understand. The first are the two radii. Below I have specified both 
+	the two radii for the elliptical arc and the beginning and ending points. I don't 
+	understand how the curve is calculated. It seems over parameterized. I also don't 
+	completely understand the x-axis-rotation parameter: which end is fixed and which 
+	end moves.
+</p>
+
+<p>
+	Increasing the rx radius flattens the curve. This is not the case for ry. Again I 
+	can get the corner close, but it would be difficult to get it sufficiently exact.
+</p>
+
+<br />
+<hr />
+
+<fieldset>
+	<legend>Create a Corner from Arcs:</legend>
+		<label for="cornerSize">Size</label>
+		<input type="text" id="cornerSize" placeholder="1"><br/>
+		<label for="cornerDeg">Degrees of Rotation</label>
+		<input type="text" id="cornerDeg" placeholder="0"><br/>
+		<label for="cornerTrans">Translation</label>
+		<input type="text2" id="cornerTransX" placeholder="0">
+		<input type="text2" id="cornerTransY" placeholder="0"><br/>
+		<br/>
+		<input type="button" value="Render Corner" onclick="calcOutput('arc')"/>
+		<br/>
+</fieldset>
+
+<hr />
+
+<p>
+	I am not certain how the path with Bezier curves will work, but will dive right in.
+</p>
+
+<br />
+<hr />
+
+<fieldset>
+	<legend>Create a Corner from Bézier Curves:</legend>
+		<label for="cornerSize">Size</label>
+		<input type="text" id="cornerSize" placeholder="1"><br/>
+		<label for="cornerDeg">Degrees of Rotation</label>
+		<input type="text" id="cornerDeg" placeholder="0"><br/>
+		<label for="cornerTrans">Translation</label>
+		<input type="text2" id="cornerTransX" placeholder="0">
+		<input type="text2" id="cornerTransY" placeholder="0"><br/>
+		<br/>
+		<input type="button" value="Render Corner" onclick="calcOutput('bez')"/>
+		<br/>
+</fieldset>
+
+<hr />
+
+<div>
+
+</div>
+
+<p>
+	After tweaking the control points the two curves do a good job mimicking the end of 
+	a swatch. This set of control points should be formatted as an array of points just 
+	like a swatch. Then it can use the same tools for rotating, translating, and scaling 
+	as does the swatch. Somehow the parameters need to be sized, rotated, and translated 
+	to fit the standard swatch.
+</p>
+
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>October 30, 2022</p>
+</footer>
+
+</body>
+</html>

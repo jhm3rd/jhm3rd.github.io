@@ -1,0 +1,238 @@
+<html>
+<head>
+<title>Solving Quadratic Equations</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function getRoots(B,C,prec)
+{
+	const bO2 = -B/2;
+	const u = Math.sqrt(bO2 * bO2 - C);
+	
+	const root1 = bO2 + u;
+	const root2 = bO2 - u;
+	
+	let precision = 0;
+	
+	(prec) ? precision = prec : precision = 2;
+	
+	return [root1.toFixed(precision),root2.toFixed(precision)];
+}
+
+function solveQuadratic()
+{
+	const B = parseFloat(document.getElementById("B").value);
+	const C = parseFloat(document.getElementById("C").value);
+	const precision = parseInt(document.getElementById("prec").value);
+
+	let roots = getRoots(B,C,precision);
+	
+	document.getElementById("roots").value = `${roots[0]} and ${roots[1]}`;
+	
+}	// end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Quadratic Equation Solver
+</h1>
+
+<p>
+	A recently posted <a href=https://www.futilitycloset.com/2019/12/10/another-way/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+FutilityCloset+%28Futility+Closet%29>video</a> 
+	demonstrates a "new" way to solve quadratic equations. It was used by ancient 
+	civilizations including the Greeks and Indians. The proof is recounted here and the 
+	algorithm is implemented below.
+</p>
+
+<ol>
+	<li>If you find <em>r</em> and <em>s</em> with sum <em>-B</em> and product <em>C</em>, 
+	then <em>x<sup>2</sup> + Bx + C = (x - r)(x - s)</em>, and they are all the roots</li>
+	<li>Two numbers sum to <em>-B</em> when they are <em>-B/2 &plusmn; u</li>
+	<li>Their product is <em>C</em> when <em>B<sup>2</sup>/4 - u<sup>2</sup> = C</em></li>
+	<li>Square root always gives a valid <em>u</em></li>
+	<li>Thus <em>-B/2 &plusmn; u</em> work as <em>r</em> and <em>s</em>, and are all the roots</li>
+</ol>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a B and C and hit the button:</legend>
+		<label for="B">B</label>
+		<input type="text" id="B" placeholder="-7" autofocus><br/>
+		<label for="C">C</label>
+		<input type="text" id="C" placeholder="12"><br/>
+		<br />
+		<label for="prec">Precision (default is 2)</label>
+		<input type="text" id="prec" placeholder="2"><br/>
+		<br/>
+		<input type="button" value="Find Roots" onclick="solveQuadratic()"/>
+		<br/>
+		<br/>
+		<label for="roots">Roots of the Quadratic</label>
+		<input type="text" name="roots" id="roots" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<br />
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 14, 2018</p>
+</footer>
+</html>

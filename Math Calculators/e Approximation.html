@@ -1,0 +1,258 @@
+<html>
+<head>
+<title>Approximating e</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function eApprox(n) // this returns the approximation and the error in an array
+{
+	const e = 2.718281828459045
+	
+	const approx = (1 + 1/n)**n;
+	const error = 100 * (e - approx)/e;
+	
+	const resArr = [approx,error];
+	
+	return resArr;
+}
+
+function calce() {
+
+	const n = document.getElementById("depth").value;
+	
+	let resArray = eApprox(n);
+	
+	document.getElementById("approx").value = resArray[0];
+	document.getElementById("error").value = resArray[1];
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Approximating e
+</h1>
+<h2>To the limits of your patience</h2><br />
+
+<p>
+	The first approximation for e = 2.718281828459045 was discovered by Jacob 
+	Bernoulli. This approximation was shown on 
+	<a href="https://twitter.com/fermatslibrary">Fermat's Library</a>. 
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<mi>e</mi>
+			<mo>=</mo>
+			<munderover>
+				<mi>lim</mi>
+				<mrow>
+					<mi>n</mi>
+					<mo>&rarr;</mo>
+					<mo>&infin;</m0>
+				</mrow>
+				<mi></mi>
+			</munderover>
+			<msup>
+				<mfenced>
+					<mrow>
+					<mn>1</mn>
+					<mo>+</mo>
+					<mfrac>
+						<mn>1</mn>
+						<mi>n</mi>
+					</mfrac>
+					</mrow>
+				</mfenced>
+				<mi>n</mi>
+			</msup>
+		</mrow>
+		</math>
+
+<p>	
+	The calculator returns either an approximation and the associated error given 
+	an upper limit for n.
+</p>
+
+<p class=note>
+	It is not clear if there is any upper limit to the choice of n.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a number and hit the button:</legend>
+		<label for="depth">n = Limit of Calculation</label>
+		<input type="text" id="depth" placeholder="2513" autofocus><br/>
+		<br/>
+		<input type="button" value="Approximate e" onclick="calce()"/>
+		<br/>
+		<br/>
+		<label for="approx">Approximate (<em>e</em>) = </label>
+		<input type="text" name="approx" id="approx" size="25" readOnly="True"/><br />
+		<label for="error">Error (%) = </label>
+		<input type="text" name="error" id="error" size="25" readOnly="True"/><br />
+		
+		<br/>
+</fieldset>
+
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>June 23, 2019</p>
+</footer>
+</html>

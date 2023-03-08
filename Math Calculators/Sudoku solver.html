@@ -1,0 +1,551 @@
+<html>
+<head>
+<title>Sudoku Solver</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 20px;
+		font-size: 80%;
+	}
+	input.sudG {
+		background-color: #E1E1E1;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 30%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 10;
+  		font-weight: bold;
+  		font-size: 14px;
+  	}
+  	table td {
+  		border: solid 1px #000;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  		padding-top: 5px;
+  		padding-bottom: 5px;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.g {
+  		background-color: #E1E1E1;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+//	Globals
+
+const SIZE = 9;
+const BOX = Math.sqrt(SIZE);
+const EMPTY = 0;
+
+const Row0 = [0,0,0,0,0,0,0,0,0];
+const Row1 = [];
+const Row2 = [];
+const Row3 = [];
+const Row4 = [];
+const Row5 = [];
+const Row6 = [];
+const Row7 = [];
+const Row8 = [];
+const Board = [Row0,Row1,Row2,Row3,Row4,Row5,Row6,Row7,Row8];
+
+function isInRow(row,number)
+{
+	for (let i = 0; i < SIZE; i++)
+	{
+		if (Board[row][i] == number) 
+		{
+			return true;
+		}
+	}			
+	return false;
+}
+
+function isInCol(col,number)
+{
+	for (let i = 0; i < SIZE; i++)
+	{
+		if (Board[i][col] == number)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+function isInBox(row,col,number)
+{
+	const r = row - row % BOX;
+	const c = col - col % BOX;
+	
+	for (let i = r; i < r + BOX; i++)
+	{
+		for (let j = c; j < c + BOX; j++)
+		{
+			if (Board[i][j] == number) 
+			{
+				return true;
+			}	
+		}
+	}
+	return false;
+}
+
+function isOk(row, col, number)
+{
+	return !isInRow(row, number) && !isInCol(col, number) && !isInBox(row, col, number);
+}
+
+function solve()
+{
+	for (let row = 0; row < SIZE; row++)
+	{
+		for (let col = 0; col < SIZE; col++)
+		{
+			if (Board[row][col] == EMPTY)
+			{
+				for (let number = 1; number <= SIZE; number++)
+				{
+					if (isOk(row, col, number))
+					{
+						Board[row][col] = number;
+						if (solve())
+						{
+							return true;
+						}
+						else
+						{
+							Board[row][col] = EMPTY;
+						}
+					}
+				}
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+
+
+function solveSudoku() {
+
+	const div = document.getElementsByTagName("div")[0];
+	
+	for (let i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r0c${i}`).value;
+		(temp !== "")? Row0[i] = parseInt(temp): Row0[i] = 0;
+	}
+	
+		for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r1c${i}`).value;
+		(temp !== "")? Row1[i] = parseInt(temp): Row1[i] = 0;
+	}
+
+		for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r2c${i}`).value;
+		(temp !== "")? Row2[i] = parseInt(temp): Row2[i] = 0;
+	}
+	
+		for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r3c${i}`).value;
+		(temp !== "")? Row3[i] = parseInt(temp): Row3[i] = 0;
+	}
+	
+		for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r4c${i}`).value;
+		(temp !== "")? Row4[i] = parseInt(temp): Row4[i] = 0;
+	}
+	
+		for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r5c${i}`).value;
+		(temp !== "")? Row5[i] = parseInt(temp): Row5[i] = 0;
+	}
+
+	for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r6c${i}`).value;
+		(temp !== "")? Row6[i] = parseInt(temp): Row6[i] = 0;
+	}
+
+	for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r7c${i}`).value;
+		(temp !== "")? Row7[i] = parseInt(temp): Row7[i] = 0;
+	}
+	
+		for (i = 0; i < SIZE; i++)
+	{
+		let temp = document.getElementById(`r8c${i}`).value;
+		(temp !== "")? Row8[i] = parseInt(temp): Row8[i] = 0;
+	}
+
+
+
+	
+	const initial = `<p>${Row0.toString()}</p>
+		<p>${Row1.toString()}</p>
+		<p>${Row2.toString()}</p>
+		<p>${Row3.toString()}</p>
+		<p>${Row4.toString()}</p>
+		<p>${Row5.toString()}</p>
+		<p>${Row6.toString()}</p>
+		<p>${Row7.toString()}</p>
+		<p>${Row8.toString()}</p>`;
+		
+	let row0 = Row0.toString();
+	let row1 = Row1.toString();
+	let row2 = Row2.toString();
+	let row3 = Row3.toString();
+	let row4 = Row4.toString();
+	let row5 = Row5.toString();
+	let row6 = Row6.toString();
+	let row7 = Row7.toString();
+	let row8 = Row8.toString();
+	
+	const initialTable = `<table><tr><td>${(row0[0]!==0)?row0[0]:""}</td><td>${(row0[2]==0)?"":row0[2]}</td><td>${(row0[4]==0)?"":row0[4]}</td><td class="g">${(row0[6]==0)?"":row0[6]}</td><td class="g">${(row0[8]==0)?"":row0[8]}</td><td class="g">${(row0[10]==0)?"":row0[10]}</td><td>${(row0[12]==0)?"":row0[12]}</td><td>${(row0[14]==0)?"":row0[14]}</td><td>${(row0[16]==0)?"":row0[16]}</td></tr>
+		<tr><td>${(row1[0]==0)?"":row1[0]}</td><td>${(row1[2]==0)?"":row1[2]}</td><td>${(row1[4]==0)?"":row1[4]}</td><td class="g">${(row1[6]==0)?"":row1[6]}</td><td class="g">${(row1[8]==0)?"":row1[8]}</td><td class="g">${(row1[10]==0)?"":row1[10]}</td><td>${(row1[12]==0)?"":row1[12]}</td><td>${(row1[14]==0)?"":row1[14]}</td><td>${(row1[16]==0)?"":row1[16]}</td></tr>
+		<tr><td>${(row2[0]==0)?"":row2[0]}</td><td>${(row2[2]==0)?"":row2[2]}</td><td>${(row2[4]==0)?"":row2[4]}</td><td class="g">${(row2[6]==0)?"":row2[6]}</td><td class="g">${(row2[8]==0)?"":row2[8]}</td><td class="g">${(row2[10]==0)?"":row2[10]}</td><td>${(row2[12]==0)?"":row2[12]}</td><td>${(row2[14]==0)?"":row2[14]}</td><td>${(row2[16]==0)?"":row2[16]}</td></tr>
+		<tr><td class="g">${(row3[0]==0)?"":row3[0]}</td><td class="g">${(row3[2]==0)?"":row3[2]}</td><td class="g">${(row3[4]==0)?"":row3[4]}</td><td>${(row3[6]==0)?"":row3[6]}</td><td>${(row3[8]==0)?"":row3[8]}</td><td>${(row3[10]==0)?"":row3[10]}</td><td class="g">${(row3[12]==0)?"":row3[12]}</td><td class="g">${(row3[14]==0)?"":row3[14]}</td><td class="g">${(row3[16]==0)?"":row3[16]}</td></tr>
+		<tr><td class="g">${(row4[0]==0)?"":row4[0]}</td><td class="g">${(row4[2]==0)?"":row4[2]}</td><td class="g">${(row4[4]==0)?"":row4[4]}</td><td>${(row4[6]==0)?"":row4[6]}</td><td>${(row4[8]==0)?"":row4[8]}</td><td>${(row4[10]==0)?"":row4[10]}</td><td class="g">${(row4[12]==0)?"":row4[12]}</td><td class="g">${(row4[14]==0)?"":row4[14]}</td><td class="g">${(row4[16]==0)?"":row4[16]}</td></tr>
+		<tr><td class="g">${(row5[0]==0)?"":row5[0]}</td><td class="g">${(row5[2]==0)?"":row5[2]}</td><td class="g">${(row5[4]==0)?"":row5[4]}</td><td>${(row5[6]==0)?"":row5[6]}</td><td>${(row5[8]==0)?"":row5[8]}</td><td>${(row5[10]==0)?"":row5[10]}</td><td class="g">${(row5[12]==0)?"":row5[12]}</td><td class="g">${(row5[14]==0)?"":row5[14]}</td><td class="g">${(row5[16]==0)?"":row5[16]}</td></tr>
+		<tr><td>${(row6[0]==0)?"":row6[0]}</td><td>${(row6[2]==0)?"":row6[2]}</td><td>${(row6[4]==0)?"":row6[4]}</td><td class="g">${(row6[6]==0)?"":row6[6]}</td><td class="g">${(row6[8]==0)?"":row6[8]}</td><td class="g">${(row6[10]==0)?"":row6[10]}</td><td>${(row6[12]==0)?"":row6[12]}</td><td>${(row6[14]==0)?"":row6[14]}</td><td>${(row6[16]==0)?"":row6[16]}</td></tr>
+		<tr><td>${(row7[0]==0)?"":row7[0]}</td><td>${(row7[2]==0)?"":row7[2]}</td><td>${(row7[4]==0)?"":row7[4]}</td><td class="g">${(row7[6]==0)?"":row7[6]}</td><td class="g">${(row7[8]==0)?"":row7[8]}</td><td class="g">${(row7[10]==0)?"":row7[10]}</td><td>${(row7[12]==0)?"":row7[12]}</td><td>${(row7[14]==0)?"":row7[14]}</td><td>${(row7[16]==0)?"":row7[16]}</td></tr>
+		<tr><td>${(row8[0]==0)?"":row8[0]}</td><td>${(row8[2]==0)?"":row8[2]}</td><td>${(row8[4]==0)?"":row8[4]}</td><td class="g">${(row8[6]==0)?"":row8[6]}</td><td class="g">${(row8[8]==0)?"":row8[8]}</td><td class="g">${(row8[10]==0)?"":row8[10]}</td><td>${(row8[12]==0)?"":row8[12]}</td><td>${(row8[14]==0)?"":row8[14]}</td><td>${(row8[16]==0)?"":row8[16]}</td></tr>
+		</table>`;
+
+	if (solve())
+	{
+		row0 = Row0.toString();
+		row1 = Row1.toString();
+		row2 = Row2.toString();
+		row3 = Row3.toString();
+		row4 = Row4.toString();
+		row5 = Row5.toString();
+		row6 = Row6.toString();
+		row7 = Row7.toString();
+		row8 = Row8.toString();
+
+
+		const solved = `<table><tr><td>${(row0[0]!==0)?row0[0]:""}</td><td>${(row0[2]==0)?"":row0[2]}</td><td>${(row0[4]==0)?"":row0[4]}</td><td class="g">${(row0[6]==0)?"":row0[6]}</td><td class="g">${(row0[8]==0)?"":row0[8]}</td><td class="g">${(row0[10]==0)?"":row0[10]}</td><td>${(row0[12]==0)?"":row0[12]}</td><td>${(row0[14]==0)?"":row0[14]}</td><td>${(row0[16]==0)?"":row0[16]}</td></tr>
+		<tr><td>${(row1[0]==0)?"":row1[0]}</td><td>${(row1[2]==0)?"":row1[2]}</td><td>${(row1[4]==0)?"":row1[4]}</td><td class="g">${(row1[6]==0)?"":row1[6]}</td><td class="g">${(row1[8]==0)?"":row1[8]}</td><td class="g">${(row1[10]==0)?"":row1[10]}</td><td>${(row1[12]==0)?"":row1[12]}</td><td>${(row1[14]==0)?"":row1[14]}</td><td>${(row1[16]==0)?"":row1[16]}</td></tr>
+		<tr><td>${(row2[0]==0)?"":row2[0]}</td><td>${(row2[2]==0)?"":row2[2]}</td><td>${(row2[4]==0)?"":row2[4]}</td><td class="g">${(row2[6]==0)?"":row2[6]}</td><td class="g">${(row2[8]==0)?"":row2[8]}</td><td class="g">${(row2[10]==0)?"":row2[10]}</td><td>${(row2[12]==0)?"":row2[12]}</td><td>${(row2[14]==0)?"":row2[14]}</td><td>${(row2[16]==0)?"":row2[16]}</td></tr>
+		<tr><td class="g">${(row3[0]==0)?"":row3[0]}</td><td class="g">${(row3[2]==0)?"":row3[2]}</td><td class="g">${(row3[4]==0)?"":row3[4]}</td><td>${(row3[6]==0)?"":row3[6]}</td><td>${(row3[8]==0)?"":row3[8]}</td><td>${(row3[10]==0)?"":row3[10]}</td><td class="g">${(row3[12]==0)?"":row3[12]}</td><td class="g">${(row3[14]==0)?"":row3[14]}</td><td class="g">${(row3[16]==0)?"":row3[16]}</td></tr>
+		<tr><td class="g">${(row4[0]==0)?"":row4[0]}</td><td class="g">${(row4[2]==0)?"":row4[2]}</td><td class="g">${(row4[4]==0)?"":row4[4]}</td><td>${(row4[6]==0)?"":row4[6]}</td><td>${(row4[8]==0)?"":row4[8]}</td><td>${(row4[10]==0)?"":row4[10]}</td><td class="g">${(row4[12]==0)?"":row4[12]}</td><td class="g">${(row4[14]==0)?"":row4[14]}</td><td class="g">${(row4[16]==0)?"":row4[16]}</td></tr>
+		<tr><td class="g">${(row5[0]==0)?"":row5[0]}</td><td class="g">${(row5[2]==0)?"":row5[2]}</td><td class="g">${(row5[4]==0)?"":row5[4]}</td><td>${(row5[6]==0)?"":row5[6]}</td><td>${(row5[8]==0)?"":row5[8]}</td><td>${(row5[10]==0)?"":row5[10]}</td><td class="g">${(row5[12]==0)?"":row5[12]}</td><td class="g">${(row5[14]==0)?"":row5[14]}</td><td class="g">${(row5[16]==0)?"":row5[16]}</td></tr>
+		<tr><td>${(row6[0]==0)?"":row6[0]}</td><td>${(row6[2]==0)?"":row6[2]}</td><td>${(row6[4]==0)?"":row6[4]}</td><td class="g">${(row6[6]==0)?"":row6[6]}</td><td class="g">${(row6[8]==0)?"":row6[8]}</td><td class="g">${(row6[10]==0)?"":row6[10]}</td><td>${(row6[12]==0)?"":row6[12]}</td><td>${(row6[14]==0)?"":row6[14]}</td><td>${(row6[16]==0)?"":row6[16]}</td></tr>
+		<tr><td>${(row7[0]==0)?"":row7[0]}</td><td>${(row7[2]==0)?"":row7[2]}</td><td>${(row7[4]==0)?"":row7[4]}</td><td class="g">${(row7[6]==0)?"":row7[6]}</td><td class="g">${(row7[8]==0)?"":row7[8]}</td><td class="g">${(row7[10]==0)?"":row7[10]}</td><td>${(row7[12]==0)?"":row7[12]}</td><td>${(row7[14]==0)?"":row7[14]}</td><td>${(row7[16]==0)?"":row7[16]}</td></tr>
+		<tr><td>${(row8[0]==0)?"":row8[0]}</td><td>${(row8[2]==0)?"":row8[2]}</td><td>${(row8[4]==0)?"":row8[4]}</td><td class="g">${(row8[6]==0)?"":row8[6]}</td><td class="g">${(row8[8]==0)?"":row8[8]}</td><td class="g">${(row8[10]==0)?"":row8[10]}</td><td>${(row8[12]==0)?"":row8[12]}</td><td>${(row8[14]==0)?"":row8[14]}</td><td>${(row8[16]==0)?"":row8[16]}</td></tr>
+		</table>`;
+		
+		
+		
+		div.innerHTML = `${initialTable}<br />${solved}`;
+	}
+	
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Sudoku Solver
+</h1>
+<h2>Solve Sudoku puzzles of size 9 X 9.</h2><br />
+
+<p>
+	This program is based on an <a href="https://medium.com/javarevisited/building-a-sudoku-solver-in-java-with-dancing-links-180274b0b6c1">article</a> 
+	that explains two programmatic ways to solve the puzzle written in Java. The simpler 
+	and slower method is implemented here. A Sudoku puzzle is a square matrix of numbers 
+	with four constraints on the number in each square. The matrix is of length and width 
+	SIZE. Further the matrix is divided into smaller boxes with SIZE total squares. Thus 
+	the four constraints are:
+</p>
+
+<ul>
+	<li>Cell constraint: Each cell contains a number from 1 to the SIZE of the grid.</li>
+	<li>Line constraint: Each line contains only 1 - SIZE unique integers.</li>
+	<li>Column constraint: Each column contains only 1 - SIZE unique integers.</li>
+	<li>Box constraint: Each box contains only 1 - SIZE unique integers.</li>
+</ul>
+
+<p>
+	The Sudoku grid is modeled as a two-dimensional array of numbers from 0 to SIZE, 
+	where 0 implies that the cell has not yet been filled. Methods are defined to check 
+	the uniqueness of a square by looking at the lines/box it resides in for a similar 
+	number. If the number is already present then true is returned. To find the box 
+	containing the square of interest a simple method using the modulo function is used. 
+	Next a function is written that calls each of these constraint checks in turn. The 
+	final constraint that the square has a number is implemented in the solving algorithm.
+</p>
+
+<p>
+	The solving algorithm is known as a back tracking algorithm. One thing I am unsure 
+	of: does it require a number in every row and column initially or do all Sudoku 
+	puzzles have this requirement for solution.
+</p>
+
+
+
+
+<br />
+
+<hr />
+
+<fieldset>
+	<legend>Input Sudoku Puzzle</legend>
+	<input type="text" id="r0c0" autofocus>
+	<input type="text" id="r0c1">
+	<input type="text" id="r0c2">
+	<input class="sudG" type="text" id="r0c3">
+	<input class="sudG" type="text" id="r0c4">
+	<input class="sudG" type="text" id="r0c5">
+	<input type="text" id="r0c6">
+	<input type="text" id="r0c7">
+	<input type="text" id="r0c8">
+	<br />
+	<input type="text" id="r1c0">
+	<input type="text" id="r1c1">
+	<input type="text" id="r1c2">
+	<input class="sudG" type="text" id="r1c3">
+	<input class="sudG" type="text" id="r1c4">
+	<input class="sudG" type="text" id="r1c5">
+	<input type="text" id="r1c6">
+	<input type="text" id="r1c7">
+	<input type="text" id="r1c8">
+	<br />
+	<input type="text" id="r2c0">
+	<input type="text" id="r2c1">
+	<input type="text" id="r2c2">
+	<input class="sudG" type="text" id="r2c3">
+	<input class="sudG" type="text" id="r2c4">
+	<input class="sudG" type="text" id="r2c5">
+	<input type="text" id="r2c6">
+	<input type="text" id="r2c7">
+	<input type="text" id="r2c8">
+	<br />
+	<input class="sudG" type="text" id="r3c0">
+	<input class="sudG" type="text" id="r3c1">
+	<input class="sudG" type="text" id="r3c2">
+	<input type="text" id="r3c3">
+	<input type="text" id="r3c4">
+	<input type="text" id="r3c5">
+	<input class="sudG" type="text" id="r3c6">
+	<input class="sudG" type="text" id="r3c7">
+	<input class="sudG" type="text" id="r3c8">
+	<br />
+	<input class="sudG" type="text" id="r4c0">
+	<input class="sudG" type="text" id="r4c1">
+	<input class="sudG" type="text" id="r4c2">
+	<input type="text" id="r4c3">
+	<input type="text" id="r4c4">
+	<input type="text" id="r4c5">
+	<input class="sudG" type="text" id="r4c6">
+	<input class="sudG" type="text" id="r4c7">
+	<input class="sudG" type="text" id="r4c8">
+	<br />
+	<input class="sudG" type="text" id="r5c0">
+	<input class="sudG" type="text" id="r5c1">
+	<input class="sudG" type="text" id="r5c2">
+	<input type="text" id="r5c3">
+	<input type="text" id="r5c4">
+	<input type="text" id="r5c5">
+	<input class="sudG" type="text" id="r5c6">
+	<input class="sudG" type="text" id="r5c7">
+	<input class="sudG" type="text" id="r5c8">
+	<br />
+	<input type="text" id="r6c0">
+	<input type="text" id="r6c1">
+	<input type="text" id="r6c2">
+	<input class="sudG" type="text" id="r6c3">
+	<input class="sudG" type="text" id="r6c4">
+	<input class="sudG" type="text" id="r6c5">
+	<input type="text" id="r6c6">
+	<input type="text" id="r6c7">
+	<input type="text" id="r6c8">
+	<br />
+	<input type="text" id="r7c0">
+	<input type="text" id="r7c1">
+	<input type="text" id="r7c2">
+	<input class="sudG" type="text" id="r7c3">
+	<input class="sudG" type="text" id="r7c4">
+	<input class="sudG" type="text" id="r7c5">
+	<input type="text" id="r7c6">
+	<input type="text" id="r7c7">
+	<input type="text" id="r7c8">
+	<br />
+	<input type="text" id="r8c0">
+	<input type="text" id="r8c1">
+	<input type="text" id="r8c2">
+	<input class="sudG" type="text" id="r8c3">
+	<input class="sudG" type="text" id="r8c4">
+	<input class="sudG" type="text" id="r8c5">
+	<input type="text" id="r8c6">
+	<input type="text" id="r8c7">
+	<input type="text" id="r8c8">
+	<br />
+</fieldset>
+
+<br />
+
+<fieldset>
+	<legend>Hit the button:</legend>
+		<br/>
+		<input type="button" value="Solve the Sudoku" onclick="solveSudoku()"/>
+		<br/>
+</fieldset>
+
+<p class=note>
+	Reload the browser window/tab between solutions to reinitialize the puzzle.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 24, 2017</p>
+</footer>
+</html>

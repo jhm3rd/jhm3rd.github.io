@@ -1,0 +1,265 @@
+<html>
+<head>
+<title>Schwarzschild Radius</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function getRadius(wt) {
+	const G = 0.0000000000667430;
+	const lightSpd = 299792458;
+	const ltSpdSqrd = lightSpd * lightSpd;
+	
+	return 2*G*wt/ltSpdSqrd;
+}
+
+function calcSRadius()
+{
+	const wt = parseFloat(document.getElementById("wt").value);
+	
+	const radius = getRadius(wt);
+	
+	document.getElementById("radius").value = radius;
+		
+}	// end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Schwarzchild Radius
+</h1>
+
+<p>
+	The Schwarzchild radius is the radius defining the event horizon of a black hole. 
+	It can be calculated for any given mass.
+</p>
+
+<p>
+	The formula for calculating the Schwarzchild radius, <em>R<sub>S</sub></em> , in 
+	meters is as follows:
+</p>
+	
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msub>
+				<mi>R</mi>
+				<mi>S</mi>
+			</msub>
+			<mo>=</mo>
+			<mfrac>
+				<mrow>
+					<mn>2</mn>
+					<mi>G</mi>
+					<mi>M</mi>
+				</mrow>
+				<mrow>
+					<msup>
+						<mi>c</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mfrac>
+		</mrow>
+	</math>
+
+<p>
+	Where M is in kilograms, c is in meters/second, and G is in 
+	meters<sup>3</sup>/kg/seconds<sup>2</sup>.
+</p>
+
+<table>
+	<thead>
+	Some Interesting Weights to Try
+	</thead>
+	<tr> <th>Object</th>	<th>Weight (kilograms)</th> </tr>
+	<tr> <td>Planck Mass</td>	<td>2.18 x 10<sup>-8</sup></td> </tr>
+	<tr> <td>Big Mac</td>	<td>0.215</td> </tr>
+	<tr> <td>Human</td>	<td>70</td> </tr>
+	<tr> <td>Moon</td>	<td>7.35 x 10<sup>22</sup></td> </tr>
+	<tr> <td>Earth</td>	<td>5.97 x 10<sup>24</sup></td> </tr>
+	<tr> <td>Jupiter</td>	<td>1.90 x 10<sup>27</sup></td> </tr>
+	<tr> <td>Sun</td>	<td>1.99 x 10<sup>30</sup></td> </tr>
+	<tr> <td>Milky Way</td>	<td>1.6 x 10<sup>42</sup></td> </tr>
+	<tr> <td>Observable Universe</td>	<td>8.8 x 10<sup>52</sup></td> </tr>
+</table>
+
+<p class=note>
+	By the way the radius of a proton is 0.86 X 10<sup>-15</sup>m and the Planck 
+	length is 1.616229 X 10<sup>-35</sup>m.
+</p>
+
+<br />
+<p>	
+	This calculator returns the Schwarzchild radius for any mass  entered. 
+</p>
+
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a weight and hit the button:</legend>
+		<label for="wt">Weight (kg) [for exponentials enter e.g. 1.21E21]</label>
+		<input type="text" id="wt" placeholder="5.97E24" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate Schwarzchild Radius" onclick="calcSRadius()"/>
+		<br/>
+		<br/>
+		<label for="radius">Schwarzchild Radius (meters)</label>
+		<input type="text" name="radius" id="radius" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>May 27, 2019</p>
+</footer>
+</html>

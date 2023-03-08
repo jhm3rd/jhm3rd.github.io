@@ -1,0 +1,307 @@
+<html>
+<head>
+<title>Fibonacci Sequence Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function fibo(n, sequence) // this is non-recursive version of calculating Fibonacci numbers
+{
+	var result = 0;
+	var resMinus1;
+	var resMinus2;
+	var i;
+	var listing = "";
+	
+	if (n==0)
+	{
+		result = 0;
+	}
+	else if (n==1)
+	{
+		result = 1;
+		if (sequence)
+		{
+			listing = "0, 1"
+		}
+	}
+	else
+	{
+		resMinus1 = 2;
+		resMinus2 = 1;
+		listing = "0, 1, 1, 2";
+		for (i=2; i <= n-3; i++)
+		{
+			result = resMinus1 + resMinus2;
+			resMinus2 = resMinus1;
+			resMinus1 = result;
+			listing = listing + ", " + result;
+		}
+	}
+	if (sequence)
+	{
+		return listing;
+	}
+	else
+	{
+		return result;
+	}
+}
+
+function calcFibo() {
+
+	var n = document.getElementById("n").value;
+	var singleOrSeq = document.getElementById("singleSeq").value;
+	var div = document.getElementsByTagName("div")[0];
+
+	var result = 0;
+	var list = "";
+	
+		switch (singleOrSeq)
+	{
+		case "N":
+			result = fibo(n, false);
+			document.getElementById("nFibo").value = result;
+			break;
+		case "S":
+			list = fibo(n, true);
+			div.innerHTML = list;
+			break;
+	} // end switch
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Fibonacci Number Calculator
+</h1>
+<h2>For any number chosen &leq; 1477</h2><br />
+
+<p>
+	A Fibonacci number is defined by the two previous Fibonacci numbers in the sequence:
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mi>n</mi>
+				<mo>=</mo>
+				<mfenced>
+					<mrow>
+						<mi>n</mi>
+						<mo>-</mo>
+						<mn>1</mn>
+					</mrow>
+				</mfenced>
+				<mo>+</mo>
+				<mfenced>
+					<mrow>
+						<mi>n</mi>
+						<mo>-</mo>
+						<mn>2</mn>
+					</mrow>
+				</mfenced>
+			</mrow>
+		</math>
+
+<p>	
+	The calculator returns either the nth Fibonacci number for any <em>n</em> &leq; 
+	1477 or the sequence of Fibonacci numbers up through <em>n</em>. To use the calculator 
+	simply enter the number for which you would like the Fibonacci number, 
+	Fibo(<em>n</em>) or Fibonacci sequence computed.
+</p>
+
+<p class=note>
+	The 1477 limit is due to the 64-bit computer architecture which is limited in the 
+	size of numbers it can manage to numbers less than 2<sup>64</sup>.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a number and hit the button:</legend>
+		<label for="depth">Number, <em>n</em> &leq; 1477</label>
+		<input type="text" id="n" placeholder="10" autofocus><br/>
+		<label for="singleSeq">Select either nth or list:</label>
+		<select name="singleSeq" id="singleSeq">
+			<option value="N" selected>Nth Fibonacci Number</option>
+			<option value="S">Fibonacci Sequence</option>
+		</select><br/>
+		<br/>
+		<input type="button" value="Calculate Fibonacci" onclick="calcFibo()"/>
+		<br/>
+		<br/>
+		<label for="nFibo">Fibo(<em>n</em>) = </label>
+		<input type="text" name="nFibo" id="nFibo" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<p class=note>
+	Reload the browser window/tab between calculations if you don't want successive 
+	calculations appended.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 5, 2017</p>
+</footer>
+</html>

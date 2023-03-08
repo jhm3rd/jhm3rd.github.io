@@ -1,0 +1,278 @@
+<html>
+<head>
+<title>SVG Animation</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 600px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+
+<!--
+
+
+function showClock() {
+
+	import sySVG from "https://cdn.graphery.online/0.1.5/svg/module/index.js";
+	const svg = gySVG().viewBox('0 0 250 250');
+	
+	// create outer circle
+	
+	svg.add('circle')
+		.cx(125).cy(125).r(124)
+		.stroke('#000').stroke_width(2).fill('none');
+		
+	//create hour and minute marks
+	
+	for (let n = 6;  n <= 360; n += 6) {
+  		const radians = ((n - 90) * Math.PI) / 180.0;
+  		let radio;
+ 		if (n % 30 === 0) {
+ 		   radio = 110;
+		} else {
+		    radio = 115;
+		}
+		svg.add('line')
+		    .x1(125 + 120 * Math.cos(radians))
+		    .y1(125 + 120 * Math.sin(radians))
+		    .x2(125 + radio * Math.cos(radians))
+		    .y2(125 + radio * Math.sin(radians))
+		    .stroke('#000').stroke_width(n % 30 === 0 ? 2 : 1);
+	}
+	
+	// create labels for the hours
+	
+	let h = 1;
+	for (let n = 6;  n <= 360; n += 6) {
+	  const radians = ((n - 90) * Math.PI) / 180.0;
+	  let radio;
+	  if (n % 30 === 0) {
+	    radio = 110;
+	    svg.add('text')
+	      .innerHTML(h++)
+	      .x(125 + 95 * Math.cos(radians))
+	      .y(132 + 95 * Math.sin(radians))
+	      .style.fontSize(20)
+	      .style.fontFamily('sans-serif')
+	      .text_anchor('middle');
+	  } else {
+	    radio = 115;
+	  }
+	  svg.add('line')
+	    .x1(125 + 120 * Math.cos(radians))
+	    .y1(125 + 120 * Math.sin(radians))
+	    .x2(125 + radio * Math.cos(radians))
+	    .y2(125 + radio * Math.sin(radians))
+	    .stroke('#000').stroke_width(n % 30 === 0 ? 2 : 1);
+	}
+	
+	// create clock hands
+	
+	const g       = svg.add('g').fill('#000').stroke('#555').stroke_width(1);
+	const seconds = g.add('polygon').points([125, 20], [129, 125], [125, 145], [124, 125]);
+	const minutes = g.add('polygon').points([125, 30], [130, 125], [125, 150], [120, 125]);
+	const hours   = g.add('polygon').points([125, 60], [132, 125], [125, 160], [118, 125]);
+
+	svg.attachTo('#content');
+	
+	// animate the hands
+	
+	setInterval((function update() {
+	  const d = new Date();
+	  seconds.transform(`rotate(${ d.getSeconds() * 6 }, 125, 125)`);
+	  minutes.transform(`rotate(${ d.getMinutes() * 6 }, 125, 125)`);
+	  hours  .transform(`rotate(${(d.getHours() % 12 * 30) +(d.getMinutes() * 0.5) }, 125, 125)`);
+	  return update;
+	})(), 1000);
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Animations via SVG
+</h1>
+
+<p>
+	This animation utilizes a SVG library, built for simplifying SVG and animations. The 
+	library is built by <a href="https://www.graphery.org/svg/examples/">Graphery SVG</a>. 
+	The animation implemented is a simple clock face that shows the current time per the 
+	computer.
+</p>
+
+<p>
+	First the gySVG library is imported. Then we configure the viewbox and create the 
+	graph. Then we draw a circle and add it to the viewbox. Hour and minute marks are 
+	created next. They are placed every 6&deg;. Next we need a text label for every 
+	hour. Next we create the three clock hands with add('polygon').
+</p>
+
+<p>
+	Finally, we animate the hands. This is done with setInterval where .transform('rotate') 
+	is called for each of the hands.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Display an SVG Clock</legend>
+		<input type="button" value="Show Clock" onclick="showClock()"/>
+</fieldset>
+
+<div name="content" id="content">
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 24, 2020</p>
+</footer>
+</html>

@@ -1,0 +1,258 @@
+<html>
+<head>
+<title>Common Factor Limit Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+
+function calcCFL() {
+
+	const a = parseInt(document.getElementById("firstNum").value);
+	const b = parseInt(document.getElementById("secondNum").value);
+
+	const result = (a*b)-(a+b);
+	document.getElementById("cfl").value=result;
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Common Factor Limit Calculator
+</h1>
+<h2>Problem Derived from a Web Excursion</h2><br />
+
+<p>
+	A linear combination of any two numbers will at some upper limit be able to produce 
+	all numbers after that limit. Per the following formula, for any integers a and b, 
+	the pair (13,119) can produce all numbers, n, above 1415. In general a and b must 
+	be relatively prime.
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+					<mrow>
+						<mn>13</mn>
+						<mi>a</mi>
+					</mrow>
+				<mo>+</mo>
+					<mrow>
+						<mn>119</mn>
+						<mi>b</mi>
+					</mrow>
+				<mo>=</mo>
+				<mi>n</mi>
+			</mrow>
+		</math>
+
+<p>	
+	This calculator determines the highest number that cannot be reproduced by a linear 
+	combination of the two numbers provided.
+</p>
+
+<p class=note>
+	This problem was seen on the web (12/9/18). It was solved by trying out various 
+	combinations of smaller integers. These pairs gave the following results: (3,5)=>7, 
+	(3,7)=>11, (5,7)=>23, (3,11)=>19, (5,11)=>39, and (7,11)=>59. This pattern can be 
+	reproduced by the following formula:
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mi>CFL</mi>
+				<mo>=</mo>
+				<mfenced>
+					<mrow>
+						<mi>a</mi>
+						<mo>x</mo>
+						<mi>b</mi>
+					</mrow>
+				</mfenced>
+				<mo>-</mo>
+				<mfenced>
+					<mrow>
+						<mi>a</mi>
+						<mo>+</mo>
+						<mi>b</mi>
+					</mrow>
+				</mfenced>
+			</mrow>
+		</math>
+
+<p>
+	I have not proven that this formula will always work, but it is implemented here.  
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter two numbers and hit the button:</legend>
+		<label for="firstNum">First Number</label>
+		<input type="text" id="firstNum" placeholder="11" autofocus><br/>
+		<label for="secondNum">Second Number</label>
+		<input type="text" id="secondNum" placeholder="113"><br/>
+		<br/>
+		<input type="button" value="Calculate CFL" onclick="calcCFL()"/>
+		<br/>
+		<br/>
+		<label for="cfl">Common factor limit = </label>
+		<input type="text" name="cfl" id="cfl" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<br/>
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>December 10, 2018</p>
+</footer>
+</html>

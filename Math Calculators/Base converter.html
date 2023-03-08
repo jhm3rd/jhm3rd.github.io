@@ -1,0 +1,721 @@
+<html>
+<head>
+<title>Numerical Base Converter</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table th {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	tbody tr:nth-child(odd) 
+  	{	
+  		background: #eee;
+	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+// global variables
+
+// for decimals need to first determine the number of decimals included. Then the 
+// smallest base fraction is determined and the closest larger matching fraction in 
+// the new base must be selected. For example, if the input is 0.123, then a conversion 
+// to base 2 would require going out 10 decimals to 1/1024. (Maybe one more for rounding.)
+
+// The process might look something like this:
+// Starting with  "123.456" grab characters from "." to string length.
+// Get length of new string, "456", and 10^length = 1000.
+// Successively multiply 2 by 2 until result is >= to 1000 or 1024 in this case.
+// If 456/1000 is >= 1/2 (2^-1) then divide numerator by 1/2 * 1000.
+// Otherwise put 0 in first decimal and go to next power (2^-2) = 1/4 and divide the 
+// numerator by 1/4 * 1000. This gives 1 in the second decimal with a remainder of 206.
+// Multiply this by 1000 * the next power of 2, 2^-3 or 1/8 * 1000 = 125. Divide 
+// numerator and get 1 for the third decimal with a remainder of 81. Continue for 
+// seven more iterations.
+
+
+var numerals = new String("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#");
+
+function checkForDec(n,base)
+{
+	var decPart = "";
+	var intPart = "";
+	var newNum = "";
+	var lenDec = 0;		// the number of decimal characters
+	var nStr = new String(n.toString());
+	var decLoc = nStr.indexOf(".");
+	
+	var powerTen = 0;	// the power of the denominator in base 10
+	var powerBase = 1;
+	var newDecLen = 0;
+	var decimal = 0;
+	
+	if (decLoc != -1) // we have a decimal
+	{
+		decPart = nStr.slice(decLoc+1);
+		decimal = parseInt(decPart);
+		intPart = nStr.slice(0,decLoc); // grabbed the integer and decimal parts of the number
+		lenDec = decPart.length;
+
+		newNum = getNewNum(intPart,base) + ".";
+		var insLoc = newNum.indexOf(" ");
+		newNum = newNum.substring(0,insLoc) + "." + decPart + newNum.substring(insLoc,newNum.length);
+		
+		powerTen = Math.pow(10,lenDec);
+		var nextDig = 0;
+		var remainder = 0;
+		var pBRecip = 0;
+		
+		// now we need to find a close match for this number in powers of base
+
+		powerBase = powerBase * base;		
+		remainder = decimal/powerTen;
+		
+		while (powerBase <= powerTen)
+		{
+			powerBase = powerBase * base;
+			newDecLen++;
+		}
+		
+		if (newDecLen < lenDec)
+		{
+			newDecLen = lenDec;
+		}
+		
+		powerBase = base;
+		for (var i=1; i<=newDecLen; i++)
+		{
+			pBRecip = 1/powerBase;
+			nextDig = Math.floor(remainder / pBRecip);
+			newNum = newNum + numerals.charAt(nextDig);
+			remainder = remainder % pBRecip;
+			powerBase = powerBase * base;
+		}
+		return newNum;
+	}
+	else
+	{
+		return getNewNum(n,base);
+	}
+}
+
+function getNewNum(n,base)
+{
+	var pow = 1;
+	var newNum = n + " in base " + base + " = ";	// this is a string 
+	var remainder = 1;
+	var multiple = 0;
+		
+	while (pow<=n)
+	{
+		pow = pow * base;
+	}
+	
+	pow = pow/base; // may have gone one power too far
+	remainder = n;
+	
+	while (pow!=1)
+	{
+		multiple = Math.floor(remainder/pow);
+		newNum = newNum + numerals.charAt(multiple);
+		remainder = remainder % pow;
+		pow = pow/base;
+	}
+	
+	newNum = newNum + numerals.charAt(remainder);
+	
+	return newNum;
+	
+} // end getNewNum 
+
+function getBTenNum(n,base)
+{
+	var pow = 1;
+	var numStr = new String(n.toString());
+	var len = numStr.length;
+	var result = 0;
+	var digit = 0;
+	
+	pow = Math.pow(base,len-1);
+	
+	for (var i=0; i<len; i++)
+	{
+		digit = numerals.indexOf(numStr.charAt(i));
+				// gets the value of the character at i
+				
+		result = result + pow * digit;
+		pow = pow / base;
+	}
+	
+	return result;
+	
+} // end getNewNum 
+
+function calcBase() {
+
+	var n = parseFloat(document.getElementById("n").value);
+	var base = document.getElementById("base").value;
+	
+	document.getElementById("numBase").value = checkForDec(n,base);
+
+} //end of function
+
+function toBaseTen() {
+
+	var n = document.getElementById("bTenNum").value;
+	var base = document.getElementById("oldBase").value;
+	
+	document.getElementById("baseTen").value = getBTenNum(n,base);
+
+} //end of function
+
+function toAllBases() { // to make compatible with reals, note the two changes below
+
+	var n = parseFloat(document.getElementById("baseTenNum").value); // change from parseInt to parseFloat
+	var div = document.getElementsByTagName("div")[0];
+	
+	var table = "<table><tr><th>Base</th><th>Number</th></tr>";
+	var strNum = "";
+	var eqPos;
+	
+	for (var i=2; i<=64; i++)
+	{
+		if (i!=10)
+		{
+			strNum = checkForDec(n,i);	// change from getNewNum(n,i) to checkForDec(n,i)
+			eqPos = strNum.indexOf("=");
+			strNum = strNum.slice(eqPos+1);
+			table = table + "<tr><td>" + i + "</td><td>" + strNum + "</td></tr>";
+		}
+	}
+	
+	table = table + "</table>"
+	div.innerHTML = table;
+
+} //end of function
+
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Numerical Base Converter
+</h1>
+
+<p>
+	This calculator will convert an integer in base 10 format to the corresponding 
+	representation in bases 2 - 64. With bases higher than 10 it is necessary to 
+	add to the usual numerals, 0 - 9. This is done by using capital letters to 
+	represent the numbers 10 - 35 for bases 11 - 36. For example, base 16 uses A through 
+	F to represent 10 - 15, respectively. Similarly, the lower case letters are used 
+	to represent the numbers 36 - 61 for bases 37 - 62. Finally, to get to base 64 
+	the characters @, and #, represent the numerals 63 and 64. respectively. A table 
+	should help to clarify these assignments: 
+</p>
+
+<table>
+	<tr>
+		<th>A</th>
+		<th>B</th>
+		<th>C</th>
+		<th>D</th>
+		<th>E</th>
+		<th>F</th>
+		<th>G</th>
+		<th>H</th>
+		<th>I</th>
+		<th>J</th>
+		<th>K</th>
+		<th>L</th>
+		<th>M</th>
+		<th>N</th>
+		<th>O</th>
+		<th>P</th>
+		<th>Q</th>
+		<th>R</th>
+		<th>S</th>
+		<th>T</th>
+		<th>U</th>
+		<th>V</th>
+		<th>W</th>
+		<th>X</th>
+		<th>Y</th>
+		<th>Z</th>
+	</tr>
+	<tr>
+		<td>10</td>
+		<td>11</td>
+		<td>12</td>
+		<td>13</td>
+		<td>14</td>
+		<td>15</td>
+		<td>16</td>
+		<td>17</td>
+		<td>18</td>
+		<td>19</td>
+		<td>20</td>
+		<td>21</td>
+		<td>22</td>
+		<td>23</td>
+		<td>24</td>
+		<td>25</td>
+		<td>26</td>
+		<td>27</td>
+		<td>28</td>
+		<td>29</td>
+		<td>30</td>
+		<td>31</td>
+		<td>32</td>
+		<td>33</td>
+		<td>34</td>
+		<td>35</td>
+	</tr>
+	<tr>
+		<th>a</th>
+		<th>b</th>
+		<th>c</th>
+		<th>d</th>
+		<th>e</th>
+		<th>f</th>
+		<th>g</th>
+		<th>h</th>
+		<th>i</th>
+		<th>j</th>
+		<th>k</th>
+		<th>l</th>
+		<th>m</th>
+		<th>n</th>
+		<th>o</th>
+		<th>p</th>
+		<th>q</th>
+		<th>r</th>
+		<th>s</th>
+		<th>t</th>
+		<th>u</th>
+		<th>v</th>
+		<th>w</th>
+		<th>x</th>
+		<th>y</th>
+		<th>z</th>
+	</tr>
+	<tr>
+		<td>36</td>
+		<td>37</td>
+		<td>38</td>
+		<td>39</td>
+		<td>40</td>
+		<td>41</td>
+		<td>42</td>
+		<td>43</td>
+		<td>44</td>
+		<td>45</td>
+		<td>46</td>
+		<td>47</td>
+		<td>48</td>
+		<td>49</td>
+		<td>50</td>
+		<td>51</td>
+		<td>52</td>
+		<td>53</td>
+		<td>54</td>
+		<td>55</td>
+		<td>56</td>
+		<td>57</td>
+		<td>58</td>
+		<td>59</td>
+		<td>60</td>
+		<td>61</td>
+	</tr>
+	<tr>
+		<th>@</th>
+		<th>#</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+	</tr>
+	<tr>
+		<td>62</td>
+		<td>63</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr>
+</table>
+
+<p class=note>
+	This calculator currently handles reals as well as integers in conversions 
+	across the same base range, 2&nbsp;-&nbsp;64, but only the first and third forms, 
+	from base ten to the chosen base(s).
+</p>
+
+<p>	
+	In the first form enter a number in base 10 and the desired base. The calculator 
+	returns the number expressed in the chosen base. The second form in the calculator 
+	will return the base 10 representation of a number expressed in a different base. 
+	The base must be specified. The third form in this calculator will produce a table 
+	of all bases [2-9,11-32] and the corresponding representations of any number entered 
+	in base 10.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>To convert a number in base 10 enter the number and the desired base:</legend>
+		<label for="n">Number</label>
+		<input type="text" id="n" placeholder="10" autofocus><br/>
+		<label for="base">Select the desired base:</label>
+		<select name="base" id="base">
+			<option value="2" selected>2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="11">11</option>
+			<option value="12">12</option>
+			<option value="13">13</option>
+			<option value="14">14</option>
+			<option value="15">15</option>
+			<option value="16">16</option>
+			<option value="17">17</option>
+			<option value="18">18</option>
+			<option value="19">19</option>
+			<option value="20">20</option>
+			<option value="21">21</option>
+			<option value="22">22</option>
+			<option value="23">23</option>
+			<option value="24">24</option>
+			<option value="25">25</option>
+			<option value="26">26</option>
+			<option value="27">27</option>
+			<option value="28">28</option>
+			<option value="29">29</option>
+			<option value="30">30</option>
+			<option value="31">31</option>
+			<option value="32">32</option>
+			<option value="33">33</option>
+			<option value="34">34</option>
+			<option value="35">35</option>
+			<option value="36">36</option>
+			<option value="37">37</option>
+			<option value="38">38</option>
+			<option value="39">39</option>
+			<option value="40">40</option>
+			<option value="41">41</option>
+			<option value="42">42</option>
+			<option value="43">43</option>
+			<option value="44">44</option>
+			<option value="45">45</option>
+			<option value="46">46</option>
+			<option value="47">47</option>
+			<option value="48">48</option>
+			<option value="49">49</option>
+			<option value="50">50</option>
+			<option value="51">51</option>
+			<option value="52">52</option>
+			<option value="53">53</option>
+			<option value="54">54</option>
+			<option value="55">55</option>
+			<option value="56">56</option>
+			<option value="57">57</option>
+			<option value="58">58</option>
+			<option value="59">59</option>
+			<option value="60">60</option>
+			<option value="61">61</option>
+			<option value="62">62</option>
+			<option value="63">63</option>
+			<option value="64">64</option>
+		</select><br/>
+		<br/>
+		<input type="button" value="Calculate With Base" onclick="calcBase()"/>
+		<br/>
+		<br/>
+		<label for="numBase">New Base Representation</label>
+		<input type="text" name="numBase" id="numBase" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<fieldset>
+	<legend>To convert a number from another base to base 10 enter number and current base:</legend>
+		<label for="bTenNum">Number</label>
+		<input type="text" id="bTenNum" placeholder="10"><br/>
+		<label for="base">Select the current base:</label>
+		<select name="oldBase" id="oldBase">
+			<option value="2" selected>2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="11">11</option>
+			<option value="12">12</option>
+			<option value="13">13</option>
+			<option value="14">14</option>
+			<option value="15">15</option>
+			<option value="16">16</option>
+			<option value="17">17</option>
+			<option value="18">18</option>
+			<option value="19">19</option>
+			<option value="20">20</option>
+			<option value="21">21</option>
+			<option value="22">22</option>
+			<option value="23">23</option>
+			<option value="24">24</option>
+			<option value="25">25</option>
+			<option value="26">26</option>
+			<option value="27">27</option>
+			<option value="28">28</option>
+			<option value="29">29</option>
+			<option value="30">30</option>
+			<option value="31">31</option>
+			<option value="32">32</option>
+			<option value="33">33</option>
+			<option value="34">34</option>
+			<option value="35">35</option>
+			<option value="36">36</option>
+			<option value="37">37</option>
+			<option value="38">38</option>
+			<option value="39">39</option>
+			<option value="40">40</option>
+			<option value="41">41</option>
+			<option value="42">42</option>
+			<option value="43">43</option>
+			<option value="44">44</option>
+			<option value="45">45</option>
+			<option value="46">46</option>
+			<option value="47">47</option>
+			<option value="48">48</option>
+			<option value="49">49</option>
+			<option value="50">50</option>
+			<option value="51">51</option>
+			<option value="52">52</option>
+			<option value="53">53</option>
+			<option value="54">54</option>
+			<option value="55">55</option>
+			<option value="56">56</option>
+			<option value="57">57</option>
+			<option value="58">58</option>
+			<option value="59">59</option>
+			<option value="60">60</option>
+			<option value="61">61</option>
+			<option value="62">62</option>
+			<option value="63">63</option>
+			<option value="64">64</option>
+		</select><br/>
+		<br/>
+		<input type="button" value="Convert to Base 10" onclick="toBaseTen()"/><br/><br/>
+		<label for="baseTen">Base 10 Equivalent</label>
+		<input type="text" name="baseTen" id="baseTen" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<fieldset>
+	<legend>Convert a number from base 10 into a table of representations of that number 
+		in all available bases</legend>
+	<label for="baseTenNum">Number</label>
+	<input type="text" id="baseTenNum" placeholder="10"><br/>
+	<br/>
+	<input type="button" value="Compute Table of Base Representations" onclick="toAllBases()"/><br/><br/>
+</fieldset>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>April 25, 2018</p>
+</footer>
+</html>

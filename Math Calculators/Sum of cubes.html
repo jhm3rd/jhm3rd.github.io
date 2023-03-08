@@ -1,0 +1,235 @@
+<html>
+<head>
+<title>Sum of Cubes</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function breakUpNum(n)	// assume n is a three digit number
+{
+	let result = [];
+	let strNum = "" + n;
+	
+	result[0] = parseInt(strNum[0]);
+	result[1] = parseInt(strNum[1])
+	result[2] = parseInt(strNum[2])
+	return result;
+}
+
+function soc()	
+{
+	let numArray = [];
+	let listing = "";
+	for (let i=100; i<1000; i++)
+	{
+		numArray = breakUpNum(i);
+		if ((Math.pow(numArray[0],3) + Math.pow(numArray[1],3) + Math.pow(numArray[2],3)) == i)
+		{
+			listing = listing + ", " + i;
+		}
+	}	// end for
+	
+	return listing;
+}	// end soc
+
+function calcSOC() {
+
+	var div = document.getElementsByTagName("div")[0];
+
+	var list = "";
+	
+	list = soc();
+	div.innerHTML = list;
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Sum of Cubes
+</h1>
+
+<p>
+	I encountered a puzzle that asked "what a three digit number which is equal to the 
+	sum of the cubes of its digits, where one less than this number also has this 
+	property?" This calculator solves this problem.
+</p>
+
+<p>	
+	The calculator returns a list of numbers whose sums of digits cubed equals the 
+	number. 
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>HHit the button:</legend>
+		<input type="button" value="Calculate Sums of Cubes" onclick="calcSOC()"/>
+		<br/>
+</fieldset>
+
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 5, 2017</p>
+</footer>
+</html>

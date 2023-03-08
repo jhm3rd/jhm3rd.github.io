@@ -1,0 +1,369 @@
+<html>
+<head>
+<title>Approximating Pi</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function piApprox(n) // this returns the approximation and the error in an array
+{
+	const pi = Math.PI;
+	const rpd = pi/180; //radians per degree
+
+	
+	const approx = n/2 * Math.sin(rpd*360/n);
+	const error = 100 * (pi - approx)/pi;
+	
+	const resArr = [approx,error];
+	
+	return resArr;
+}
+
+function piApproxW(n)
+{
+	const pi = Math.PI;
+	let piApprox = 1;
+	
+	for (let i=1; i<=n; i++)
+	{
+		piApprox = piApprox * ((2 * i)**2) / ((2 * i - 1) * (2 * i + 1))
+	}
+	
+	const error = 100 * (pi - 2 * piApprox)/pi;
+	
+	const resArr = [2 * piApprox,error];
+	
+	return resArr;
+}
+
+function calcPi() {
+
+	const n = document.getElementById("depth").value;
+	
+	let resArray = piApprox(n);
+	
+	document.getElementById("approx").value = resArray[0];
+	document.getElementById("error").value = resArray[1];
+
+} //end of function
+
+function calcWPi() {
+	const n = document.getElementById("depthW").value;
+	
+	let resArray = piApproxW(n);
+	
+	document.getElementById("approxW").value = resArray[0];
+	document.getElementById("errorW").value = resArray[1];
+}
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Approximating &pi;
+</h1>
+<h2>To the limits of a circle</h2><br />
+
+<p>
+	This calculator is a simple approximation for &pi; = 3.141592653589793. It was 
+	seen in a YouTube video by
+	<a href="https://www.youtube.com/watch?v=dBoG4eRSWG8">Think Twice</a>. The area 
+	of a circle of radius 1 is &pi;. So the circle's area can be approximated by the 
+	area of an inscribed polygon. The limit as the polygon approaches circular  is 
+	the formula below:
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<mi>&pi;</mi>
+			<mo>=</mo>
+			<munderover>
+				<mi>lim</mi>
+				<mrow>
+					<mi>n</mi>
+					<mo>&rarr;</mo>
+					<mo>&infin;</m0>
+				</mrow>
+				<mi></mi>
+			</munderover>
+			<mfrac>
+				<mi>n</mi>
+				<mn>2</mn>
+			</mfrac>
+			<mi>&it;</mi>
+			<mrow>
+				<mi>sin</mi>
+				<mfenced>
+					<mfrac>
+						<mn>360</mn>
+						<mi>n</mi>
+					</mfrac>
+				</mfenced>
+			</mrow>
+		</mrow>
+		</math>
+
+<p>	
+	The calculator returns an approximation and the associated error given 
+	an upper limit for n.
+</p>
+
+<p class=note>
+	It is not clear if there is any upper limit to the choice of n.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a number and hit the button:</legend>
+		<label for="depth">n = Limit of Calculation</label>
+		<input type="text" id="depth" placeholder="2513" autofocus><br/>
+		<br/>
+		<input type="button" value="Approximate pi" onclick="calcPi()"/>
+		<br/>
+		<br/>
+		<label for="approx">Approximate (<em>&pi;</em>) = </label>
+		<input type="text" name="approx" id="approx" size="25" readOnly="True"/><br />
+		<label for="error">Error (%) = </label>
+		<input type="text" name="error" id="error" size="25" readOnly="True"/><br />
+		
+		<br/>
+</fieldset>
+
+
+<hr />
+
+<h2>Via the Wallis Formula</h2><br />
+
+<p>
+	John Wallis devised the following formula for &pi; in 1655.
+</p>
+
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<mfrac>
+				<mi>&pi;</mi>
+				<mn>2</mn>
+			</mfrac>
+			<mo>=</mo>
+			<mfrac>
+				<mrow>
+					<mn>2</mn>
+					<mo>&#xd7;</mo>
+					<mn>2</mn>
+				</mrow>
+				<mrow>
+					<mn>1</mn>
+					<mo>&#xd7;</mo>
+					<mn>3</mn>
+				</mrow>
+			</mfrac>
+			<mo>&#xd7;</mo>
+			<mfrac>
+				<mrow>
+					<mn>4</mn>
+					<mo>&#xd7;</mo>
+					<mn>4</mn>
+				</mrow>
+				<mrow>
+					<mn>3</mn>
+					<mo>&#xd7;</mo>
+					<mn>5</mn>
+				</mrow>
+			</mfrac>
+			<mo>&#xd7;</mo>
+			<mfrac>
+				<mrow>
+					<mn>6</mn>
+					<mo>&#xd7;</mo>
+					<mn>6</mn>
+				</mrow>
+				<mrow>
+					<mn>5</mn>
+					<mo>&#xd7;</mo>
+					<mn>7</mn>
+				</mrow>
+			</mfrac>
+			<mi>&#x2026;</mi>
+		</mrow>
+	</math>
+	
+<p>
+	Each term is composed of the square of an even number divided by the product 
+	of the two odd numbers bracketing the even number.
+</p>
+
+<p class="note">
+	The error for 25,000 factors is about 0.001%.
+</p>
+
+<fieldset>
+	<legend>Enter the number of terms and hit the button:</legend>
+		<label for="depthW">n = Number of Terms</label>
+		<input type="text" id="depthW" placeholder="25" autofocus><br/>
+		<br/>
+		<input type="button" value="Approximate pi" onclick="calcWPi()"/>
+		<br/>
+		<br/>
+		<label for="approx">Approximate (<em>&pi;</em>) = </label>
+		<input type="text" name="approxW" id="approxW" size="25" readOnly="True"/><br />
+		<label for="error">Error (%) = </label>
+		<input type="text" name="errorW" id="errorW" size="25" readOnly="True"/><br />
+		
+		<br/>
+</fieldset>
+<br/>
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>June 26, 2019</p>
+</footer>
+</html>

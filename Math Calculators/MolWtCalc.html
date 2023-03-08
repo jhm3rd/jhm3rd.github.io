@@ -1,0 +1,562 @@
+<html>
+<head>
+<title> Molecular Weight Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 0 3px 10px;
+	}
+	img.bigImage {
+		margin:0 5px 5px 0;
+		height: 34%;
+		width: 60%;
+	}
+	label {
+		display: inline-block;
+		width: 350px;
+		font-weight: bold;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 150%;
+	}
+	input[type="button"] {
+		width: 300px;
+		font-size: 150%;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+	.element {
+		text-align: center;
+		margin-top: 0;
+		margin-bottom; 5px;
+		font-size: 120%
+	}
+	.number {
+		text-align: center;
+		margin-top: 0;
+		margin-bottom; 5px;
+		font-size: 150%
+	}
+	.bezel {
+		border-bottom: 2px solid #ccc;
+		border-right: 2px solid #ccc;
+	}
+	.tableButton {
+		position: relative;
+	}
+	.overlap {
+		position: absolute;
+		left: 0px;
+		top: 0px;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+</style>
+
+<script src="MolWtCalc.js"></script>
+
+<script type="text/javascript">
+
+// function getCoords(event) {
+//     let cX = event.clientX;
+//     let cY = event.clientY;
+//     let button = molWtCalc.findBtnFmClk(cX,cY);
+//     if (button)									// if an element/number was clicked
+// 	{    const formula = document.getElementById("molForm").value;
+//     	document.getElementById("molForm").value = formula + button;
+// 	}   
+// }
+
+function addToFormula(element)
+{
+	const formula = document.getElementById("molForm").value;
+    document.getElementById("molForm").value = formula + element;
+}
+
+
+/* the function for doing the main job... */
+function calc() {
+
+	// Get the entered formula string
+	const formula = document.getElementById("molForm").value;
+	
+	if(!formula) 
+	{
+    	// Nothing to do as molWt is empty)
+	} 
+	else	// Evaluate the formula and display result
+	{
+    	const elemArray = molWtCalc.parse(formula);		// Break formula into elements and numbers
+    	const molecWt = molWtCalc.calcMolWt(elemArray);		// Calculate the molecular weight
+		document.getElementById("molwt").value = molecWt;	// Assign the result
+	}
+
+}
+</script>
+
+</head>
+
+<body>
+<h1>Molecular Weight Calculator</h1>
+<h2>Calculate Molecular Weights for Entered Formulas</h2><br />
+
+
+<p> 
+	This calculator is useful for determining the molecular weight for any entered 
+	formula. The formula can be entered from the keyboard or from the periodic table 
+	and its associated number buttons. After entering the formula by either or both 
+	methods click the "Calculate Molecular Weight" button to get the molecular weight.
+</p>
+
+<br />
+
+<div class="tableButton">
+<!-- Table from LANL.gov -->
+
+<!-- Table is about 871 X 414 pixels, with each cell about 43 X 43 incl. spacing -->
+<!--
+<table width="871" border="0" cellpadding="1" cellspacing="2" class="data">
+      <tr>
+        <td ></td>
+        <td width="44"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+        <td width="40"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td  ></td>
+        <td class="bezel" bgcolor="#FFFF33">1<p class="element">H</p></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">0</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">1</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">2</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">3</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">4</p></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td class="bezel" bgcolor="#FF99FF">2<p class="element">He</p>
+		</td>
+		</tr>
+		<tr>
+		<td  ></td>
+		<td class="bezel" bgcolor="#33CCFF">3<p class="element">Li</p></td>
+		<td class="bezel" bgcolor="#FFCC99">4<p class="element">Be</p></td>
+		<td></td>
+		<td></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">5</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">6</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">7</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">8</p></td>
+		<td class="bezel" bgcolor="#FFEECC"><p class="number">9</p></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td class="bezel" bgcolor="#FF9999">5<p class="element">B</p></td>
+		<td class="bezel" bgcolor="#FFFF33">6<p class="element">C</p></td>
+		<td class="bezel" bgcolor="#FFFF33">7<p class="element">N</p></td>
+		<td class="bezel" bgcolor="#FFFF33"> 8<p class="element">O</p></td>
+		<td class="bezel" bgcolor="#FF6666">9<p class="element">F</p></td>
+		<td class="bezel" bgcolor="#FF99FF">10<p class="element">Ne</p></td>
+
+        </tr>
+		<tr>
+        <td ></td>
+        <td class="bezel" bgcolor="#33CCFF">11<p class="element">Na</p></td>
+        <td class="bezel" bgcolor="#FFCC99">12<p class="element">Mg</p></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+
+        <td></td>
+
+        <td></td>
+
+        <td></td>
+
+        <td></td>
+
+        <td class="bezel" bgcolor="#FFCCCC">13<p class="element">Al</p></td>
+        <td class="bezel"  bgcolor="#FF9999">14<p class="element">Si</p></td>
+        <td class="bezel" bgcolor="#FFFF33">15<p class="element">P</p></td>
+        <td class="bezel" bgcolor="#FFFF33">16<p class="element">S</p></td>
+        <td class="bezel" bgcolor="#FF6666">17<p class="element">Cl</p></td>
+        <td class="bezel"  bgcolor="#FF99FF">18<p class="element">Ar</p></td>
+      </tr>
+      <tr>
+		<td></td>
+        <td class="bezel"  bgcolor="#33CCFF">19<p class="element">K</p></td>
+        <td class="bezel" bgcolor="#FFCC99">20<p class="element">Ca</p></td>
+        <td class="bezel" bgcolor="#66FF66">21<p class="element">Sc</p></td>
+        <td class="bezel" bgcolor="#66FF66">22<p class="element">Ti</p></td>
+        <td class="bezel" bgcolor="#66FF66">23<p class="element">V</p></td>
+        <td class="bezel" bgcolor="#66FF66">24<p class="element">Cr</p></td>
+        <td class="bezel" bgcolor="#66FF66" >25<p class="element">Mn</p></td>
+        <td class="bezel" bgcolor="#66FF66">26<p class="element">Fe</p></td>
+        <td class="bezel" bgcolor="#66FF66">27<p class="element">Co</p></td>
+        <td class="bezel" bgcolor="#66FF66">28<p class="element">Ni</p></td>
+        <td class="bezel" bgcolor="#66FF66">29<p class="element">Cu</p></td>
+        <td class="bezel" bgcolor="#66FF66">30<p class="element">Zn</p></td>
+        <td class="bezel" bgcolor="#FFCCCC">31<p class="element">Ga</p></td>
+        <td class="bezel" bgcolor="#FF9999">32<p class="element">Ge</p></td>
+        <td class="bezel" bgcolor="#FF9999">33<p class="element">As</p></td>
+        <td class="bezel" bgcolor="#FFFF33" >34<p class="element">Se</p></td>
+        <td class="bezel" bgcolor="#FF6666" >35<p class="element">Br</p></td>
+        <td class="bezel" bgcolor="#FF99FF" >36<p class="element">Kr</p></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="bezel" bgcolor="#33CCFF">37<p class="element">Rb</p></td>
+        <td class="bezel" bgcolor="#FFCC99">38<p class="element">Sr</p></td>
+        <td class="bezel" bgcolor="#66FF66">39<p class="element">Y</p></td>
+        <td class="bezel" bgcolor="#66FF66">40<p class="element">Zr</p></td>
+        <td class="bezel" bgcolor="#66FF66">41<p class="element">Nb</p></td>
+        <td class="bezel" bgcolor="#66FF66">42<p class="element">Mo</p></td>
+        <td class="bezel" bgcolor="#66FF66">43<p class="element">Tc</p></td>
+		<td class="bezel" bgcolor="#66FF66">44<p class="element">Ru</p></td>
+		<td class="bezel" bgcolor="#66FF66">45<p class="element">Rh</p></td>
+		<td class="bezel" bgcolor="#66FF66">46<p class="element">Pd</p></td>
+		<td class="bezel" bgcolor="#66FF66">47<p class="element">Ag</p></td>
+		<td class="bezel" bgcolor="#66FF66">48<p class="element">Cd</p></td>
+		<td class="bezel" bgcolor="#FFCCCC">49<p class="element">In</p></td>
+		<td class="bezel" bgcolor="#FFCCCC">50<p class="element">Sn</p></td>
+		<td class="bezel"  bgcolor="#FF9999">51<p class="element">Sb</p></td>
+		<td class="bezel" bgcolor="#FF9999">52<p class="element">Te</p></td>
+		<td class="bezel" bgcolor="#FF6666">53<p class="element">I</p></td>
+		<td class="bezel" bgcolor="#FF99FF">54<p class="element">Xe</p></td>
+      </tr>
+      <tr >
+        <td></td>
+        <td class="bezel" bgcolor="#33CCFF">55<p class="element">Cs</p></td>
+        <td class="bezel" bgcolor="#FFCC99">56<p class="element">Ba</p></td>
+        <td bgcolor="#99FFCC">*</td>
+        <td class="bezel" bgcolor="#66FF66" >72<p class="element">Hf</p></td>
+        <td class="bezel" bgcolor="#66FF66" >73<p class="element">Ta</p></td>
+        <td class="bezel" bgcolor="#66FF66" >74<p class="element">W</p></td>
+		<td class="bezel" bgcolor="#66FF66" >75<p class="element">Re</p></td>
+		<td class="bezel" bgcolor="#66FF66" >76<p class="element">Os</p></td>
+		<td class="bezel" bgcolor="#66FF66" >77<p class="element">Ir</p></td>
+		<td class="bezel" bgcolor="#66FF66" >78<p class="element">Pt</p></td>
+		<td class="bezel" bgcolor="#66FF66" >79<p class="element">Au</p></td>
+		<td class="bezel" bgcolor="#66FF66" >80<p class="element">Hg</p></td>
+		<td class="bezel" bgcolor="#FFCCCC" >81<p class="element">Tl</p></td>
+		<td class="bezel" bgcolor="#FFCCCC" >82<p class="element">Pb</p></td>
+		<td class="bezel" bgcolor="#FFCCCC" >83<p class="element">Bi</p></td>
+		<td class="bezel" bgcolor="#FF9999" >84<p class="element">Po</p></td>
+		<td class="bezel" bgcolor="#FF6666" >85<p class="element">At</p></td>
+		<td class="bezel" bgcolor="#FF99FF" >86<p class="element">Rn</p></td>
+      </tr>
+      <tr>
+        <td  ></td>
+        <td class="bezel" bgcolor="#33CCFF">87<p class="element">Fr</p></td>
+        <td class="bezel" bgcolor="#FFCC99">88<p class="element">Ra</p></td>
+        <td bgcolor="#33CCCC">**</td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#66FF66"><p class="element"></p></td>
+		<td bgcolor="#FFCCCC"><p class="element"></p></td>
+		<td bgcolor="#FFCCCC"><p class="element"></p></td>
+		<td bgcolor="#FFCCCC"><p class="element"></p></td>
+		<td bgcolor="#FFCCCC"><p class="element"></p></td>
+		<td bgcolor="#FF6666"><p class="element"></p></td>
+		<td bgcolor="#FF99FF"><p class="element"></p></td>
+      </tr>
+      </table>   
+  <div class="clear"></div><br />
+    <table width="873" border="0" cellpadding="1" cellspacing="2" class="data">
+    <tr>
+      <td width="100"></td>
+      <td width="73">Lanthanides*</td>
+      <td width="36" class="bezel"  bgcolor="#99FFCC">57<p class="element">La</p></td>
+     <td width="40"  class="bezel" bgcolor="#99FFCC">58<p class="element">Ce</p></td>
+      <td width="40"  class="bezel" bgcolor="#99FFCC">59<p class="element">Pr</p></td>
+      <td width="40"  class="bezel" bgcolor="#99FFCC">60<p class="element">Nd</p></td>
+      <td width="39"  class="bezel" bgcolor="#99FFCC">61<p class="element">Pm</p></td>
+      <td width="39"  class="bezel" bgcolor="#99FFCC">62<p class="element">Sm</p></td>
+      <td width="40" class="bezel"  bgcolor="#99FFCC">63<p class="element">Eu</p></td>
+      <td width="40"  class="bezel" bgcolor="#99FFCC">64<p class="element">Gd</p></td>
+      <td width="40"  class="bezel" bgcolor="#99FFCC">65<p class="element">Tb</p></td>
+      <td width="39"  class="bezel" bgcolor="#99FFCC">66<p class="element">Dy</p></td>
+      <td width="39"  class="bezel" bgcolor="#99FFCC">67<p class="element">Ho</p></td>
+      <td width="39"  class="bezel" bgcolor="#99FFCC">68<p class="element">Er</p></td>
+      <td width="38"  class="bezel" bgcolor="#99FFCC">69<p class="element">Tm</p></td>
+      <td width="40"  class="bezel" bgcolor="#99FFCC">70<p class="element">Yb</p></td>
+      <td width="40"  class="bezel" bgcolor="#99FFCC">71<p class="element">Lu</p></td>
+      </tr>
+      <tr>
+        <td width="89"></td>
+        <td width="73">Actinides**</td>
+        <td class="bezel" bgcolor="#33CCCC">89<p class="element">Ac</p></td>
+        <td class="bezel" bgcolor="#33CCCC">90<p class="element">Th</p></td>
+        <td class="bezel" bgcolor="#33CCCC">91<p class="element">Pa</p></td>
+        <td class="bezel" bgcolor="#33CCCC">92<p class="element">U</p></td>
+        <td bgcolor="#33CCCC"><p class="element"></p></td>
+        <td bgcolor="#33CCCC"><p class="element"></p></td>
+        <td bgcolor="#33CCCC"><p class="element"></p></td>
+        <td bgcolor="#33CCCC"><p class="element"></p></td>
+		<td bgcolor="#33CCCC"><p class="element"></p></td>
+		<td bgcolor="#33CCCC"><p class="element"></p></td>
+		<td bgcolor="#33CCCC"><p class="element"></p></td>
+		<td bgcolor="#33CCCC"><p class="element"></p></td>
+		<td bgcolor="#33CCCC"><p class="element"></p></td>
+		<td bgcolor="#33CCCC"><p class="element"></p></td>
+		<td bgcolor="#33CCCC"><p class="element"></p></td>
+	  </tr>
+</table>
+-->
+
+<img class="overlap" src="Periodic table.png" alt="Periodic table" width="876" height="468" usemap="#elements">
+<!-- This picture that doesn't exist seems to work, though ideally a transparent pic 
+		or a pic of the PT would be better. -->
+<!-- 	const keyWidth = 43;
+		const keyHeight = 47;
+		const leftMargin = 115;
+		const LALeftMargin = 240;
+		const topMargin = 36;
+		const LATopMargin = 399;
+		const gap = 1; -->
+		
+<map name="elements">
+	<area shape="rect" href="" coords = "72,8,115,55" title = "Hydrogen" onClick = "addToFormula('H'); return false;"/>
+	<area shape="rect" href="" coords = "252,8,295,55" title = "0" onClick = "addToFormula('0'); return false;"/>
+	<area shape="rect" href="" coords = "296,8,339,55" title = "1" onClick = "addToFormula('1'); return false;"/>
+	<area shape="rect" href="" coords = "340,8,382,55" title = "2" onClick = "addToFormula('2'); return false;"/>
+	<area shape="rect" href="" coords = "383,8,426,55" title = "3" onClick = "addToFormula('3'); return false;"/>
+	<area shape="rect" href="" coords = "428,8,471,55" title = "4" onClick = "addToFormula('4'); return false;"/>
+	<area shape="rect" href="" coords = "828,8,871,55" title = "Helium" onClick = "addToFormula('He'); return false;"/>
+
+	<area shape="rect" href="" coords = "72,56,115,103" title = "Lithium" onClick = "addToFormula('Li'); return false;"/>
+	<area shape="rect" href="" coords = "116,56,159,103" title = "Berylium" onClick = "addToFormula('Be'); return false;"/>
+	<area shape="rect" href="" coords = "252,56,295,103" title = "5" onClick = "addToFormula('0'); return false;"/>
+	<area shape="rect" href="" coords = "296,56,339,103" title = "6" onClick = "addToFormula('1'); return false;"/>
+	<area shape="rect" href="" coords = "340,56,382,103" title = "7" onClick = "addToFormula('2'); return false;"/>
+	<area shape="rect" href="" coords = "383,56,426,103" title = "8" onClick = "addToFormula('3'); return false;"/>
+	<area shape="rect" href="" coords = "428,56,471,103" title = "9" onClick = "addToFormula('4'); return false;"/>
+	<area shape="rect" href="" coords = "604,56,647,103" title = "Boron" onClick = "addToFormula('B'); return false;"/>
+	<area shape="rect" href="" coords = "648,56,691,103" title = "Carbon" onClick = "addToFormula('C'); return false;"/>
+	<area shape="rect" href="" coords = "692,56,735,103" title = "Nitrogen" onClick = "addToFormula('N'); return false;"/>
+	<area shape="rect" href="" coords = "736,56,779,103" title = "Oxygen" onClick = "addToFormula('O'); return false;"/>
+	<area shape="rect" href="" coords = "780,56,823,103" title = "Fluorine" onClick = "addToFormula('F'); return false;"/>
+	<area shape="rect" href="" coords = "824,56,867,103" title = "Neon" onClick = "addToFormula('Ne'); return false;"/>
+
+	<area shape="rect" href="" coords = "72,104,115,151" title = "Sodium" onClick = "addToFormula('Na'); return false;"/>
+	<area shape="rect" href="" coords = "116,104,159,151" title = "Magnesium" onClick = "addToFormula('Mg'); return false;"/>
+	<area shape="rect" href="" coords = "604,104,647,151" title = "Aluminum" onClick = "addToFormula('Al'); return false;"/>
+	<area shape="rect" href="" coords = "648,104,691,151" title = "Silicon" onClick = "addToFormula('Si'); return false;"/>
+	<area shape="rect" href="" coords = "692,104,735,151" title = "Phosphorus" onClick = "addToFormula('P'); return false;"/>
+	<area shape="rect" href="" coords = "736,104,779,151" title = "Sulfur" onClick = "addToFormula('S'); return false;"/>
+	<area shape="rect" href="" coords = "780,104,823,151" title = "Chlorine" onClick = "addToFormula('Cl'); return false;"/>
+	<area shape="rect" href="" coords = "824,104,867,151" title = "Argon" onClick = "addToFormula('Ar'); return false;"/>
+
+	<area shape="rect" href="" coords = "72,152,115,197" title = "Potassium" onClick = "addToFormula('K'); return false;"/>
+	<area shape="rect" href="" coords = "116,152,159,197" title = "Calcium" onClick = "addToFormula('Ca'); return false;"/>
+	<area shape="rect" href="" coords = "160,152,205,197" title = "Scandium" onClick = "addToFormula('Sc'); return false;"/>
+	<area shape="rect" href="" coords = "208,152,251,197" title = "Titanium" onClick = "addToFormula('Ti'); return false;"/>
+	<area shape="rect" href="" coords = "252,152,295,197" title = "Vanadium" onClick = "addToFormula('V'); return false;"/>
+	<area shape="rect" href="" coords = "296,152,339,197" title = "Chromium" onClick = "addToFormula('Cr'); return false;"/>
+	<area shape="rect" href="" coords = "340,152,383,197" title = "Manganese" onClick = "addToFormula('Mn'); return false;"/>
+	<area shape="rect" href="" coords = "384,152,427,197" title = "Iron" onClick = "addToFormula('Fe'); return false;"/>
+	<area shape="rect" href="" coords = "428,152,471,197" title = "Cobalt" onClick = "addToFormula('Co'); return false;"/>
+	<area shape="rect" href="" coords = "472,152,515,197" title = "Nickel" onClick = "addToFormula('Ni'); return false;"/>
+	<area shape="rect" href="" coords = "516,152,559,197" title = "Copper" onClick = "addToFormula('Cu'); return false;"/>
+	<area shape="rect" href="" coords = "560,152,603,197" title = "Zinc" onClick = "addToFormula('Zn'); return false;"/>
+	<area shape="rect" href="" coords = "604,152,647,197" title = "Gallium" onClick = "addToFormula('Ga'); return false;"/>
+	<area shape="rect" href="" coords = "648,152,691,197" title = "Germenanium" onClick = "addToFormula('Ge'); return false;"/>
+	<area shape="rect" href="" coords = "692,152,735,197" title = "Arsenic" onClick = "addToFormula('As'); return false;"/>
+	<area shape="rect" href="" coords = "736,152,779,197" title = "Selenium" onClick = "addToFormula('Se'); return false;"/>
+	<area shape="rect" href="" coords = "780,152,823,197" title = "Bromine" onClick = "addToFormula('Br'); return false;"/>
+	<area shape="rect" href="" coords = "824,152,867,197" title = "Krypton" onClick = "addToFormula('Kr'); return false;"/>
+
+	<area shape="rect" href="" coords = "72,200,115,247" title = "Rubidium" onClick = "addToFormula('Rb'); return false;"/>
+	<area shape="rect" href="" coords = "116,200,159,247" title = "Strontium" onClick = "addToFormula('Sr'); return false;"/>
+	<area shape="rect" href="" coords = "160,200,205,247" title = "Ytrium" onClick = "addToFormula('Y'); return false;"/>
+	<area shape="rect" href="" coords = "208,200,251,247" title = "Zirconium" onClick = "addToFormula('Zr'); return false;"/>
+	<area shape="rect" href="" coords = "252,200,295,247" title = "Niobium" onClick = "addToFormula('Nb'); return false;"/>
+	<area shape="rect" href="" coords = "296,200,339,247" title = "Molybdenum" onClick = "addToFormula('Mo'); return false;"/>
+	<area shape="rect" href="" coords = "340,200,383,247" title = "Technetium" onClick = "addToFormula('Tc'); return false;"/>
+	<area shape="rect" href="" coords = "384,200,427,247" title = "Ruthenium" onClick = "addToFormula('Ru'); return false;"/>
+	<area shape="rect" href="" coords = "428,200,471,247" title = "Rhodium" onClick = "addToFormula('Rh'); return false;"/>
+	<area shape="rect" href="" coords = "472,200,515,247" title = "Palladium" onClick = "addToFormula('Pd'); return false;"/>
+	<area shape="rect" href="" coords = "516,200,559,247" title = "Silver" onClick = "addToFormula('Ag'); return false;"/>
+	<area shape="rect" href="" coords = "560,200,603,247" title = "Cadmium" onClick = "addToFormula('Cd'); return false;"/>
+	<area shape="rect" href="" coords = "604,200,647,247" title = "Indium" onClick = "addToFormula('In'); return false;"/>
+	<area shape="rect" href="" coords = "648,200,691,247" title = "Tin" onClick = "addToFormula('Sn'); return false;"/>
+	<area shape="rect" href="" coords = "692,200,735,247" title = "Antimony" onClick = "addToFormula('Sb'); return false;"/>
+	<area shape="rect" href="" coords = "736,200,779,247" title = "Tellurium" onClick = "addToFormula('Te'); return false;"/>
+	<area shape="rect" href="" coords = "780,200,823,247" title = "Iodine" onClick = "addToFormula('I'); return false;"/>
+	<area shape="rect" href="" coords = "824,200,867,247" title = "Xenon" onClick = "addToFormula('Xe'); return false;"/>
+
+	<area shape="rect" href="" coords = "72,248,115,295" title = "Cesium" onClick = "addToFormula('Cs'); return false;"/>
+	<area shape="rect" href="" coords = "116,248,159,295" title = "Barium" onClick = "addToFormula('Ba'); return false;"/>
+	<area shape="rect" href="" coords = "208,248,251,295" title = "Hafnium" onClick = "addToFormula('Hf'); return false;"/>
+	<area shape="rect" href="" coords = "252,248,295,295" title = "Tantalum" onClick = "addToFormula('Ta'); return false;"/>
+	<area shape="rect" href="" coords = "296,248,339,295" title = "Tungsten" onClick = "addToFormula('W'); return false;"/>
+	<area shape="rect" href="" coords = "340,248,383,295" title = "Rhenium" onClick = "addToFormula('Re'); return false;"/>
+	<area shape="rect" href="" coords = "384,248,427,295" title = "Osmium" onClick = "addToFormula('Os'); return false;"/>
+	<area shape="rect" href="" coords = "428,248,471,295" title = "Iridium" onClick = "addToFormula('Ir'); return false;"/>
+	<area shape="rect" href="" coords = "472,248,515,295" title = "Platinum" onClick = "addToFormula('Pt'); return false;"/>
+	<area shape="rect" href="" coords = "516,248,559,295" title = "Gold" onClick = "addToFormula('Au'); return false;"/>
+	<area shape="rect" href="" coords = "560,248,603,295" title = "Mercury" onClick = "addToFormula('Hg'); return false;"/>
+	<area shape="rect" href="" coords = "604,248,647,295" title = "Thallium" onClick = "addToFormula('Tl'); return false;"/>
+	<area shape="rect" href="" coords = "648,248,691,295" title = "Lead" onClick = "addToFormula('Pb'); return false;"/>
+	<area shape="rect" href="" coords = "692,248,735,295" title = "Bismuth" onClick = "addToFormula('Bi'); return false;"/>
+	<area shape="rect" href="" coords = "736,248,779,295" title = "Polonium" onClick = "addToFormula('Po'); return false;"/>
+	<area shape="rect" href="" coords = "780,248,823,295" title = "Astatine" onClick = "addToFormula('At'); return false;"/>
+	<area shape="rect" href="" coords = "824,248,867,295" title = "Radon" onClick = "addToFormula('Rn'); return false;"/>
+
+	<area shape="rect" href="" coords = "72,296,115,343" title = "Francium" onClick = "addToFormula('Fr'); return false;"/>
+	<area shape="rect" href="" coords = "116,296,159,343" title = "Radium" onClick = "addToFormula('Ra'); return false;"/>
+
+	<area shape="rect" href="" coords = "198,368,241,415" title = "Lanthanum" onClick = "addToFormula('La'); return false;"/>
+	<area shape="rect" href="" coords = "242,368,285,415" title = "Cerium" onClick = "addToFormula('Ce'); return false;"/>
+	<area shape="rect" href="" coords = "286,368,329,415" title = "Praseodymium" onClick = "addToFormula('Pr'); return false;"/>
+	<area shape="rect" href="" coords = "331,368,374,415" title = "Neodymium" onClick = "addToFormula('Nd'); return false;"/>
+	<area shape="rect" href="" coords = "376,368,419,415" title = "Promethium" onClick = "addToFormula('Pm'); return false;"/>
+	<area shape="rect" href="" coords = "420,368,463,415" title = "Samarium" onClick = "addToFormula('Sm'); return false;"/>
+	<area shape="rect" href="" coords = "468,368,511,415" title = "Europium" onClick = "addToFormula('Eu'); return false;"/>
+	<area shape="rect" href="" coords = "512,368,555,415" title = "Gadolinium" onClick = "addToFormula('Gd'); return false;"/>
+	<area shape="rect" href="" coords = "556,368,599,415" title = "Terbium" onClick = "addToFormula('Tb'); return false;"/>
+	<area shape="rect" href="" coords = "600,368,643,415" title = "Dysprosium" onClick = "addToFormula('Dy'); return false;"/>
+	<area shape="rect" href="" coords = "644,368,687,415" title = "Holmium" onClick = "addToFormula('Ho'); return false;"/>
+	<area shape="rect" href="" coords = "688,368,731,415" title = "Erbium" onClick = "addToFormula('Er'); return false;"/>
+	<area shape="rect" href="" coords = "732,368,775,415" title = "Thulium" onClick = "addToFormula('Tm'); return false;"/>
+	<area shape="rect" href="" coords = "776,368,819,415" title = "Ytterbium" onClick = "addToFormula('Yb'); return false;"/>
+	<area shape="rect" href="" coords = "820,368,863,415" title = "Lutetium" onClick = "addToFormula('Lu'); return false;"/>
+
+	<area shape="rect" href="" coords = "198,416,241,462" title = "Actinium" onClick = "addToFormula('Ac'); return false;"/>
+	<area shape="rect" href="" coords = "242,416,285,462" title = "Thorium" onClick = "addToFormula('Th'); return false;"/>
+	<area shape="rect" href="" coords = "286,416,329,462" title = "Protactinium" onClick = "addToFormula('Pa'); return false;"/>
+	<area shape="rect" href="" coords = "331,416,374,462" title = "Uranium" onClick = "addToFormula('U'); return false;"/>
+        
+        
+</map>
+
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<p class="note">
+	The elemental weights are in the MolWtCalc.js file (lines 217 - 400) and can be 
+	modified as needed.
+</p>
+
+<hr />
+<br />
+<fieldset>
+	<legend>Molecular Weight Calculation</legend>
+	<label>Molecular Formula</label>
+	<input type="text" id="molForm" placeholder="C12H23NO2" size="12" autofocus /><br />
+	<br />
+	<hr />
+	<br /><input type="button" value="Calculate Molecular Weight" onclick="calc()"/><br />
+	<br />
+	<label>Molecular Weight</label>
+	<input type="text" id="molwt" readOnly="True" size="12"/><br />
+	<br>
+</fieldset>
+
+<hr />
+</body>
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+	<p>January 3, 2020</p>
+</footer>
+</html>

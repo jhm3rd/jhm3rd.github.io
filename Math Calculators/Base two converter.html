@@ -1,0 +1,346 @@
+<html>
+<head>
+<title>Fractional Decimal-Binary Inter-Converter</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function intToBTwo (number)							// number is string
+{
+	const num = parseInt(number);
+	let rem = num % 2;								// remainder
+	let newNum = parseInt(num/2);					// result
+	let baseTwo = rem.toString();					// growing  base two number
+	while (newNum !== 0)
+	{
+		rem = newNum % 2;
+		newNum = parseInt(newNum / 2);
+		baseTwo = rem.toString().concat(baseTwo);
+	}
+	return baseTwo;									// return string
+}
+
+function intToBTen (number)							// number is string
+{
+	const numLen = number.length;
+	let i = 0;
+	let baseTenNum = 0;
+	let digit = 0;
+	while (i < numLen)
+	{
+		i++;
+		baseTenNum = baseTenNum + 2**(i-1) * number[numLen - i];
+	}
+	
+	return baseTenNum.toString();					// return string
+}
+
+function fracToBTwo (number,prcsn)
+{
+	const num = parseFloat(`.${number}`);
+
+	let newNum = num * 2;
+	let intPart = parseInt(newNum);
+	newNum = newNum - intPart;
+	let digit = (intPart >= 1) ? 1 : 0;
+	let baseTwo = digit.toString();
+	
+	let i = 1;
+	
+	while (newNum > 0 && i < prcsn)
+	{
+		newNum = newNum * 2;
+		intPart = parseInt(newNum);
+		newNum = newNum - intPart;
+		digit = (intPart >= 1) ? 1 : 0;
+		i++;
+
+		baseTwo = baseTwo.concat(digit.toString());
+	}
+	return baseTwo;
+}
+
+function fracToBTen (number)
+{
+	const numLen = number.length;
+	let i = numLen;
+	let baseTenNum = 0;
+	let digit = 0;
+	while (i > 0)
+	{
+		baseTenNum = baseTenNum + number[numLen - i] / 2**(numLen - i + 1);
+		i--;
+	}
+	
+	return baseTenNum.toString();					// return string
+}
+
+function convert() {
+
+	const number = document.getElementById("num").value;
+	const theBase = document.getElementById("tenOrTwo").value;
+	let prcsn = document.getElementById("precision").value;
+	let answer = "";
+	
+	if (prcsn == "")
+	{
+		prcsn = "10";
+	}
+
+// Break number into integer and fractional parts, convert them and recombine.
+
+	if (number.includes("."))
+	{
+		const numParts = number.split(".");
+		if (theBase == "ten")
+		{
+			answer = `${intToBTwo(numParts[0])}.${fracToBTwo(numParts[1],prcsn)}`;
+		}
+		else								// base 2
+		{
+			answer = (parseInt(intToBTen(numParts[0])) + parseFloat(fracToBTen(numParts[1]))).toFixed(prcsn);
+		}
+	}
+	else									// integer
+	{
+		if (theBase == "ten")
+		{
+			answer = intToBTwo(number);
+		}
+		else								// base 2
+		{
+			answer = intToBTen(number);
+		}
+	}
+	
+	document.getElementById("convertedNum").value = answer;
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Fractional Decimal to Binary Converter
+</h1>
+<h2>(and Back Again)</h2><br />
+
+<p>
+	This calculator converts numbers from base ten to binary and back using a simple 
+	algorithm. It works for both intergers and decimals. Precision of the output can 
+	be modified as desired.
+</p>
+
+<p class="note">
+	Never realized how many meanings "<em>decimal</em>" has (and are used here): 
+	"<em>decimal</em>" or Base 10 number system, the "<em>decimal</em>" digits to the 
+	right of the "period", and <em>decimal</em> point for the "period".
+</p>
+
+<p>
+	For Base 10 to Base 2 integer conversion the algorithm is simply successive divisions 
+	by 2. The fractional part is converted by successive multiplications of resulting 
+	fractional parts by 2. For Base 2 to Base 10 integer conversion the algorithm 
+	multiplies the individual digits by increasing powers of 2 and for the decimal part 
+	the individual digits are multiplied by the reciprocals of increasing powers of 2.
+</p>
+
+<p class="note">
+	For the integer part of base ten numbers JavaScript provides a simple way to convert 
+	to binary with number.toString(2), e.g., if integer = 29, then integer.toString(2) 
+	returns 11101.
+</p>
+
+<p>	
+	To use the calculator enter a number, specify whether the number is in Base 10 or 
+	Base 2, and the desired precision. The default is Base 10 and ten digits of 
+	precision after the decimal point. Ten or eleven Base 2 decimals of precision is 
+	equivalent to "thousandths" precision in Base 10.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a number and hit the button:</legend>
+		<label for="num">Number to Convert</label>
+		<input type="text" id="num" placeholder="255" autofocus><br/>
+		<br />
+		<label for="tenOrTwo">Current Number Is Base 10 or Base 2:</label>
+		<select id="tenOrTwo">
+			<option value="ten" selected>Base 10</option>
+			<option value="two">Base 2</option>
+		</select>
+		<br />
+		<br />
+		<label for="precision">Precision (integer)</label>
+		<input type="text" id="precision" placeholder="10"><br/>
+		<br/>
+		<input type="button" value="Convert" onclick="convert()"/>
+		<br/>
+		<label for="convertedNum">Converted Number</label>
+		<input type="text" id="convertedNum" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+
+<p class="note">
+	A lot of precision can be required to get a base ten fraction back from its base 
+	two equivalent. For example, 3.1415 with a precision of 20 when converted to binary 
+	(11.00100100001110010101) and the binary answer pasted back into "Number to Convert" 
+	returned: 3.14149951934814453125.
+</p>
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 15, 2020</p>
+</footer>
+</html>

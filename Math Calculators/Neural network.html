@@ -1,0 +1,1272 @@
+<html>
+<head>
+<title>Neural Network</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script src="plotly-latest.min.js"></script>
+<script type="text/javascript">
+<!--
+
+let lossAccum = new Array(100);
+let accumReg = 0;
+
+function randNormal(){				// want to fake numpy.random.normal which picks
+									// a random biased by the gaussian distribution
+	let newRand = 0;				// the following is from Wikipedia article on
+									// the Normal Distribution
+	for (let i=1; i<=12; i++){		// create a new number based on 12 random numbers
+		newRand = newRand + Math.random();
+	}
+	return newRand / 12;			// number in range 0 to 12 so need to normalize
+}
+
+function sigmoid(x){				// the sigmoid activation function
+	return 1 / (1 + Math.exp(-x));
+}
+
+function sigPrime(x){				// the derivative of the sigmoid
+	fx = sigmoid(x);
+	return fx * (1-fx);
+}
+
+function mseLoss(yTrue,yPred){		// yTrue and yPred are arrays of the same length
+	let temp = 0;
+	for (const [i, v] of yTrue.entries()){	// iterate over yTrue
+  		temp = temp + (v - yPred[i])**2;
+	}
+	return temp / (yTrue.length);
+}
+
+class OurNeuralNet {
+	constructor(w1,w2,w3,w4,w5,w6,b1,b2,b3){
+		this.w1 = w1;					// introduce weightings
+		this.w2 = w2;
+		this.w3 = w3;
+		this.w4 = w4;
+		this.w5 = w5;
+		this.w6 = w6;
+
+		this.b1 = b1;					// introduce biases
+		this.b2 = b2;
+		this.b3 = b3;
+	}
+	
+	initialize() {
+		this.w1 = randNormal();		// define the weightings
+		this.w2 = randNormal();		// randNormal returns a number between 0 & 1
+		this.w3 = randNormal();		// biased by the normal distribution
+		this.w4 = randNormal();
+		this.w5 = randNormal();
+		this.w6 = randNormal();
+
+		this.b1 = randNormal();		// define the biases
+		this.b2 = randNormal();
+		this.b3 = randNormal();
+	}
+	
+	feedForward(dataArr){
+		// dataArr is an array of two elements, wt & ht
+		// this function is used for prediction after
+		// optimizing the weightings and biases
+						
+		let h1 = sigmoid(this.w1 * dataArr[0] + this.w2 * dataArr[1] + this.b1);
+		let h2 = sigmoid(this.w3 * dataArr[0] + this.w4 * dataArr[1] + this.b2);
+		let o1 = sigmoid(this.w5 * h1 + this.w6 * h2 + this.b3);
+		return o1;
+	}
+	
+	train(data, allYTrues){
+		let learnRate = 0.1;
+		const epochs = 1000;			// number of times to loop through dataset
+		
+		let sumH1 = 0;
+		let h1 = 0;
+		let sumH2 = 0;
+		let h2 = 0;
+		let sumO1 = 0;
+		let o1 = 0;
+		let yPred = 0;
+		let yTrue = 0;
+		
+		let dLdYpred
+		let dYpreddW5 = 0;			// neuron o1
+		let dYpreddW6 = 0;
+		let dYpreddB3 = 0;
+		let dYpreddH1 = 0;
+		let dYpreddH2 = 0;
+		
+		let dH1dW1 = 0;				// neuron h1
+		let dH1dW2 = 0;
+		let dH1dB1 = 0;
+
+		let dH2dW3 = 0;				// neuron h2
+		let dH2dW4 = 0;
+		let dH2dB2 = 0;
+		
+		let testPred = [0,0,0,0];	// one slot for each prediction from the four data pts
+		let testData = [0.0];
+		let loss = 0;
+	
+		for (let epoch = 1; epoch <= epochs; epoch++){
+			// now loop through each line of data
+			// where data is an nX2 array of the weights and heights
+			// and allYTrues is an array of length n containing the true/false data
+			
+			for (let numData = 0; numData < data.length; numData++){
+				sumH1 = this.w1 * data[numData][0] + this.w2 * data[numData][1] + this.b1;
+				h1 = sigmoid(sumH1);
+				
+				sumH2 = this.w3 * data[numData][0] + this.w4 * data[numData][1] + this.b2;
+				h2 = sigmoid(sumH2);
+
+				sumO1 = this.w5 * h1 + this.w6 * h2 + this.b3;
+				o1 = sigmoid(sumO1);
+				yPred = o1;
+				yTrue = allYTrues[numData];
+				
+				// Calculate the partial derivatives
+				// Naming convention: dLdW1 represents partial L / partial w1
+				dLdYpred = -2 * (yTrue - yPred);
+				
+				dYpreddW5 = h1 * sigPrime(sumO1);			// neuron o1
+				dYpreddW6 = h2 * sigPrime(sumO1);
+				dYpreddB3 = sigPrime(sumO1);
+				dYpreddH1 = this.w5 * sigPrime(sumO1);
+				dYpreddH2 = this.w6 * sigPrime(sumO1);
+				
+				dH1dW1 = data[numData][0] * sigPrime(sumH1);		// neuron h1
+				dH1dW2 = data[numData][1] * sigPrime(sumH1);
+				dH1dB1 = sigPrime(sumH1);
+				
+				dH2dW3 = data[numData][0] * sigPrime(sumH2);		// neuron h2
+				dH2dW4 = data[numData][1] * sigPrime(sumH2);
+				dH2dB2 = sigPrime(sumH2);
+				
+				// Update weightings and biases
+				this.w1 -= learnRate * dLdYpred * dYpreddH1 * dH1dW1;	// neuron h1
+				this.w2 -= learnRate * dLdYpred * dYpreddH1 * dH1dW2;
+				this.b1 -= learnRate * dLdYpred * dYpreddH1 * dH1dB1;
+
+				this.w3 -= learnRate * dLdYpred * dYpreddH2 * dH2dW3;	// neuron h2
+				this.w4 -= learnRate * dLdYpred * dYpreddH2 * dH2dW4;
+				this.b2 -= learnRate * dLdYpred * dYpreddH2 * dH2dB2;
+				
+				this.w5 -= learnRate * dLdYpred * dYpreddW5;	// neuron o1
+				this.w6 -= learnRate * dLdYpred * dYpreddW6;
+				this.b3 -= learnRate * dLdYpred * dYpreddB3;
+
+			}
+			// Calculate the total loss every 10 epochs
+			// based on all of the original data
+			// Accumulate the test data for graphing in lossAccum
+			
+			if (epoch % 10 == 0){
+				for (let i = 0; i < data.length; i++){
+					testData[0] = data[i][0];
+					testData[1] = data[i][1];
+					testPred[i] = this.feedForward(testData);
+				}
+				accumReg++;
+				loss = mseLoss(allYTrues, testPred);
+				lossAccum[accumReg] = loss;
+			}
+		}
+	}
+}
+
+function calcDist(){	
+	const graph = document.getElementById("graph");
+		
+	// set up the data and feed it to an instance of OurNeuralNet
+	
+	const theData = [[-8.25,1.75],[18.75,5.25],[10.75,3.25],[-21.25,-6.75]];
+	// const theData = [[-2,-1],[25,6],[17,4],[-15,-6]];
+	const yValues = [1,0,0,1];
+	
+	const net = new OurNeuralNet();
+	net.initialize();
+	net.train(theData, yValues);
+	
+	let myArr = Array.from(Array(99), (x, index) => index + 1);
+		// creates an array filled with 0 - 99
+	const improveData = [
+		{
+			x: [...myArr],
+			y: [...lossAccum],
+			type: 'scatter'
+		}
+	];
+	
+	Plotly.newPlot(graph, improveData);
+	
+	// Make some predictions
+	
+	emily = new Array(-7,-3);
+	frank = new Array(20,2);
+	
+	document.getElementById("emily").value = net.feedForward(emily);
+	document.getElementById("frank").value = net.feedForward(frank);
+
+} //end of function
+
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Neural Network Implementation
+</h1>
+
+<p>
+	This JavaScript implementation of a neural network is based on the 
+	<a href="https://victorzhou.com/blog/intro-to-neural-networks/">Python example</a> 
+	published by Victor Zhou on March 3, 2019. The following is a summary of Victor's 
+	introductory explanation of neural networks and how to program them.
+</p>
+
+<p>	
+	The building blocks of a neural network are "neurons", essentially a black box 
+	with inputs and outputs. In this introduction all neurons will have 2 inputs and 
+	one output. Within the neuron the inputs are multiplied by weighting factors, then 
+	the weighted inputs are added together with a bias. 
+</p>
+
+<p>	
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msub>
+				<mi>x</mi>
+				<mn>1</mn>
+			</msub>
+			<mo>&rarr;</mo>
+			<msub>
+				<mi>x</mi>
+				<mn>1</mn>
+			</msub>
+			<mo>&times;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+	</math>
+</p>
+
+<p>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msub>
+				<mi>x</mi>
+				<mn>2</mn>
+			</msub>
+			<mo>&rarr;</mo>
+			<msub>
+				<mi>x</mi>
+				<mn>2</mn>
+			</msub>
+			<mo>&times;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>2</mn>
+			</msub>
+		</mrow>
+	</math>
+</p>
+
+<p>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<mo>(</mo>
+			<msub>
+				<mi>x</mi>
+				<mn>1</mn>
+			</msub>
+			<mo>&times;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>1</mn>
+			</msub>
+			<mo>)</mo>
+			<mo>+</mo>
+			<mo>(</mo>
+			<msub>
+				<mi>x</mi>
+				<mn>2</mn>
+			</msub>
+			<mo>&times;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>2</mn>
+			</msub>
+			<mo>)</mo>
+			<mo>+</mo>
+			<mi>b</mi>
+		</mrow>
+	</math>
+</p>
+
+<p >
+	Finally the sum is passed through an activation function:
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<mi>y</mi>
+			<mo>=</mo>
+			<mo>&fnof;</mo>
+			<mo>(</mo>
+			<mo>(</mo>
+			<msub>
+				<mi>x</mi>
+				<mn>1</mn>
+			</msub>
+			<mo>&times;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>1</mn>
+			</msub>
+			<mo>)</mo>
+			<mo>+</mo>
+			<mo>(</mo>
+			<msub>
+				<mi>x</mi>
+				<mn>2</mn>
+			</msub>
+			<mo>&times;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>2</mn>
+			</msub>
+			<mo>)</mo>
+			<mo>+</mo>
+			<mi>b</mi>
+			<mo>)</mo>
+		</mrow>
+	</math>
+</p>
+
+<p>
+	The activation is used to turn unbounded input into a more predictable form. A 
+	commonly used activation function is the sigma function. Using the sigma function 
+	turns numbers in the range 
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='inline'>
+			<mrow>
+				<mo>(</mo>
+				<mo>-</mo>
+				<mi>&infin;</mi>
+				<mi>,</mi>
+				<mo>+</mo>
+				<mi>&infin;</mi>
+				<mo>)</mo>
+			</mrow>
+		</math>
+	to
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='inline'>
+			<mrow>
+				<mo>(</mo>
+				<mn>0</mn>
+				<mi>,</mi>
+				<mn>1</mn>
+				<mo>)</mo>
+			</mrow>
+		</math>
+	. The sigmoid function is 
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mo>&fnof;</mo>
+				<mfenced>
+					<mn>x</mn>
+				</mfenced>
+				<mo>=</mo>
+				<mfrac>
+					<mrow>
+						<mn>1</mn>
+					</mrow>
+					<mrow>
+						<mo>(</mo>
+						<mn>1</mn>
+						<mo>+</mo>
+						<msup>
+							<mrow>
+								<mi>e</mi>
+							</mrow>
+							<mrow>
+								<mo>-</mo>
+								<mi>x</mi>
+							</mrow>
+						</msup>
+						<mo>)</mo>
+					</mrow>
+				</mfrac>
+			</mrow>
+		</math>
+	This process of passing inputs forward to produce an output is called 
+	<em>feedforward</em>.
+</p>
+
+<p>
+	A neural network is simply a number of neurons connected together into layers. 
+	The network we will model programmatically has three layers, an input layer with 
+	two inputs, a hidden layer with two neurons, and an output layer. The inputs for 
+	the output layer are the outputs from the neurons in the hidden layer. A more 
+	complex neural network would have more hidden layers and more neurons in each 
+	layer.
+</p>
+
+<p>
+	So this network we are building will have 2 inputs, 
+	<math display='inline'>
+		<mfenced>
+			<msub>
+				<mi>x</mi>
+				<mn>1</mn>
+			</msub>
+			<msub>
+				<mi>x</mi>
+				<mn>2</mn>
+			</msub>
+		</mfenced>
+	</math>
+	. Each of these will serve as input for both neurons in our hidden layer, 
+	<math display='inline'>
+		<mfenced>
+			<msub>
+				<mi>h</mi>
+				<mn>1</mn>
+			</msub>
+			<msub>
+				<mi>h</mi>
+				<mn>2</mn>
+			</msub>
+		</mfenced>
+	</math>
+	. There is one neuron, o<sub>1</sub> for our output layer. So we have four 
+	weightings from input to hidden layer and two weightings from hidden to output.
+</p>
+
+<img src="Network.png">
+
+<p>
+	The example from Victor is using weight and height data to predict a person's 
+	gender. So given data from two women and two men can we build a model that 
+	will predict gender from new weight and height data. The following table shows 
+	the data we will use.
+</p>
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Weight (lb)</th>
+		<th>Height (in)</th>
+		<th>Gender</th>
+	</tr>
+	<tr>
+		<td>Alice</td>
+		<td>133</td>
+		<td>65</td>
+		<td>F</td>
+	</tr>
+	<tr>
+		<td>Bob</td>
+		<td>160</td>
+		<td>72</td>
+		<td>M</td>
+	</tr>
+	<tr>
+		<td>Charlie</td>
+		<td>152</td>
+		<td>70</td>
+		<td>M</td>
+	</tr>
+	<tr>
+		<td>Diana</td>
+		<td>120</td>
+		<td>60</td>
+		<td>F</td>
+	</tr>
+</table>
+
+<p>
+	It is often common to shift the data and normally this is done by the mean. So 
+	subtracting the mean weight, 141.25, from the weights and the mean height, 66.75, 
+	gives the following revised table.
+</p>
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Weight (lb)</th>
+		<th>Height (in)</th>
+		<th>Gender</th>
+	</tr>
+	<tr>
+		<td>Alice</td>
+		<td>-8.25</td>
+		<td>1.75</td>
+		<td>F</td>
+	</tr>
+	<tr>
+		<td>Bob</td>
+		<td>18.75</td>
+		<td>5.25</td>
+		<td>M</td>
+	</tr>
+	<tr>
+		<td>Charlie</td>
+		<td>10.75</td>
+		<td>3.25</td>
+		<td>M</td>
+	</tr>
+	<tr>
+		<td>Diana</td>
+		<td>-21.25</td>
+		<td>-6.75</td>
+		<td>F</td>
+	</tr>
+</table>
+
+<p>
+	Training requires a measure of how "good" the predictions are, so we can track 
+	this measure and seek improvement. This is called the <em>loss</em>. Here the 
+	mean squared error (MSE) loss.
+</p>
+
+<math display='block'>
+	<mrow>
+		<mi>MSE</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mi>n</mi>
+		</mfrac>
+		<munderover>
+			<mo>&#x2211;</mo>
+			<mrow>
+				<mi>x</mi>
+				<mo>=</mo>
+				<mn>1</mn>
+			</mrow>
+			<mi>b</mi>
+		</munderover>
+		<mrow>
+			<msup>
+				<mrow>
+					<mo>(</mo>
+					<msub>
+						<mi>y</mi>
+						<mi>true</mi>
+					</msub>
+					<mo>-</mo>
+					<msub>
+						<mi>y</mi>
+						<mi>pred</mi>
+					</msub>
+					<mo>)</mo>
+				</mrow>
+				<mn>2</mn>
+			</msup>
+		</mrow>
+	</mrow>
+</math>
+
+<p>
+	Where n is the sample number, y is the variable being predicted (gender), y-true 
+	is the value of the correct variable (1), and y-pred is the predicted value of 
+	y from the network. Thus we are seeking the average over all of the squared errors. 
+	The better the prediction the lower the loss. To train a network you adjust the 
+	weighting factors and biases to minimize the loss.
+</p>
+
+<p>
+	If we label the six weights and three biases per the diagram above, the we can 
+	write the loss as a multivariable function:
+</p>
+
+<math display='block'>
+	<mrow>
+		<mi>L</mi>
+		<mfenced>
+			<msub><mi>w</mi><mn>1</mn></msub>
+			<msub><mi>w</mi><mn>2</mn></msub>
+			<msub><mi>w</mi><mn>3</mn></msub>
+			<msub><mi>w</mi><mn>4</mn></msub>
+			<msub><mi>w</mi><mn>5</mn></msub>
+			<msub><mi>w</mi><mn>6</mn></msub>
+			<msub><mi>b</mi><mn>1</mn></msub>
+			<msub><mi>b</mi><mn>2</mn></msub>
+			<msub><mi>b</mi><mn>3</mn></msub>
+		</mfenced>
+	</mrow>
+</math>
+
+<p>
+	The partial derivative of L with respect to w1 can tell us how the loss will 
+	change as w1 changes. Remember we defined L as the loss above. 
+</p>
+
+<math display="block">
+	<mfrac>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<mi>L</mi>
+		</mrow>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<mfrac>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<mi>L</mi>
+		</mrow>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>y</mi>
+				<mi>pred</mi>
+			</msub>
+		</mrow>
+	</mfrac>
+	<mo>&times;</mo>
+	<mfrac>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>y</mi>
+				<mi>pred</mi>
+			</msub>
+		</mrow>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+	</mfrac>
+</math>
+
+<p>
+	Because 
+	<math display="inline">
+		<mrow>
+			<mi>L</mi>
+			<mo>=</mo>
+			<mo>-</mo>
+			<mi>2</mi>
+			<msup>
+				<mrow>
+					<mo>(</mo>
+					<mn>1</mn>
+					<mo>-</mo>
+					<msub>
+						<mi>y</mi>
+						<mi>pred</mi>
+					</msub>
+					<mo>)</mo>
+				</mrow>
+				<mi>2</mi>
+			</msup>
+		</mrow>
+	</math>
+	so 
+	<math display="inline">
+		<mfrac>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<mi>L</mi>
+			</mrow>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<msub>
+					<mi>y</mi>
+					<mi>pred</mi>
+				</msub>
+			</mrow>
+		</mfrac>
+		<mo>=</mo>
+		<mo>-</mo>
+		<mi>2</mi>
+		<mrow>
+			<mo>(</mo>
+			<mn>1</mn>
+			<mo>-</mo>
+			<msub>
+				<mi>y</mi>
+				<mi>pred</mi>
+			</msub>
+			<mo>)</mo>
+		</mrow>
+	</math>
+	. We also know that 
+	<math display="inline">
+		<msub>
+			<mi>y</mi>
+			<mi>pred</mi>
+		</msub>
+		<mo>=</mo>
+		<msub>
+			<mi>o</mi>
+			<mn>1</mn>
+		</msub>
+		<mo>=</mo>
+		<mo>&fnof;</mo>
+		<mo>(</mo>
+		<msub><mi>w</mi><mn>5</mn></msub>
+		<msub><mi>h</mi><mn>1</mn></msub>
+		<mo>+</mo>
+		<msub><mi>w</mi><mn>6</mn></msub>
+		<msub><mi>h</mi><mn>2</mn></msub>
+		<mo>+</mo>
+		<msub><mi>b</mi><mn>3</mn></msub>
+		<mo>)</mo>
+	</math>
+	 where <em>f</em> is the sigmoid function.
+</p>
+
+<p>
+	Since w1 only affects h1 (not h2), we can write 
+</p>
+
+<math display="block">
+	<mfrac>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>y</mi>
+				<mi>pred</mi>
+			</msub>
+		</mrow>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<mfrac>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>y</mi>
+				<mi>pred</mi>
+			</msub>
+		</mrow>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>h</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+	</mfrac>
+	<mo>&times;</mo>
+	<mfrac>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>h</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>w</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+	</mfrac>
+</math>
+
+<math display="block">
+	<mfrac>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>y</mi>
+				<mi>pred</mi>
+			</msub>
+		</mrow>
+		<mrow>
+			<mo>&#x2202;</mo>
+			<msub>
+				<mi>h</mi>
+				<mn>1</mn>
+			</msub>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<msub><mi>w</mi><mn>5</mn></msub>
+	<mo>&times;</mo>
+	<mrow>
+		<msup><mo>&fnof;</mo><mi>'</mi></msup>
+		<mo>(</mo>
+		<msub><mi>w</mi><mn>5</mn></msub>
+		<msub><mi>h</mi><mn>1</mn></msub>
+		<mo>+</mo>
+		<msub><mi>w</mi><mn>6</mn></msub>
+		<msub><mi>h</mi><mn>2</mn></msub>
+		<mo>+</mo>
+		<msub><mi>b</mi><mn>3</mn></msub>
+	<mo>)</mo>
+	</mrow>
+</math>
+
+<p>
+	We can follow the same reasoning for 
+	<math display="inline">
+		<mfrac>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<msub>
+					<mi>h</mi>
+					<mn>1</mn>
+				</msub>
+			</mrow>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<msub>
+					<mi>w</mi>
+					<mn>1</mn>
+				</msub>
+			</mrow>
+		</mfrac>
+	</math>
+	: 
+</p>
+
+	<math display="block">
+		<msub>
+			<mi>h</mi>
+			<mi>1</mi>
+		</msub>
+		<mo>=</mo>
+		<mo>&fnof;</mo>
+		<mo>(</mo>
+		<msub><mi>w</mi><mn>1</mn></msub>
+		<msub><mi>x</mi><mn>1</mn></msub>
+		<mo>+</mo>
+		<msub><mi>w</mi><mn>2</mn></msub>
+		<msub><mi>x</mi><mn>2</mn></msub>
+		<mo>+</mo>
+		<msub><mi>b</mi><mn>1</mn></msub>
+		<mo>)</mo>
+	</math>
+
+	<math display="block">
+		<mfrac>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<msub>
+					<mi>h</mi>
+					<mi>1</mi>
+				</msub>
+			</mrow>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<msub>
+					<mi>w</mi>
+					<mn>1</mn>
+				</msub>
+			</mrow>
+		</mfrac>
+		<mo>=</mo>
+		<msub><mi>x</mi><mn>1</mn></msub>
+		<mo>&times;</mo>
+		<mrow>
+			<msup><mo>&fnof;</mo><mi>'</mi></msup>
+			<mo>(</mo>
+			<msub><mi>w</mi><mn>1</mn></msub>
+			<msub><mi>x</mi><mn>1</mn></msub>
+			<mo>+</mo>
+			<msub><mi>w</mi><mn>2</mn></msub>
+			<msub><mi>x</mi><mn>2</mn></msub>
+			<mo>+</mo>
+			<msub><mi>b</mi><mn>1</mn></msub>
+			<mo>)</mo>
+		</mrow>
+	</math>
+
+<p>
+	The derivative of the sigmoid function, <em>f</em> <sup>'</sup>, is:
+</p>
+
+<math display="block">
+	<mrow>
+		<msup><mo>&fnof;</mo><mi>'</mi></msup>
+		<mo>(</mo><mi>x</mi><mo>)</mo>
+	</mrow>
+	<mo>=</mo>
+	<mfrac>
+		<mrow>
+			<msup><mi>e</mi><mi>x</mi></msup>
+		</mrow>
+		<mrow>
+			<msup>
+				<mrow>
+					<mo>(</mo>
+					<mi>1</mi>
+					<mo>+</mo>
+					<msup>
+						<mi>e</mi>
+						<mrow><mo>-</mo><mi>x</mi></mrow>
+					</msup>
+					<mo>)</mo>
+				</mrow>
+				<mn>2</mn>
+			</msup>
+		</mrow>
+	</mfrac>
+	<mo>=</mo>
+	<mrow>
+		<mo>&fnof;</mo>
+		<mo>(</mo><mi>x</mi><mo>)</mo>
+	</mrow>
+	<mo>&times;</mo>
+	<mrow>
+		<mo>(</mo>
+		<mi>1</mi>
+		<mo>-</mo>
+		<mo>&fnof;</mo>
+		<mo>(</mo><mi>x</mi><mo>)</mo>	
+		<mo>)</mo>
+	</mrow>
+</math>
+
+<p>
+	So if we have a dataset that only consists of Alice (wt = -8.25, ht = -1.75, 
+	gender = 1) and set all of the weightings to 1 and the biases to 0, we can 
+	feed this through the network...
+</p>
+
+<math display="block">
+	<msub><mi>h</mi><mn>1</mn></msub>
+	<mo>=</mo>
+	<mo>&fnof;</mo>
+	<mrow>
+		<mo>(</mo>
+		<msub><mi>w</mi><mn>1</mn></msub>
+		<msub><mi>x</mi><mn>1</mn></msub>
+		<mo>+</mo>
+		<msub><mi>w</mi><mn>2</mn></msub>
+		<msub><mi>x</mi><mn>2</mn></msub>
+		<mo>+</mo>
+		<msub><mi>b</mi><mn>1</mn></msub>
+		<mo>)</mo>
+	</mrow>
+	<mo>=</mo>
+	<mo>&fnof;</mo>
+	<mrow>
+		<mo>(</mo><mo>-</mo><mn>8.25</mn>
+		<mo>-</mo><mn>1.75</mn>
+		<mo>+</mo><mn>0</mn>
+		<mo>)</mo>
+	</mrow>
+	<mo>=</mo>
+	<mn>0.0000454</mn>
+</math>
+
+<br/>
+
+<math display="block">
+	<msub><mi>h</mi><mn>2</mn></msub>
+	<mo>=</mo>
+	<mo>&fnof;</mo>
+	<mrow>
+		<mo>(</mo>
+		<msub><mi>w</mi><mn>3</mn></msub>
+		<msub><mi>x</mi><mn>1</mn></msub>
+		<mo>+</mo>
+		<msub><mi>w</mi><mn>4</mn></msub>
+		<msub><mi>x</mi><mn>2</mn></msub>
+		<mo>+</mo>
+		<msub><mi>b</mi><mn>2</mn></msub>
+		<mo>)</mo>
+	</mrow>
+	<mo>=</mo>
+	<mn>0.0000454</mn>
+</math>
+
+<br/>
+
+<math display="block">
+	<msub><mi>o</mi><mn>1</mn></msub>
+	<mo>=</mo>
+	<mo>&fnof;</mo>
+	<mrow>
+		<mo>(</mo>
+		<msub><mi>w</mi><mn>5</mn></msub>
+		<msub><mi>h</mi><mn>1</mn></msub>
+		<mo>+</mo>
+		<msub><mi>w</mi><mn>6</mn></msub>
+		<msub><mi>h</mi><mn>2</mn></msub>
+		<mo>+</mo>
+		<msub><mi>b</mi><mn>3</mn></msub>
+		<mo>)</mo>
+	</mrow>
+	<mo>=</mo>
+	<mo>&fnof;</mo>
+	<mrow>
+		<mo>(</mo><mn>0.0000454</mn>
+		<mo>+</mo><mn>0.0000454</mn>
+		<mo>+</mo><mn>0</mn>
+		<mo>)</mo>
+	</mrow>
+	<mo>=</mo>
+	<mn>0.500</mn>
+</math>
+
+<p>
+	So y-pred is 0.500, which means neither male nor female is favored as expected. 
+	Using the formulas above one can calculate 
+	<math display="inline">
+		<mfrac>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<mi>L</mi>
+			</mrow>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<msub>
+					<mi>w</mi>
+					<mn>1</mn>
+				</msub>
+			</mrow>
+		</mfrac>
+	</math>
+	, probably a very small number but I will leave that as an exercise as I am 
+	tired of writing MathML.
+</p>
+
+<p>
+	The next thing to consider is the optimization algorithm used to modify the 
+	variables and minimize loss. The algorithm implemented here is <em>stochastic 
+	gradient descent</em> or SGD. One basically subtracts 
+	<math display="inline">
+		<mfrac>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<mi>L</mi>
+			</mrow>
+			<mrow>
+				<mo>&#x2202;</mo>
+				<msub>
+					<mi>w</mi>
+					<mn>1</mn>
+				</msub>
+			</mrow>
+		</mfrac>
+	</math>
+	 multiplied by a constant, &eta;, from <em>w1</em> to get a new <em>w1</em>. &eta; is called the 
+	 learning rate as it controls how much we modify <em>w1</em>.
+</p>
+
+<p>
+	The process works as follows:
+</p>
+
+<ol>
+	<li>Choose a single sample from the dataset (thus stochastic).</li>
+	<li>Calculate all the partial derivatives of loss with respect to weightings
+		or biases.</li>
+	<li>Use an update equation to modify weightings and biases appropriately.</li>
+	<li>Repeat as needed.</li>
+</ol>
+
+<p>
+	At this point the learning continues for 1000 cycles based on the data in the 
+	table above. The program then predicts the gender of the following two individuals: 
+	Emily (-7,3) and Frank (20,2). The predictions are listed in the two fields below. 
+	A graph is also constructed that shows how the loss improves through the 1000 
+	training iterations.
+</p>
+
+<p>
+	See <a href="https://playground.tensorflow.org/#activation=linear&batchSize=10&dataset=circle&regDataset=reg-gauss&learningRate=0.03&regularizationRate=0&noise=0&networkShape=4,2&seed=0.59226&showTestData=false&discretize=false&percTrainData=80&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=regression&initZero=false&hideText=false">
+	Neural Network Playground</a> for a real neural network.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Hit the button to start the learning process:</legend>
+		<input type="button" value="Run Neural Net" onclick="calcDist()"/>
+		<br/>
+		<br/>
+		<label for="emily">Emily's predicted gender (1 => female)</label>
+		<input type="text" name="emily" id="emily" value="" size="25"/><br />
+		<label for="frank">Frank's predicted gender (0 => male)</label>
+		<input type="text" name="frank" id="frank" value="" size="25"/><br />
+		<br/>
+</fieldset>
+
+<hr />
+
+<h3>Improvement in loss through the 1000 iterations</h3>
+
+<hr/>
+
+<div id="graph">
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>April 29, 2019</p>
+</footer>
+</html>

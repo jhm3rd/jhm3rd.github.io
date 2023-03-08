@@ -1,0 +1,677 @@
+<html>
+<head>
+<title>Convergent Sequence Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function two(n)
+{
+	var result = 0;
+	var i;
+	
+	if (n==0)
+	{
+		result = 0;
+	}
+	else if (n==1)
+	{
+		result = 1;
+	}
+	else
+	{
+		result = 1;
+		for (i=1; i < n; i++)
+		{
+			result = result + 1/Math.pow(2,i);
+		}
+	}
+	return result;
+}
+
+function twoThirds(n)
+{
+	var result = 0;
+	var i;
+	
+	if (n==0)
+	{
+		result = 0;
+	}
+	else if (n==1)
+	{
+		result = 1;
+	}
+	else
+	{
+		result = 1;
+		for (i=1; i < n; i++)
+		{
+			result = result + Math.pow(-1,i)*1/Math.pow(2,i);
+		}
+	}
+	return result;
+}
+
+function threeHalves(n)
+{
+	var result = 0;
+	var i;
+	
+	if (n==0)
+	{
+		result = 0;
+	}
+	else if (n==1)
+	{
+		result = 1;
+	}
+	else
+	{
+		result = 1;
+		for (i=1; i < n; i++)
+		{
+			result = result + 1/Math.pow(3,i);
+		}
+	}
+	return result;
+}
+
+function threeQuarters(n)
+{
+	var result = 0;
+	var i;
+	
+	if (n==0)
+	{
+		result = 0;
+	}
+	else if (n==1)
+	{
+		result = 1;
+	}
+	else
+	{
+		result = 1;
+		for (i=1; i < n; i++)
+		{
+			result = result + Math.pow(-1,i)*1/Math.pow(3,i);
+		}
+	}
+	return result;
+}
+
+function sqRtTwo(n) // (4k+2)^2/(4k+1)(4k+3)
+{
+	var result = 1;
+	var i;
+	
+	if (n==0)
+	{
+		result = 0;
+	}
+	else
+	{
+		for (i=0; i < n; i++)
+		{
+			result = result * Math.pow((4*i+2),2)/(4*i+1)/(4*i+3);
+		}
+	}
+	return result;
+}
+
+function piOverTwo(n)
+{
+	var result = 0;
+	
+	if (n==0)
+	{
+		result = 0;
+	}
+	else if (n==1)
+	{
+		result = 2;
+	}
+	else
+	{
+		result = 1;
+		var num = 1;
+		var div = 2;
+		for (i=2; i < n; i=i+2)
+		{
+			num = i;
+			div = i - 1;
+			result = result * num/div * num/(div+2);
+		}
+	}
+	return result;
+
+}
+
+function calcSeq() {
+
+	var depth = document.getElementById("depth").value;
+	var chosenSeq = document.getElementById("singleSeq").value;
+	var div = document.getElementsByTagName("div")[0];
+
+	var result = 0;
+	var list = "";
+	
+		switch (chosenSeq)
+	{
+		case "A":
+			result = two(depth);
+			document.getElementById("result").value = result;
+			document.getElementById("diff").value = 2.0 - result;
+			break;
+		case "B":
+			result = twoThirds(depth);
+			document.getElementById("result").value = result;
+			document.getElementById("diff").value = 2/3 - result;
+			break;
+		case "C":
+			result = threeHalves(depth);
+			document.getElementById("result").value = result;
+			document.getElementById("diff").value = 3/2 - result;
+			break;
+		case "D":
+			result = threeQuarters(depth);
+			document.getElementById("result").value = result;
+			document.getElementById("diff").value = 0.75 - result;
+			break;
+		case "E":
+			result = sqRtTwo(depth);
+			document.getElementById("result").value = result;
+			document.getElementById("diff").value = Math.SQRT2 - result;
+			break; 
+		case "F":
+			result = piOverTwo(depth);
+			document.getElementById("result").value = result;
+			document.getElementById("diff").value = Math.PI/2 - result;
+			break;
+	} // end switch
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Convergent Sequence Calculator
+</h1>
+<h2>Six convergent series; two irrational</h2><br />
+
+<p>
+	Here are the six sequences that can be calculated to approximate the answer upon 
+	which they converge:
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mn>1</mn>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>2</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>4</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>8</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mi>&#x2026;</mi>
+				<mo>=</mo>
+				<mn>2</mn>
+			</mrow>
+		</math>
+	<br/>
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mn>1</mn>
+				<mo>&#x2212;</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>2</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>4</mn>
+				</mfrac>
+				<mo>-</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>8</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mi>&#x2026;</mi>
+				<mo>=</mo>
+				<mfrac>
+					<mn>2</mn>
+					<mn>3</mn>
+				</mfrac>
+			</mrow>
+		</math>
+	<br/>
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mn>1</mn>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>3</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>9</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>27</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mi>&#x2026;</mi>
+				<mo>=</mo>
+				<mfrac>
+					<mn>3</mn>
+					<mn>2</mn>
+				</mfrac>
+			</mrow>
+		</math>
+	<br/>
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mn>1</mn>
+				<mo>-</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>3</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>9</mn>
+				</mfrac>
+				<mo>-</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mn>27</mn>
+				</mfrac>
+				<mo>+</mo>
+				<mi>&#x2026;</mi>
+				<mo>=</mo>
+				<mfrac>
+					<mn>3</mn>
+					<mn>4</mn>
+				</mfrac>
+			</mrow>
+		</math>
+	<br/>
+	<br/>
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mfrac>
+					<mrow>
+						<mn>2</mn>
+						<mo>&#xd7;</mo>
+						<mn>2</mn>
+					</mrow>
+					<mrow>
+						<mn>1</mn>
+						<mo>&#xd7;</mo>
+						<mn>3</mn>
+					</mrow>
+				</mfrac>
+				<mo>&#xd7;</mo>
+				<mfrac>
+					<mrow>
+						<mn>6</mn>
+						<mo>&#xd7;</mo>
+						<mn>6</mn>
+					</mrow>
+					<mrow>
+						<mn>5</mn>
+						<mo>&#xd7;</mo>
+						<mn>7</mn>
+					</mrow>
+				</mfrac>
+				<mo>&#xd7;</mo>
+				<mfrac>
+					<mrow>
+						<mn>10</mn>
+						<mo>&#xd7;</mo>
+						<mn>10</mn>
+					</mrow>
+					<mrow>
+						<mn>9</mn>
+						<mo>&#xd7;</mo>
+						<mn>11</mn>
+					</mrow>
+				</mfrac>
+				<mo>&#xd7;</mo>
+				<mfrac>
+					<mrow>
+						<mn>14</mn>
+						<mo>&#xd7;</mo>
+						<mn>14</mn>
+					</mrow>
+					<mrow>
+						<mn>13</mn>
+						<mo>&#xd7;</mo>
+						<mn>15</mn>
+					</mrow>
+				</mfrac>
+				<mo>&#xd7;</mo>
+				<mi>&#x2026;</mi>
+				<mo>=</mo>
+				<mroot>
+					<mn>2</mn>
+					<mn>2</mn>
+				</mroot>
+			</mrow>
+		</math>
+<br/>
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<mn>2</mn>
+			<mn>1</mn>
+		</mfrac>
+		<mi>&#xa0;</mi> <!- nbsp ->
+		<mi>&#xd7;</mi> <!- multiplication sign ->
+		<mi>&#xa0;</mi> <!- nbsp ->
+		<mfrac>
+			<mn>2</mn>
+			<mn>3</mn>
+		</mfrac>
+		<mi>&#xa0;</mi>
+		<mi>&#xd7;</mi>
+		<mi>&#xa0;</mi>
+		<mfrac>
+			<mn>4</mn>
+			<mn>3</mn>
+		</mfrac>
+		<mi>&#xa0;</mi>
+		<mi>&#xd7;</mi>
+		<mi>&#xa0;</mi>
+		<mfrac>
+			<mn>4</mn>
+			<mn>5</mn>
+		</mfrac>
+		<mi>&#xa0;</mi>
+		<mi>&#xd7;</mi>
+		<mi>&#xa0;</mi>
+		<mfrac>
+			<mn>6</mn>
+			<mn>5</mn>
+		</mfrac>
+		<mi>&#xa0;</mi>
+		<mi>&#xd7;</mi>
+		<mi>&#xa0;</mi>
+		<mfrac>
+			<mn>6</mn>
+			<mn>7</mn>
+		</mfrac>
+		<mi>&#xa0;</mi>
+		<mi>&#xd7;</mi>
+		<mi>&#xa0;</mi>
+		<mi>&#x2026;</mi>
+		<mo>=</mo>
+		<mfrac>
+			<mi>&#x3c0;</mi>
+			<mn>2</mn>
+		</mfrac>
+	</mrow>
+</math>
+<br/>
+
+<p>	
+	The fifth series is a little less obvious as far as constructing the terms. Each term 
+	is constructed as follows with <em>k</em> starting at 0:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<msup>
+				<mfenced>
+					<mrow>
+						<mn>4</mn>
+						<mi>k</mi>
+						<mo>+</mo>
+						<mn>2</mn>
+					</mrow>
+				</mfenced>
+				<mn>2</mn>
+			</msup>
+			<mrow>
+				<mfenced>
+					<mrow>
+						<mn>4</mn>
+						<mi>k</mi>
+						<mo>+</mo>
+						<mn>1</mn>
+					</mrow>
+				</mfenced>
+				<mfenced>
+					<mrow>
+						<mn>4</mn>
+						<mi>k</mi>
+						<mo>+</mo>
+						<mn>3</mn>
+					</mrow>
+				</mfenced>
+			</mrow>
+		</mfrac>
+	</mrow>
+</math>
+
+<p>
+	The final series is the Wallis formula for &pi;/2. A beautiful graphic proof of this 
+	series' equality with &pi;/2 was presented by the 
+	<a href="https://www.youtube.com/watch?v=8GPy_UMV-08&t=5s">
+	3Blue1Brown youtube channel</a> in 2018. This calculation actually computes a pair of 
+	terms (with the same numerator) in the series versus a single term in the series for 
+	all of the others. (e.g. if ten is enter for "Number of Terms", 20 terms are 
+	calculated.)
+</p>
+
+<p>
+	The calculator works as follows: select a convergent series from the drop down 
+	menu, enter the number of terms for your approximation, and hit the "Calculate" 
+	button. The output shows the number calculated and the difference from the limit.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a number and hit the button:</legend>
+		<label for="singleSeq">Select the sequence:</label>
+		<select name="singleSeq" id="singleSeq">
+			<option value="A" selected>2</option>
+			<option value="B">2/3</option>
+			<option value="C">3/2</option>
+			<option value="D">3/4</option>
+			<option value="E">&radic;2</option>
+			<option value="F">&pi;/2</option>
+		</select><br/>
+		<label for="depth">Number of terms</label>
+		<input type="text" id="depth" placeholder="10" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate" onclick="calcSeq()"/>
+		<br/>
+		<br/>
+		<label for="result">Approximation = </label>
+		<input type="text" name="result" id="result" value="" size="25" disabled/><br />
+		<label for="diff">Difference = </label>
+		<input type="text" name="diff" id="diff" value="" size="25" disabled/><br />
+		<br/>
+</fieldset>
+
+<br/>
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>May 1, 2017</p>
+</footer>
+</html>

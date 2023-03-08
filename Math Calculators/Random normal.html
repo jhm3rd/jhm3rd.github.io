@@ -1,0 +1,371 @@
+<html>
+<head>
+<title>Random Normal Tester</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script src="plotly-latest.min.js"></script>
+
+<script type="text/javascript">
+<!--
+
+let labels = new Array();
+
+
+function randNormal(){				// want to fake numpy.random.normal which picks
+									// a random biased by the gaussian distribution
+	let newRand = 0;				// the following is from Wikipedia article on
+									// the Normal Distribution
+	for (let i=1; i<=12; i++){		// create a new number based on 12 random numbers
+		newRand = newRand + Math.random();
+	}
+	return newRand / 12;			// number in range 0 to 12 so need to normalize
+}
+
+function getData(){
+	const depth = document.getElementById("depth").value;
+	const divisions = parseInt(document.getElementById("divisions").value);
+	
+	let distArray = Array(divisions).fill(0);
+	
+	if (divisions === 10){
+		for (let i = 1; i <= depth; i++){		// distribute the numbers across the array
+			let random = randNormal();
+			if (random >= 0.9){
+				distArray[9] = distArray[9] + 1;
+			}
+			else if (random >= 0.8){
+				distArray[8] = distArray[8] + 1;
+			}
+			else if (random >= 0.7){
+				distArray[7] = distArray[7] + 1;
+			}
+			else if (random >= 0.6){
+				distArray[6] = distArray[6] + 1;
+			}
+			else if (random >= 0.5){
+				distArray[5] = distArray[5] + 1;
+			}
+			else if (random >= 0.4){
+				distArray[4] = distArray[4] + 1;
+			}
+			else if (random >= 0.3){
+				distArray[3] = distArray[3] + 1;
+			}
+			else if (random >= 0.2){
+				distArray[2] = distArray[2] + 1;
+			}
+			else if (random >= 0.1){
+				distArray[1] = distArray[1] + 1;
+			}
+			else{
+				distArray[0] = distArray[0] + 1;
+			}
+		}
+		labels = ['0-0.1','0.1-0.2','0.2-0.3','0.3-0.4','0.4-0.5','0.5-0.6','0.6-0.7','0.7-0.8','0.8-0.9','0.9-1'];
+	}
+	else{											// distribute across 20 divisions
+		for (let i = 1; i <= depth; i++){
+			let random = randNormal();
+			if (random >= 0.95){
+				distArray[19] = distArray[19] + 1;
+			}
+			else if (random >= 0.9){
+				distArray[18] = distArray[18] + 1;
+			}
+			else if (random >= 0.85){
+				distArray[17] = distArray[17] + 1;
+			}
+			else if (random >= 0.8){
+				distArray[16] = distArray[16] + 1;
+			}
+			else if (random >= 0.75){
+				distArray[15] = distArray[15] + 1;
+			}
+			else if (random >= 0.7){
+				distArray[14] = distArray[14] + 1;
+			}
+			else if (random >= 0.65){
+				distArray[13] = distArray[13] + 1;
+			}
+			else if (random >= 0.6){
+				distArray[12] = distArray[12] + 1;
+			}
+			else if (random >= 0.55){
+				distArray[11] = distArray[11] + 1;
+			}
+			else if (random >= 0.5){
+				distArray[10] = distArray[10] + 1;
+			}
+			else if (random >= 0.45){
+				distArray[9] = distArray[9] + 1;
+			}
+			else if (random >= 0.4){
+				distArray[8] = distArray[8] + 1;
+			}
+			else if (random >= 0.35){
+				distArray[7] = distArray[7] + 1;
+			}
+			else if (random >= 0.3){
+				distArray[6] = distArray[6] + 1;
+			}
+			else if (random >= 0.25){
+				distArray[5] = distArray[5] + 1;
+			}
+			else if (random >= 0.2){
+				distArray[4] = distArray[4] + 1;
+			}
+			else if (random >= 0.15){
+				distArray[3] = distArray[3] + 1;
+			}
+			else if (random >= 0.1){
+				distArray[2] = distArray[2] + 1;
+			}
+			else if (random >= 0.05){
+				distArray[1] = distArray[1] + 1;
+			}
+			else{
+				distArray[0] = distArray[0] + 1;
+			}
+		}
+		labels = ['0-0.05','0.05-0.10','0.10-0.15','0.15-0.20','0.20-0.25','0.25-0.30','0.30-0.35','0.35-0.40','0.40-0.45','0.45-0.50','0.50-0.55','0.55-0.60','0.60-0.65','0.65-0.70','0.70-0.75','0.75-0.80','0.80-0.85','0.85-0.90','0.90-0.95','0.95-1'];
+	}
+	return distArray;
+}
+
+
+
+function calcDist(){	
+	const graph = document.getElementById("graph");
+	
+	const distArray = getData();
+	
+	const data = [
+		{
+			x: [...labels],
+			y: [...distArray],
+			type: 'bar'
+		}
+	];
+	
+	Plotly.newPlot(graph, data);
+
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Random Normal Number Distribution
+</h1>
+
+<p>
+	This is simply a test page for a random number generator that generates random 
+	numbers skewed to the normal distribution. From Wikipedia:
+</p>
+	
+<blockquote>
+	An easy to program approximate approach, 
+	that relies on the central limit theorem, is as follows: generate 12 uniform U(0,1) 
+	deviates, add them all up, and subtract 6 &mdash; the resulting random variable will 
+	have approximately standard normal distribution. In truth, the distribution will be 
+	Irwin&mdash;Hall, which is a 12-section eleventh-order polynomial approximation to 
+	the normal distribution. This random deviate will have a limited range of (-6, 6). 
+</blockquote>
+
+<p>
+	This tester will run the random normal number generator multiple (as input by 
+	the user) times. The resulting list of numbers is distributed across different 
+	decades of the span 0 to 1 and a bar graph is generated based on this data. The 
+	graphing is done via the <a href="https://plot.ly/javascript/">plotly library</a>.
+</p>
+
+<p class="note">
+	The graph generated by plotly is interactive. Hover over a bar to get the number 
+	of random numbers it represents.
+</p>
+
+<p class="note">
+	It is not clear how accurately this algorithm represents the normal distribution. 
+	Even after generating 10,000,000 random numbers there are no numbers in the 
+	0&nbsp;-&nbsp;0.1 and 0.9&nbsp;-&nbsp;1 ranges. After 100,000,000 (~10 secs) 
+	there were 2 in 0.9&nbsp;-&nbsp;1 and 1 in 0&nbsp;-&nbsp;0.1.
+</p>
+
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter the desired number of random numbers and hit the button:</legend>
+		<label for="depth">Limit</label>
+		<input type="text" id="depth" placeholder="1000" autofocus><br/>
+		<label for="divisions">Divisions (10 or 20)</label>
+		<input type="text" id="divisions" placeholder="10"><br/>
+		<br/>
+		<input type="button" value="Calculate Distribution" onclick="calcDist()"/>
+		<br/>
+</fieldset>
+
+
+<hr />
+
+<div id="graph">
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 5, 2017</p>
+</footer>
+</html>

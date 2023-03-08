@@ -1,0 +1,440 @@
+<html>
+<head>
+<title>SVG Testbed</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+  	svg {
+  		border: 1px solid;
+  		stroke-width: 2;
+  		fill: none;
+  		stroke-linejoin: round;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function factorial(n)
+{
+	var factorial = 1;
+	while(n > 1)
+	{
+		factorial = factorial * n;
+		n = n - 1;
+	}		
+	return factorial;
+}
+
+function shiftArray(arr,amt) {	// shifts each element in an array by a given amount
+	const shiftedArr = [];
+
+	for (const i of arr){
+      shiftedArr.push(i + amt);
+	}
+	return shiftedArr;
+}
+
+const xCoordArr = [6.8,15.44,24.08,32.72,41.36,58.64,64.4,75.92,84.56,93.2];
+const yCoordArr = [100,90,80,70,60,40,30,20,10,0];
+const ySideArr = [75,70,65,60,55,45,40,35,30,25];
+
+function showSVG() {
+							
+	function getShape(root,xShift,yShift,dig100,dig10,dig1) {		// roots are 1,2,4,5,7,8
+									// returns the SVG for the given prime number
+									// assumes each picture sits in a square box 100 X 100
+		let [lgx1, lgx2, lgx3, lgx4, lgy1, lgy2, lgy3, lgy4] = [0,0,0,0,0,0,0,0];
+		let [medx1, medx2, medx3, medx4, medy1, medy2, medy3, medy4] = [0,0,0,0,0,0,0,0];
+		let [smx1, smx2, smx3, smx4, smy1, smy2, smy3, smy4] = [0,0,0,0,0,0,0,0];
+		
+		const xArr = shiftArray(xCoordArr,xShift);
+		const yArr = shiftArray(yCoordArr,yShift);
+		const ySArr = shiftArray(ySideArr,yShift);
+		const xCen = 50 + xShift;
+		const yCen = 50 + yShift;
+					
+		switch(root) {
+			case 1:					// three embedded squares
+				lgx1 = 10 + xShift;		// large square is 100's digit
+				lgy1 = 10 + yShift;		// medium square is 10's digit
+				lgx2 = lgx1;				// small square is 1's digit
+				lgy2 = 90 + yShift;
+				lgx3 = 90 + xShift;	
+				lgy3 = lgy2;
+				lgx4 = lgx3;
+				lgy4 = lgy1;
+				
+				medx1 = 25 + xShift;
+				medy1 = 25 + yShift;
+				medx2 = medx1;
+				medy2 = 75 + yShift;
+				medx3 = 75 + xShift;
+				medy3 = medy2;
+				medx4 = medx3;
+				medy4 = medy1;
+				
+				smx1 = 40 + xShift;
+				smy1 = 40 + yShift;
+				smx2 = smx1;
+				smy2 = 60 + yShift;
+				smx3 = 60 + xShift;
+				smy3 = smy2;
+				smx4 = smx3;
+				smy4 = smy1;
+				
+				return `<polygon points="${lgx1} ${lgy1}, ${lgx2} ${lgy2}, ${lgx3} ${lgy3}, ${lgx4} ${lgy4}" stroke = ${colorArray[dig100][0]} fill = "${colorArray[dig100][0]}"/> 
+						<polygon points="${medx1} ${medy1}, ${medx2} ${medy2}, ${medx3} ${medy3}, ${medx4} ${medy4}" stroke = ${colorArray[dig10][0]} fill = "${colorArray[dig10][0]}"/> 
+						<polygon points="${smx1} ${smy1}, ${smx2} ${smy2}, ${smx3} ${smy3}, ${smx4} ${smy4}" stroke = $colorArray[dig1][0]} fill = "${colorArray[dig1][0]}"/>`;
+				break;
+			case 2:					// three stacked squares
+					const xAr = [6.8,15.44,24.08,32.72,41.36,50,58.64,67.28,75.92,84.56,93.2];
+					const yAr = [93.2,84.56,75.92,67.28,58.64,50,41.36,32.72,24.08,15.44,6.8];
+					const yHAr = [88.88,80.24,71.6,62.96,54.32,45.68,37.04,28.4,19.76,11.12];
+					
+					let xCArr = [];
+					for (let i=0; i<xAr.length; i++) {
+						xCArr[i] = xAr[i]/3;
+					}
+					let yCArr = [];
+					for (let i=0; i<yAr.length; i++) {
+						yCArr[i] = yAr[i]/3;
+					}
+					let yCHArr = [];
+					for (let i=0; i<yHAr.length; i++) {
+						yCHArr[i] = yHAr[i]/3;
+					}
+					/*const xCArr = shiftArray(xAr,xShift);
+					const yCArr = shiftArray(yAr,yShift);
+					const yCHArr = shiftArray(yHAr,yShift);*/
+				return `<polygon points = "${xCArr[1]} ${yCArr[3]}, ${xCArr[5]} ${yCArr[2]}, ${xCArr[9]} ${yCArr[3]}, ${xCArr[10]} ${yCHArr[2]}, ${xCArr[5]} ${yCArr[1]}, ${xCArr[0]} ${yCHArr[2]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCArr[0]} ${yCHArr[2]}, ${xCArr[5]} ${yCArr[1]}, ${xCArr[5]} ${yCArr[0]}, ${xCArr[0]} ${yCHArr[1]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[2]}, ${xCArr[10]} ${yCHArr[1]}, ${xCArr[5]} ${yCArr[0]}, ${xCArr[5]} ${yCArr[1]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						
+						<polygon points = "${xCArr[1]} ${yCArr[5]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[9]} ${yCArr[5]}, ${xCArr[10]} ${yCHArr[4]}, ${xCArr[5]} ${yCArr[3]}, ${xCArr[0]} ${yCHArr[4]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[0]} ${yCHArr[4]}, ${xCArr[5]} ${yCArr[3]}, ${xCArr[5]} ${yCArr[2]}, ${xCArr[0]} ${yCHArr[3]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[4]}, ${xCArr[10]} ${yCHArr[3]}, ${xCArr[5]} ${yCArr[2]}, ${xCArr[5]} ${yCArr[3]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+
+						<polygon points = "${xCArr[5]} ${yCArr[8]}, ${xCArr[10]} ${yCHArr[6]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[0]} ${yCHArr[6]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xCArr[0]} ${yCHArr[6]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[0]} ${yCHArr[5]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[6]}, ${xCArr[10]} ${yCHArr[5]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[5]} ${yCArr[5]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						
+						<polygon points = "${xCArr[5]} ${yCArr[7]}, ${xCArr[7]} ${yCHArr[6]}, ${xCArr[6]} ${yCArr[6]}, ${xCArr[5]} ${yCHArr[6]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[6]}, ${xCArr[10]} ${yCHArr[5]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[5]} ${yCArr[5]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points = "${xCArr[0]} ${yCHArr[6]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[0]} ${yCHArr[5]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[6]}, ${xCArr[10]} ${yCHArr[5]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[5]} ${yCArr[5]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points = "${xCArr[0]} ${yCHArr[6]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[0]} ${yCHArr[5]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						`;
+				break;
+			case 4:					// hexagons within hexagons my oh my
+				// proceeding clockwise around each hexagon starting from the outermost hexagon
+				return `<polygon points = "${xArr[0]} ${ySArr[0]}, ${xArr[1]} ${ySArr[1]}, ${xCen} ${yArr[1]}, ${xCen} ${yArr[0]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[0]} ${ySArr[0]}, ${xArr[1]} ${ySArr[1]}, ${xArr[1]} ${ySArr[8]}, ${xArr[0]} ${ySArr[9]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[0]} ${ySArr[9]}, ${xArr[1]} ${ySArr[8]}, ${xCen} ${yArr[8]}, ${xCen} ${yArr[9]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCen} ${yArr[9]}, ${xCen} ${yArr[8]}, ${xArr[8]} ${ySArr[8]}, ${xArr[9]} ${ySArr[9]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[9]} ${ySArr[9]}, ${xArr[8]} ${ySArr[8]}, ${xArr[8]} ${ySArr[1]}, ${xArr[9]} ${ySArr[0]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[9]} ${ySArr[0]}, ${xArr[8]} ${ySArr[1]}, ${xCen} ${yArr[1]}, ${xCen} ${yArr[0]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[1]} ${ySArr[1]}, ${xArr[2]} ${ySArr[2]}, ${xCen} ${yArr[2]}, ${xCen} ${yArr[1]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[1]} ${ySArr[1]}, ${xArr[2]} ${ySArr[2]}, ${xArr[2]} ${ySArr[7]}, ${xArr[1]} ${ySArr[8]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[1]} ${ySArr[8]}, ${xArr[2]} ${ySArr[7]}, ${xCen} ${yArr[7]}, ${xCen} ${yArr[8]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCen} ${yArr[8]}, ${xCen} ${yArr[7]}, ${xArr[7]} ${ySArr[7]}, ${xArr[8]} ${ySArr[8]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[7]} ${ySArr[7]}, ${xArr[8]} ${ySArr[8]}, ${xArr[8]} ${ySArr[1]}, ${xArr[7]} ${ySArr[2]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[7]} ${ySArr[2]}, ${xArr[8]} ${ySArr[1]}, ${xCen} ${yArr[1]}, ${xCen} ${yArr[2]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[2]} ${ySArr[2]}, ${xArr[3]} ${ySArr[3]}, ${xCen} ${yArr[3]}, ${xCen} ${yArr[2]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[2]} ${ySArr[2]}, ${xArr[3]} ${ySArr[3]}, ${xArr[3]} ${ySArr[6]}, ${xArr[2]} ${ySArr[7]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[2]} ${ySArr[7]}, ${xArr[3]} ${ySArr[6]}, ${xCen} ${yArr[6]}, ${xCen} ${yArr[7]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCen} ${yArr[7]}, ${xCen} ${yArr[6]}, ${xArr[6]} ${ySArr[6]}, ${xArr[7]} ${ySArr[7]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[6]} ${ySArr[6]}, ${xArr[7]} ${ySArr[7]}, ${xArr[7]} ${ySArr[2]}, ${xArr[6]} ${ySArr[3]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[6]} ${ySArr[3]}, ${xArr[7]} ${ySArr[2]}, ${xCen} ${yArr[2]}, ${xCen} ${yArr[3]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[3]} ${ySArr[3]}, ${xArr[4]} ${ySArr[4]}, ${xCen} ${yArr[4]}, ${xCen} ${yArr[3]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[3]} ${ySArr[3]}, ${xArr[4]} ${ySArr[4]}, ${xArr[4]} ${ySArr[5]}, ${xArr[3]} ${ySArr[6]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[3]} ${ySArr[6]}, ${xArr[4]} ${ySArr[5]}, ${xCen} ${yArr[5]}, ${xCen} ${yArr[6]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCen} ${yArr[6]}, ${xCen} ${yArr[5]}, ${xArr[5]} ${ySArr[5]}, ${xArr[6]} ${ySArr[6]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[5]} ${ySArr[5]}, ${xArr[6]} ${ySArr[6]}, ${xArr[6]} ${ySArr[3]}, ${xArr[5]} ${ySArr[4]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[5]} ${ySArr[4]}, ${xArr[6]} ${ySArr[3]}, ${xCen} ${yArr[3]}, ${xCen} ${yArr[4]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCen} ${yArr[5]}, ${xArr[5]} ${ySArr[5]}, ${xCen} ${yCen}, ${xArr[4]} ${ySArr[5]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[4]} ${ySArr[5]}, ${xCen} ${yCen}, ${xCen} ${yArr[4]}, ${xArr[4]} ${ySArr[4]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[5]} ${ySArr[5]}, ${xArr[5]} ${ySArr[4]}, ${xCen} ${yArr[4]}, ${xCen} ${yCen}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>`;
+				break;
+			case 5:					// three vertical parallel lines
+				lgx1 = 10 + xShift;
+				lgy1 = 10 + yShift;
+				lgx2 = lgx1;
+				lgy2 = 90 + yShift;
+				
+				medx1 = 50 + xShift;
+				medy1 = lgy1;
+				medx2 = medx1;
+				medy2 = lgy2;
+				
+				smx1 = 90 + xShift;
+				smy1 = lgy1;
+				smx2 = smx1;
+				smy2 = lgy2;
+				
+				return `<line x1="${lgx1}" y1="${lgy1}" x2="${lgx2}" y2="${lgy2}" stroke = ${colorArray[dig100][0]} fill = "${colorArray[dig100][0]}"/>
+						<line x1="${medx1}" y1="${medy1}" x2="${medx2}" y2="${medy2}" stroke = ${colorArray[dig10][0]} fill = "${colorArray[dig10][0]}"/>
+						<line x1="${smx1}" y1="${smy1}" x2="${smx2}" y2="${smy2}" stroke = ${colorArray[dig1][0]} fill = "${colorArray[dig1][0]}"/>`;
+				break;
+			case 7:					// three embedded circles
+				lgx1 = 50 + xShift;
+				lgy1 = 50 + yShift;
+				
+				medx1 = lgx1;
+				medy1 = lgy1;
+				
+				smx1 = lgx1;
+				smy1 = lgy1;
+				
+				return `<circle cx="${lgx1}" cy="${lgy1}" r="40" stroke = ${colorArray[dig100][0]} fill = "${colorArray[dig100][0]}"/>
+						<circle cx="${medx1}" cy="${medy1}" r="25" stroke = ${colorArray[dig10][0]} fill = "${colorArray[dig10][0]}"/>
+						<circle cx="${smx1}" cy="${smy1}" r="10" stroke = ${colorArray[dig1][0]} fill = "${colorArray[dig1][0]}"/>`;
+				break;
+			case 8:					// three horizontal parallel lines
+				lgx1 = 10 + xShift;
+				lgy1 = 10 + yShift;
+				lgx2 = 90 + xShift;
+				lgy2 = lgy1;
+				
+				medx1 = lgx1;
+				medy1 = 50 + yShift;
+				medx2 = lgx2;
+				medy2 = medy1;
+				
+				smx1 = lgx1;
+				smy1 = 90 + yShift;
+				smx2 = lgx2;
+				smy2 = smy1;
+				
+				return `<line x1="${lgx1}" y1="${lgy1}" x2="${lgx2}" y2="${lgy2}" stroke = ${colorArray[dig100][0]} fill = "${colorArray[dig100][0]}"/>
+						<line x1="${medx1}" y1="${medy1}" x2="${medx2}" y2="${medy2}" stroke = ${colorArray[dig10][0]} fill = "${colorArray[dig10][0]}"/>
+						<line x1="${smx1}" y1="${smy1}" x2="${smx2}" y2="${smy2}" stroke = "${colorArray[dig1][0]}" fill = "${colorArray[dig1][0]}"/>`;
+				break;
+			default:
+				return "Bad root";
+				break;
+		}
+	}
+	
+	
+	
+	
+	const viewBoxHt = 100;
+	const viewBoxWdth = 100;
+	const div = document.getElementsByTagName("div")[0];
+	//					Main	dark	medium	light
+	const nineClrs = ["#784c3c","#513328","#784939","#9f5f4a"];
+	const eightClrs = ["#9f5f3e","#7f422d","#a75d40","#b87d51"];
+	const sevenClrs = ["#c8773b","#b85128","#c5773f","#d7994f"];
+	const sixClrs = ["#db9841","#d17830","#de974c","#e1b955"];
+	const fiveClrs = ["#e3be4d","#dbab37","#e4bf4c","#e9d269"];
+	const fourClrs = ["#cec95c","#b8bb3c","#cbcb5d","#dada7f"];
+	const threeClrs = ["#a7bf6d","#89ab4d","#a6bf6d","#c0d38e"];
+	const twoClrs = ["#a4bd80","#86a85c","#a2bd81","#bdcfa7"];
+	const oneClrs = ["#d0d0a1","#bec386","#cdd2a1","#dbe1bf"];
+	const zeroClrs = ["#efe9cc","#e9e5bd","#f0e8c9","#f5f0dd"];
+	const bkgnd = "#464a3c"
+	const nmbrs = "#6e7467"
+	
+	let colorArray = [];
+	colorArray[0] = zeroClrs;
+	colorArray[1] = oneClrs;
+	colorArray[2] = twoClrs;
+	colorArray[3] = threeClrs;
+	colorArray[4] = fourClrs;
+	colorArray[5] = fiveClrs;
+	colorArray[6] = sixClrs;
+	colorArray[7] = sevenClrs;
+	colorArray[8] = eightClrs;
+	colorArray[9] = nineClrs;
+	
+
+	
+	let svg = `<svg viewBox="0 0 100 100" width=${viewBoxWdth} height=${viewBoxHt}>`;
+	
+	// Draw thirteen quadrilaterals for the three stacked square doughnuts
+	// First from the bottom up
+	svg = svg + getShape(2,0,0,9,6,3);	
+	
+	
+	svg = svg + "</svg>";
+	
+	div.innerHTML = svg;
+	
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	SVG Testbed
+</h1>
+<h2>Write and Display SVG</h2><br />
+
+<p>
+	This page was used to design the six pictures that make up the poster in 
+	Geometric Primes.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Hit the button to reveal the SVG</legend>
+		<input type="button" value="Produce the Geometric Primes" onclick="showSVG()"/>
+		<br/>
+</fieldset>
+<br />
+<hr />
+
+<div>
+
+</div>
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 31, 2023</p>
+</footer>
+</html>

@@ -1,0 +1,524 @@
+<html>
+<head>
+<title>Prime Circles</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function isItPrime(n) {	// only for n < 100
+	const primeList = new Set([2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97]);
+	return ((primeList.has(n)) ? true: false);
+}
+// *** Array functions ***
+const initializeArrayWithRange = (end, start = 0, step = 1) =>
+  Array.from({ length: Math.ceil((end - start + 1) / step) }, (v, i) => i * step + start);
+  
+const drop = (arr, n = 1) => arr.slice(n);	// returns a new array with n elements removed from left
+											// drop([1,2,3]) returns [2,3]
+
+const pull = (arr, ...args) => {			// removes given item from array
+  let argState = Array.isArray(args[0]) ? args[0] : args;
+  let pulled = arr.filter((v, i) => !argState.includes(v));
+  arr.length = 0;
+  pulled.forEach(v => arr.push(v));
+};
+
+  
+// *** End of Array functions ***
+
+//	initializeArrayWithRange(5); [0,1,2,3,4,5]
+//	initializeArrayWithRange(7, 3); [3,4,5,6,7]
+//	initializeArrayWithRange(9, 0, 2); [0,2,4,6,8]
+
+let startingValues = [];	// the numbers around the circle
+let withheldValues = [];							// array for pulling numbers already tried
+
+// *** create the nodes and the linked list via a class for each ***
+
+//Node
+class Node{
+  constructor(elm, next = null){
+    this.element = elm;
+    this.next = next;
+  }
+}
+
+//LinkedList
+class LinkedList{
+  constructor(){
+    this.length = 0;
+    this.head = null;
+  }
+  
+  //Add new item in the linkedlist
+  append = function(elm) {
+    let node = new Node(elm),
+    current;
+
+    if(this.head === null){
+      this.head = node;
+    }else{
+      current = this.head;
+      while(current.next){
+        current = current.next;
+      }
+
+      current.next = node;
+    }
+
+    this.length++;
+  };
+
+  //Remove item from any position
+  removeAt = function(pos){
+    if(pos > -1 && pos < this.length){
+      let current = this.head,
+      previous, index = 0;
+
+      if(pos === 0){
+        this.head = current.next;
+      }else{
+        while(index++ < pos){
+          previous = current;
+          current = current.next;
+        }
+
+        previous.next = current.next;
+      }
+
+      this.length--;
+      return current.element;
+    }else{
+      return null;
+    }
+  };
+
+  //Add item at any position
+  insert = function(pos, elm){
+    if(pos >= 0 && pos <= this.length){
+      let node = new Node(elm),
+          current = this.head,
+          previous,
+          index = 0;
+
+      if(pos === 0){
+        node.next = current;
+        this.head = node;
+      }else{
+        while(index++ < pos){
+          previous = current;
+          current = current.next;
+        } 
+
+        node.next = current;
+        previous.next = node;
+      }
+
+      this.length++;
+      return true;
+    }else{
+      return false;
+    }
+  };
+
+  //Print item of the string
+  toString = function(){
+      let current = this.head,
+      string = '';
+
+      while(current){
+        string += current.element + (current.next ? '\n' : '');
+        current = current.next;
+      }
+
+      return string;
+    };
+    
+    //Convert list to array
+    toArray = function(){
+      let arr = [],
+      current = this.head;
+      
+      while(current){
+        arr.push(current.element);
+        current = current.next;
+      }
+      
+      return arr;
+    };
+    
+    //Get the indexOf item 
+    indexOf = function(elm){
+      let current = this.head,
+      index = -1;
+
+      while(current){
+        if(elm === current.element){
+          return ++index;
+        }
+
+        index++;
+        current = current.next;
+      }
+
+      return -1;
+    };
+    
+    //Delete an item from the list
+    delete = (elm) => {
+      return this.removeAt(this.indexOf(elm));
+    };    
+
+    //Delete first item from the list
+    deleteHead = function(){
+      let current = this.head;
+      
+      if(current === null){
+        return true;
+      }
+      
+      if(current.next){
+        current = current.next;
+        this.head = current;       
+      }else{
+        this.head = null;
+      }
+      
+      return true;
+    }
+
+    //Delete last item from the list
+    deleteTail = function(){
+      let current = this.head;
+      
+      if(current === null){
+        return true;
+      }
+      
+      while(current.next){
+        if(!current.next.next){
+          current.next = null;
+        }else{
+          current = current.next;
+        }
+      }
+      
+      return true;
+    }
+
+    //Find the item in the list
+    isPresent = (elm) => {
+      return this.indexOf(elm) !== -1;
+    };
+    
+    
+    //Check if list is empty
+    isEmpty = function(){
+      return this.length === 0;
+    };
+    
+    //Get the size of the list
+    size = function(){
+      return this.length;
+    }
+    
+    //Get the head of the list
+    getHead = function(){
+      return this.head;
+    }
+    
+    //Get the tail of the list
+    getTail = function(){
+    	let current = this.head;
+    	if (current === null){
+    		return this.head;
+    	}
+    	while(current.next){
+    		if (!current.next.next){
+    			return this.current.next;
+    		}else{
+    			current = current.next;
+    		}
+    	}
+    }
+}
+
+// *** end of linked list classes definitions ***
+
+function fillCircle() {		// returns the list as a string, e.g. 1,2,3,8,5,6,7,4
+	let ll = new LinkedList();
+	ll.append(1);			// create the head of the linked list
+	startingValues = drop(startingValues);	// remove 1 from list of available numbers
+	ll.append(2);			// shortcut since process will find 2 anyway
+	startingValues = drop(startingValues);	// remove 2 from list of available numbers
+	ll.append(3);			// as above but 3
+	startingValues = drop(startingValues);	// remove 3 from list of available numbers
+	
+	// *** time to create the loop that eventually returns the circle ***
+	
+	for (let i=0; i=startingValues.length; i++) {
+		let temp = startingValues[i];
+		if (isItPrime(temp + ll.getTail()) {
+			ll.append(temp);						// create new node
+			startingValues = pull(startingValues,temp);	// remove number from array
+			break;									// found it so exit loop
+		}
+	}
+}
+
+function calcPrimeCircle() {
+
+	const n = parseInt(document.getElementById("n").value);
+	const div = document.getElementsByTagName("div")[0];
+	
+	startingValues = initializeArrayWithRange(2n);	// fill array with our numbers
+
+	let circle = fillCircle();						// construct the circle of numbers
+													// circle is a string of numbers
+	
+	div.innerHTML = circle;							// print output as string for now
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Prime Circles
+</h1>
+
+<p>
+	Is it always possible to arrange the numbers from 1 to 2n in a circle so that each 
+	adjacent pair sums to a prime? As of 2016, solutions have been found for every case 
+	up to n = 106 — but no one has yet proven that it’s always possible. From 
+	<a href="https://www.futilitycloset.com/2021/01/05/prime-circles/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+FutilityCloset+%28Futility+Closet%29">
+	Futility Closet</a>.
+</p>
+
+<img class=inline src="Prime circle.png" alt="A circle of prime sums" width="242" height="272">
+
+<p>	
+	I was intrigued by this mostly as a programming learning opportunity. A data 
+	structure for the circle of numbers could be a linked list. I have never implemented 
+	one of these in JavaScript and thought it would be a fun challenge. Additionally, the 
+	logical flow of the search for prime sums posed a second challenge. As you find prime 
+	sums you may get to a point where you can no longer find one and need to drop back 
+	and replace an earlier prime sum. So backtracking and keeping tabs on prime sums that 
+	have been eliminated poses the second challenge.
+</p>
+
+<p>
+	I am going to try something a little different here and write pseudocode to map out 
+	how I expect the program logic to flow.
+</p>
+
+<ol>
+	<li>Given n generate an array containing the numbers 1 to 2n. </li>
+	<li>Begin to generate our linked list by assigning 1 to the head node.</li>
+	<li>Remove 1 from the array</li>
+	<li>Try each of the numbers in the array until one is found that when added to 1 
+		returns a prime.</li>
+	<li>Remove that number from the array and generate a new node for this number.</li>
+	<li>Repeat the search for the next number to provide a prime sum</li>
+	<li>If one is not found then drop back a node</li>
+	<li>Save the number that gave this prime pair separately from the array to keep it 
+		from being found again.</li>
+	<li>Find a new prime pair and create the new node.</li>
+	<li>Add the saved number back to the array.</li>
+	<li>Continue finding prime pairs until the array is empty.</li>
+	<li>Check to be sure the last node and the first node sum to a prime.</li>
+	<li>If not drop back a node</li>
+	<li>If the linked list is filled correctly, then make a picture of the number circle.</li>
+</ol>
+
+<p>
+	The linked list code used here is from <a href="https://learnersbucket.com/tutorials/data-structures/linked-list-implementation-in-javascript/">
+	Learners Bucket</a>.
+</p>
+
+<p class=note>
+	The limit is based solely on your patience. A limit of 100,000,000 takes about 20 
+	seconds to calculate. Of course, the largest possible factorion is less than 
+	99,999,999 as 8 X 9! = 2,903,040. Further digits do not grow fast enough as 9! < 
+	1,000,000.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a number <= 47 (n of 2n) for your circle and hit the button:</legend>
+		<label for="depth">Number of Summands</label>
+		<input type="text" id="n" placeholder="4" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate Prime Circle" onclick="calcPrimeCircle()"/>
+		<br/>
+</fieldset>
+
+<p class=note>
+	Reload the browser window/tab between calculations if you don't want successive 
+	calculations appended.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 6, 2021</p>
+</footer>
+</html>

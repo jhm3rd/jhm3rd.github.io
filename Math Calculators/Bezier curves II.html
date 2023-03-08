@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Drawing Bezier Curves II: Words</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="programming,javascript,svg"/>
+	<meta name="description" content="Drawing Bezier Curves II: Words"/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	p.hebrew {
+		font-size: 24px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="text2"] {
+		width: 95px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+  	svg {
+  		border: 2px solid #000;
+  	}
+  	span.pp {
+  		color: red;
+  	}
+  	span.ppb {
+  		color: blue;
+  	}
+  	span.ppp {
+  		color: purple;
+  	}
+  	span.ppg {
+  		color: gray;
+  	}
+	span.ppo {
+		color: orange;
+	}
+	p.code	{
+		font-size: 100%;
+		margin-left: 20px;
+		color: blue;
+		line-height: 0.5;
+	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+//	just your basic swatch object; 
+//	serves as starting point for all swatches that make up letters
+//	possible that a slightly different swatch might be needed at some point
+//	this the getter and setter
+
+
+function scale(arr,scalar) {		//	Takes a swatch array and one scalar; 
+	//	returns a scaled array
+	let x = 0;
+	let y = 0;
+	let newArr = [[],[]];
+	for (let j=0; j<=1; j++) {
+		for (let i=0; i<=3; i++) {			// add the scaled points to newArr
+			x = arr[j][i][0] * scalar;
+			y = arr[j][i][1] * scalar;
+			newArr[j][i] = [x,y];
+		}
+	}
+
+	return newArr;
+}
+
+function trans(point,vx,vy) {		// Takes a point array and returns a translated point array 
+									// shifted by vx in the x-direction and vy in the y-direction
+	return [point[0]+vx,point[1]+vy];
+}
+
+function rotate(point,theta,origin) {	// Takes a point array and returns a rotated point array
+										// rotated ccw by theta around the origin from the x-axis
+	const rad = theta * 2 * Math.PI / 360;				// convert degrees to radians
+	const sinTheta = Math.sin(rad);
+	const cosTheta = Math.cos(rad);
+
+// 	const a = point[0]-origin[0];
+// 	const b = point[1]-origin[1];
+// 	const transPt = trans(point,a,b);	//	move to origin
+// 	const x = transPt[0] * cosTheta - transPt[1] * sinTheta;
+// 	const y = transPt[0] * sinTheta + transPt[1] * cosTheta;
+// 	const newPt = trans([x,y],-a,-b);
+
+//	to rotate a point, B, around an arbitrary point, A, use the following formulae
+//	x = ((Bx - Ax)cosTheta - (By - Ay)sinTheta) + Ax
+//	x = ((Bx - Ax)sinTheta + (By - Ay)cosTheta) + Ay
+	
+	const x = ((point[0] - origin[0]) * cosTheta - (point[1] - origin[1]) * sinTheta) + origin[0];
+	const y = ((point[0] - origin[0]) * sinTheta + (point[1] - origin[1]) * cosTheta) + origin[1];
+	
+	return [x,y];
+}
+
+function rotateArr(arr,theta,origin) {			// Arr assumed to be two sub arrays of eight control points
+//	array is rotating around the origin; need to rotate around the center of mass 
+//	to do this need to translate ctrOfMass to origin, rotate, and then translate back
+	const rad = theta * 2 * Math.PI / 360;				// convert degrees to radians
+	const sinTheta = Math.sin(rad);
+	const cosTheta = Math.cos(rad);
+	//	const ctrOfMassX = (arr[0][3][0] + arr[0][0][0]) / 2;
+	//	const ctrOfMassY = (arr[0][3][1] + arr[0][0][1]) / 2;
+	//	const diffX = ctrOfMassX - origin[0];
+	//	const diffY = ctrOfMassY - origin[1];
+	
+	//	const shiftArr = transArr(arr,-diffX,-diffY);
+	let newArr = [[],[]];
+	let x = 0;
+	let y = 0;
+	for (let j=0; j<=1; j++) {
+		for (let i=0; i<=3; i++) {			// add the rotated points to newArr
+			x = ((arr[j][i][0] - origin[0])*cosTheta - (arr[j][i][1] - origin[1])*sinTheta) + origin[0];
+			y = ((arr[j][i][0] - origin[0])*sinTheta + (arr[j][i][1] - origin[1])*cosTheta) + origin[1];
+			newArr[j][i] = [x,y];
+		}
+	}
+	//	const unShiftArr = transArr(newArr,diffX,diffY);
+	return newArr;
+}
+
+function transArr(arr,vx,vy) {		// Arr assumed to be two sub arrays of eight control points
+	let newArr = [[],[]];
+	let x = 0;
+	let y = 0;
+	for (let j=0; j<=1; j++) {
+		for (let i=0; i<=3; i++) {
+			x = arr[j][i][0] + vx;
+			y = arr[j][i][1] + vy;
+			newArr[j][i] = [x,y];
+		}
+	}
+	return newArr;
+}
+
+
+function makeSVG(cpArr) {		//	takes an array of two curves and returns SVG for given swatch
+	let svg = `<path d= "M `;
+	svg = svg + `${cpArr[0][0][0]} ${cpArr[0][0][1]} C `;
+	svg = svg + `${cpArr[0][1][0]} ${cpArr[0][1][1]}, `;
+	svg = svg + `${cpArr[0][2][0]} ${cpArr[0][2][1]}, `;
+	svg = svg + `${cpArr[0][3][0]} ${cpArr[0][3][1]}" stroke="black" fill="transparent" />`;
+	svg = svg + `<path d= "M `;
+	svg = svg + `${cpArr[1][0][0]} ${cpArr[1][0][1]} C `;
+	svg = svg + `${cpArr[1][1][0]} ${cpArr[1][1][1]}, `;
+	svg = svg + `${cpArr[1][2][0]} ${cpArr[1][2][1]}, `;
+	svg = svg + `${cpArr[1][3][0]} ${cpArr[1][3][1]}" stroke="black" fill="transparent"/>`;
+	return svg;
+}
+
+//	An object constructor for Letter
+//	Note: it is a function now so properties are separated by semicolons
+
+function Letter(name,numOfSwatches,swatches,spaceLeft) {
+	this.name = name;
+	this.numOfSwatches = numOfSwatches;		// The number of swatches needed to make the letter
+	this.swatches = swatches;
+		// 	array of swatches which contains the orientation, location, and size info
+		//	[[sw1Rot,sw1Size,sw1Loc],[sw2Rot,sw2Size,sw2Loc],...] 
+		//	where swNLoc is a point array, swNSize is a scalar, and swNRot is the degrees of 
+		//	rotation ccw around the center of mass of the swatch 
+	this.spaceLeft = spaceLeft;				//	Space before letter
+	this.flip = 0;				//	the number of the swatch to be flipped; either 1, 2, or 3
+								//	hopefully never more than one needs flipping
+	this.ctrOfMass;				//	ctrOfMass for rotations of whole letter
+								//	defined as mdpts bet l & r, t & b extrema
+								//	should be translated if letter is translated
+	this.createSVG = function(swatch,deg,size,trans) {
+		//	rotat is deg ccw from x-axis,scale is scalar, trans is array of two scalars
+		//	need to get the swatch, orient it for this letter, and then orient it per the input
+		//	eventually the input will come from the word that this letter is part of
+		let newSwatch = "";	//	contains the SVG produced below
+		let tempSwatch;
+		let toFlip = false;
+		//let tempSwatch = "";
+		// Namespace declaration,  xmlns="http://www.w3.org/2000/svg", not needed unless svg is in an external file
+		for (let i=0; i<this.numOfSwatches; i++) {
+			// use the generic swatch array
+			// tell the generic swatch to draw itself given the data from swatches
+			//	first check to see if this swatch needs flipping
+			if (i + 1 == this.flip) {
+				toFlip = true;
+			}
+			else {
+				toFlip = false;				//	need to reset after setting it to true
+			}
+			tempSwatch = swatch.positionSwatch(this.swatches[i][0],this.swatches[i][1],this.swatches[i][2],this.swatches[i][3],toFlip);
+			//	now use the user input to further orient, scale and move these swatches
+	//		tempSwatch = tempSwatch.positionSwatch(deg,scale,trans[0],trans[1]);
+			tempSwatch = rotateArr(tempSwatch,deg,this.ctrOfMass);
+			tempSwatch = scale(tempSwatch,size);
+			tempSwatch = transArr(tempSwatch,trans[0],trans[1]);
+			newSwatch = newSwatch + makeSVG(tempSwatch);
+			//alert(newSwatch);
+		}
+		return newSwatch;
+	};
+	this.getName = function() {
+		return this.name;
+	};
+	this.setName = function(nom) {
+		this.name = nom;
+	};
+	this.getspaceLeft = function() {
+		return this.spaceLeft;
+	};
+	this.setSpaceLeft = function(space) {
+		this.spaceLeft = space;
+	};
+	this.getFlip = function() {			// the number (1,2,3) of the swatch to be flipped
+		return this.flip;
+	};
+	this.setFlip = function(num) {
+		this.flip = num;
+	};
+	this.getCoM = function() {			// returns an array 
+		return this.ctrOfMass;
+	};
+	this.setCoM = function(CoM) {		// takes an array
+		this.ctrOfMass = CoM;
+	};
+	this.getNumOfSwatches = function() {
+		return this.numOfSwatches;
+	};
+	this.setNumOfSwatches = function(num) {
+		this.numOfSwatches = num;
+	};
+	this.getSwatchArr = function() {					// all control points between 0 & 1
+		return swatches;
+	};
+	this.setSwatchArr = function(swArray) {			// set all at once
+		this.swatches = swArray;
+	};
+	this.addSwatch = function(size,deg,transX,transY) {		
+//	this.swatches.push(transArr(rotateArr(scale(swatch.basicSwatch),size),deg,swatch.ctrOfMass),transX,transY);
+//	do it in one fell swoop as above or break it into byte size pieces as below
+		let newArr = scale(swatch.basicSwatch,size);		//	scale basic swatch appropriately
+		newArr = rotateArr(newArr,deg,swatch.ctrOfMass);	//	rotate as needed
+		newArr = transArr(newArr,transX,transY);			//	move it to the correct position
+		this.swatches.push(newArr);							//	push it to letter's swatch array
+	}
+}
+
+// swatch object
+
+//	fill the letter objects
+//	can use the single function and pass the characteristics of the letter's swatches
+
+function createLetter(letter,name,space,num,swatches) {
+	//	letter is letter object, swatches is array of array of four numbers
+	//	space is the amount of space before the letter in words
+	//	num is the number of swatches
+	//	createLetter(yod,'yod',1,[[1,30,0.03,-0.03]])
+	
+	letter.setName(name);
+	letter.setSpaceLeft(space);
+	letter.setNumOfSwatches(num);
+	for (let i=0; i<=num; i++) {
+		letter.addSwatch(...swatches[i]);
+	}
+}
+//	or the letters can be created without passing the characteristics of the letter's swatches
+
+function createYod() {
+	//	yod with its one swatch; a yod is a high, small ~
+
+	yod.setName('yod');
+	yod.setNumOfSwatches(1);
+	yod.addSwatch(1,30,0.03,-0.03);		// rotate swatch 30 degrees and move right and up by 30 each
+}
+
+function createDalet() {
+//	dalet is two swatches; long across top and long down right side
+	
+	dalet.setName('dalet');
+	dalet.setNumOfSwatches(2);
+	dalet.addSwatch(2,30,-0.03,-0.1);	//	rotate to horiz, left and up
+	dalet.addSwatch(2,120,0.1,0);		//	rotate to vert, far right
+}
+
+function createChet() {
+//	dalet is two swatches; long across top and long down right side
+	
+	chet.setName('chet');
+	chet.setNumOfSwatches(3);
+	chet.addSwatch(2,30,-0.03,-0.10);	//	rotate to square, left and up
+	chet.addSwatch(2,120,0.10,0);		//	rotate to vert, far right
+	chet.addSwatch(2,120,-0.05,0);		//	rotate to vert, far left
+}
+
+function createAleph() {
+//	aleph is one very long swatch angled 45 deg from upper left with vert swatch on right 
+//	and longer vertical swatch on left
+	
+	aleph.setName('aleph');
+	aleph.setNumOfSwatches(3);
+	aleph.addSwatch(2.5,75,0,0);		//	rotate to 45, stays in center
+	aleph.addSwatch(1.5,120,-0.05,0.03);	//	rotate to vert, far left
+	aleph.addSwatch(1,120,0.05,-0.03);		//	rotate to vert, upper right
+}
+
+function createHe() {
+//	he is one long horizontal swatch at top with short vert swatch on left with gap  
+//	between and longer vertical swatch on right
+	
+	he.setName('he');
+	he.setNumOfSwatches(3);
+	he.addSwatch(2,30,-0.03,-0.10);		//	rotate to horiz, move up
+	he.addSwatch(2,120,0.05,0.03);		//	rotate to vert, far right
+	he.addSwatch(1,120,-0.03,0);		//	rotate to vert, lower left
+}
+
+function createWaw() {
+//	he is one long horizontal swatch at top with short vert swatch on left with gap  
+//	between and longer vertical swatch on right
+	
+	waw.setName('waw');
+	waw.setNumOfSwatches(2);
+	waw.addSwatch(1,30,0.03,-0.10);		//	rotate to horiz, move up
+	waw.addSwatch(2,120,0.05,0.03);		//	rotate to vert, far right
+}
+
+
+//	End createLetters()
+
+
+function produceSVG(size,degRot,transX,transY) {			// n is scaling factor
+	createLetters(size,degRot,transX,transY);
+	return yod.createSVG();
+	
+//	return `<svg width="190" height="160" xmlns="http://www.w3.org/2000/svg">
+//	<path d="M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80" stroke="black" fill="transparent"/>
+// 	</svg>`;
+}
+
+function main(lett,size,deg,transX,transY)
+//	eventually returns the SVG to be displayed in calcOutput()
+
+{
+//	first we create the swatch object; 
+//	serves as starting point for all swatches that make up letters
+//	possible that a slightly different swatch might be needed at some point
+//	thus the getter and setter
+
+	const swatch =
+	{
+		basicSwatch: [[[0.032,0.146],[0.086,0.201],[0.175,0.015],[0.227,0.146]],[[0.032,0.146],[0.086,0.277],[0.175,0.091],[0.227,0.146]]],
+		flippedSwatch: [[[0.032,0.146],[0.086,0.015],[0.175,0.201],[0.227,0.146]],[[0.032,0.146],[0.086,0.091],[0.175,0.277],[0.227,0.146]]],
+		ctrOfMass: [(0.032 + 0.175) / 2,0.146],
+	
+		positionSwatch: function(degrees,size,transX,transY,toFlip)
+		//	transX or Y is two scalars to translate in the x- and y-directions
+		//	rotation is in degrees; size is a scalar
+		//	each path needs its own stroke and fill modifiers
+		{
+			let newArr = [];
+			let newSVG = "";
+			if (toFlip) {
+				rightSwatch = this.flippedSwatch;
+			}
+			else {
+				rightSwatch = this.basicSwatch;
+			}
+			newArr = rotateArr(rightSwatch,degrees,this.ctrOfMass);
+			newArr = transArr(newArr,transX,transY);
+			newArr = scale(newArr,size);
+
+			return newArr;
+		},
+		createSVG: function(swatchArr)
+		{
+			return makeSVG(swatchArr);
+		},
+		
+		//	returns the center of mass of the basic swatch
+		//	probably not valid if basicSwatch is modified by setBasicSwatch()
+		getCtrOfMass: function()
+		{
+			return this.ctrOfMass;
+		},
+		//	returns the basicSwatch array if needed for anything
+		getBasicSwatch: function()
+		{
+			return this.basicSwatch;
+		},
+		//	sets the basicSwatch if it needs to be modified for some reason
+		setBasicSwatch: function(newSwatch)
+		{
+			this.basicSwatch = newSwatch;
+		}
+	}
+	
+//	initialize letters with the letter() prototype
+//	CoM calculated from extrema in svg of each letter
+	const yod = new Letter('yod',1,[[30,100,0.03,-0.03]],0);
+	yod.setCoM([15.601666,18.8901106]);
+	yod.setSpaceLeft(10);
+	const dalet = new Letter('dalet',2,[[30,220,-0.03,-0.11],[65,200,0.055,0.005]],0.01);
+	dalet.setCoM([22.196,21.706]);
+	dalet.setFlip(2);
+	dalet.setSpaceLeft(0);			// always at beginning of word
+	const chet = new Letter('chet',3,[[30,220,-0.03,-0.11],[65,200,0.055,0.005],[120,200,-0.05,0.005]],0.01);
+	chet.setCoM([22.196,21.706]);
+	chet.setFlip(2);
+	chet.setSpaceLeft(10);
+	
+	//	const aleph = new Letter('aleph',3,[[65,250,-0.02,-0.07],[150,130,0,0.13],[150,100,0.25,-0.05]],0.01)
+	
+	const aleph = new Letter('aleph',3,[[65,270,-0.02,-0.07],[150,150,0,0.13],[150,120,0.25,-0.05]],0.01);
+	aleph.setCoM([23.6220186,24.8910006]);	// needs to be adjusted as above params were modified
+	aleph.setSpaceLeft(15);
+	const he1 = new Letter('he',3,[[30,220,-0.03,-0.11],[65,200,0.055,0.005],[120,150,-0.05,0.09]],0.01);
+	he1.setCoM([22.196,21.706]); // 26.196 & 21.706 from 36.9377517,28.3670716
+	he1.setFlip(2);
+	he1.setSpaceLeft(10);
+	const he2 = new Letter('he',3,[[30,220,-0.03,-0.11],[65,200,0.055,0.005],[120,150,-0.05,0.09]],0.01);
+	he2.setCoM([22.196,21.706]);
+	he2.setFlip(2);
+	he2.setSpaceLeft(10);
+	const waw = new Letter('waw',2,[[30,120,0.10,-0.05],[65,200,0.05,0.005]],0);
+	waw.setCoM([23,24.391]); // 33.61, 27.391 from 26.0039592,34.3545816
+	waw.setFlip(2);	
+	waw.setSpaceLeft(10);
+	
+	function updateComs(letterPos,shiftAmt,space)	// updates letter COMs
+	//	also updates the swatches for each letter	
+	{
+	//	set the new centers of mass for the letters of the word
+		let daletCOM = dalet.getCoM();
+		const daletShift = dalet.spaceLeft + letterPos[0] + shiftAmt;
+		daletCOM[0] = daletCOM[0] + daletShift;
+		dalet.setCoM([daletCOM[0],daletCOM[1]]);
+		
+		let chetCOM = chet.getCoM();
+		const chetShift = chet.spaceLeft + letterPos[1] + shiftAmt;
+		chetCOM[0] = chetCOM[0] + chetShift;
+		chet.setCoM([chetCOM[0],chetCOM[1]]);
+		
+		let alephCOM = aleph.getCoM();
+		const alephShift = aleph.spaceLeft + letterPos[2] + shiftAmt;
+		alephCOM[0] = alephCOM[0] + alephShift;
+		aleph.setCoM([alephCOM[0], alephCOM[1]]);
+		
+		let he1COM = he1.getCoM();
+		const he1Shift = he1.spaceLeft + letterPos[3] + shiftAmt + space;
+		he1COM[0] = he1COM[0] + he1Shift;
+		he1.setCoM([he1COM[0],he1COM[1]]);
+		
+		let wawCOM = waw.getCoM();
+		const wawShift = waw.spaceLeft + letterPos[4] + shiftAmt + space;
+		wawCOM[0] = wawCOM[0] + wawShift;
+		waw.setCoM([wawCOM[0],wawCOM[1]]);
+		
+		let he2COM = he2.getCoM();
+		const he2Shift = he2.spaceLeft + letterPos[5] + shiftAmt + space;
+		he2COM[0] = he2COM[0] + he2Shift;
+		he2.setCoM([he2COM[0],he2COM[1]]);
+		
+		let yodCOM = yod.getCoM();
+		const yodShift = yod.spaceLeft + letterPos[6] + shiftAmt + space;
+		yodCOM[0] = yodCOM[0] + yodShift;
+		yod.setCoM([yodCOM[0],yodCOM[1]]);
+		
+	//	change the swatches to match their new centers of mass
+		let daletSwatches = dalet.getSwatchArr();
+		const daletSwNum = dalet.getNumOfSwatches();
+		for (let i=0; i<daletSwNum; i++) { // [i][2] should be x-shift
+			daletSwatches[i][2] = daletSwatches[i][2] + daletShift;
+		}
+		dalet.setSwatchArr(daletSwatches);
+		
+		let chetSwatches = chet.getSwatchArr();
+		const chetSwNum = chet.getNumOfSwatches();
+		for (let i=0; i<chetSwNum; i++) { 
+			chetSwatches[i][2] = chetSwatches[i][2] + chetShift;
+		}
+		chet.setSwatchArr(chetSwatches);
+
+		let alephSwatches = aleph.getSwatchArr();
+		const alephSwNum = aleph.getNumOfSwatches();
+		for (let i=0; i<alephSwNum; i++) { 
+			alephSwatches[i][2] = alephSwatches[i][2] + alephShift;
+		}
+		aleph.setSwatchArr(alephSwatches);
+		
+		let he1Swatches = he1.getSwatchArr();
+		const he1SwNum = he1.getNumOfSwatches();
+		for (let i=0; i<he1SwNum; i++) { 
+			he1Swatches[i][2] = he1Swatches[i][2] + he1Shift;
+		}
+		he1.setSwatchArr(he1Swatches);
+
+		let wawSwatches = waw.getSwatchArr();
+		const wawSwNum = waw.getNumOfSwatches();
+		for (let i=0; i<wawSwNum; i++) { 
+			wawSwatches[i][2] = wawSwatches[i][2] + wawShift;
+		}
+		waw.setSwatchArr(wawSwatches);
+
+		let he2Swatches = he2.getSwatchArr();
+		const he2SwNum = he2.getNumOfSwatches();
+		for (let i=0; i<he2SwNum; i++) { 
+			he2Swatches[i][2] = he2Swatches[i][2] + he2Shift;
+		}
+		he2.setSwatchArr(he2Swatches);
+
+		let yodSwatches = yod.getSwatchArr();
+		const yodSwNum = yod.getNumOfSwatches();
+		for (let i=0; i<yodSwNum; i++) { 
+			yodSwatches[i][2] = yodSwatches[i][2] + yodShift;
+		}
+		yod.setSwatchArr(yodSwatches);
+
+		
+	}
+
+//-----------------------------------	word	-----------------------------------
+
+//	There will only be one "word", which is 
+//	essentially an array of letter objects as defined above. Each letter should have the 
+//	required information to space it appropriately relative to the other letters.
+//	The word should function as a unit for translating, rotating, and scaling.
+	const word =
+	{
+		space: 30,		//	the space sits between aleph and he1
+		letterOrder: ["dalet","chet","aleph","he1","waw","he2","yod"],
+		centerOfMass: [102.5,28],	
+
+		transY: 15,		//	a generic position to keep it in SVG box IS THIS EVER USED?
+		letterPos: [-30,10,50,90,120,165,205], 
+		shiftAmt: 30,			//	to keep the word on the screen
+		
+		//	I do not believe that a property can take an expression. A method will be 
+		//	used to create the desired word array
+		
+		createWord: function(deg,scale,trans) {
+		// this is being changed. the COM of each letter will be updated and then there 
+		// is no need to send the x-translation information that covers position within 
+		// the word. The function will also take three parameters, rotation angle, 
+		// scale factor, and an array of x- and y-translations.
+		
+			// updateComs(this.letterPos,this.shiftAmt,this.space);
+
+		// create the array of letters with rotation, translation and scaling for each
+		
+
+			const daletAmt = dalet.spaceLeft + this.letterPos[0] + this.shiftAmt;
+			const chetAmt = chet.spaceLeft + this.letterPos[1] + this.shiftAmt;
+			const alephAmt = aleph.spaceLeft + this.letterPos[2] + this.shiftAmt;
+			const he1Amt = he1.spaceLeft + this.letterPos[3] + this.shiftAmt + this.space;
+			const wawAmt = waw.spaceLeft + this.letterPos[4] + this.shiftAmt + this.space;
+			const he2Amt = he2.spaceLeft + this.letterPos[5] + this.shiftAmt + this.space;
+			const yodAmt = yod.spaceLeft + this.letterPos[6] + this.shiftAmt + this.space;
+		
+			let daletShift = scale * daletAmt;
+			let chetShift = scale * chetAmt;
+			let alephShift = scale * alephAmt;
+			let he1Shift = scale * he1Amt;
+			let wawShift = scale * wawAmt;
+			let he2Shift = scale * he2Amt;
+			let yodShift = scale * yodAmt;
+			
+			let daletY = 0;
+			let chetY = 0;
+			let alephY = 0;
+			let he1Y = 0;
+			let wawY = 0;
+			let he2Y = 0;
+			let yodY = 0;
+			
+			if (deg !== 0) {
+				const daletRot = rotate([daletAmt,28],deg,this.centerOfMass);
+				const chetRot = rotate([chetAmt,28],deg,this.centerOfMass);
+				const alephRot = rotate([alephAmt,28],deg,this.centerOfMass);
+				const he1Rot = rotate([he1Amt,28],deg,this.centerOfMass);
+				const wawRot = rotate([wawAmt,28],deg,this.centerOfMass);
+				const he2Rot = rotate([he2Amt,28],deg,this.centerOfMass);
+				const yodRot = rotate([yodAmt,28],deg,this.centerOfMass);
+
+				daletShift = scale * daletRot[0];
+				chetShift = scale * chetRot[0];
+				alephShift = scale * alephRot[0];
+				he1Shift = scale * he1Rot[0];
+				wawShift = scale * wawRot[0];
+				he2Shift = scale * he2Rot[0];
+				yodShift = scale * yodRot[0];
+				daletY = scale * daletRot[1];
+				chetY = scale * chetRot[1];
+				alephY = scale * alephRot[1];
+				he1Y = scale * he1Rot[1];
+				wawY = scale * wawRot[1];
+				he2Y = scale * he2Rot[1];
+				yodY = scale * yodRot[1];
+				
+			}
+			
+			const daletArr = [dalet,deg,size,[transX+daletShift,transY+daletY]];
+			const chetArr = [chet,deg,size,[transX+chetShift,transY+chetY]];
+			const alephArr = [aleph,deg,size,[transX+alephShift,transY+alephY]];
+			const he1Arr = [he1,deg,size,[transX+he1Shift,transY+he1Y]];
+			const wawArr = [waw,deg,size,[transX+wawShift,transY+wawY]];
+			const he2Arr = [he2,deg,size,[transX+he2Shift,transY+he2Y]];
+			const yodArr = [yod,deg,size,[transX+yodShift,transY+yodY]];
+			
+			return [daletArr,chetArr,alephArr,he1Arr,wawArr,he2Arr,yodArr]
+		},			//	contains: [[letter,deg,size,[transX,transY]],...]
+		
+		
+		renderWord: function(theWord) {
+			//	will produce the SVG for the word as created above; tells the letters to 
+			//	produce themselves given the passed coordinates
+			let wordSVG = "";
+			for (let i=0; i<=6; i++) {
+				wordSVG = wordSVG +theWord[i][0].createSVG(swatch,theWord[i][1],theWord[i][2],theWord[i][3]);
+			}
+			return wordSVG;
+		},
+		
+		//	for the following three functions, walk through the list of letters in the 
+		//	created word; rotate the letters around the word CoM by default; when word 
+		//	is translated also translate the word's CoM; scaling may require scaling 
+		//	the space between letters and the two words
+		rotateWord: function() {
+			//	From a letter's perspective rotating a word x degrees is a translation 
+			//	followed by rotation of x degrees
+		},
+		
+		transWord: function() {
+			
+		},
+		
+		scaleWord: function() {
+			
+		},
+		
+		getSpace: function() {
+			return this.space;
+		},
+		getletterOrder: function() {
+			return this.letterOrder;
+		},
+		getCOM: function() {
+			return this.centerOfMass;
+		},
+		getLetterPos: function() {
+			return this.letterPos;
+		},
+		setCOM: function(com) {
+			this.centerOfMass = com;
+		},
+		setSpace: function(sp) {
+			this.space = sp;
+		},
+		scaleLett: function(size) {
+			
+		},
+		rotateLett: function(deg) {
+			
+		},
+		transLett: function(x,y) {
+			
+		},
+		
+	} // !! Letter objects have not been created so their properties nor functions can 
+		// be accessed !!
+
+
+	let newSVG = `<svg viewbox= "0 0 300 300" width="900" height="300">`;
+
+	if (!lett) {			//	create a word not a letter
+		const newWord = word.createWord(deg,size,trans);
+		newSVG = newSVG + word.renderWord(newWord);
+	}
+	else {
+	//	NTD:	separate moving, rotating, and resizing the letter from creating the 
+	//			SVG; it is cleaner and less complex
+		if (lett == 'yod') {
+			newSVG = newSVG + yod.createSVG(swatch,deg,size,[transX,transY]);
+		} else if (lett == 'dalet') {
+			newSVG = newSVG + dalet.createSVG(swatch,deg,size,[transX,transY]);
+		} else if (lett == 'chet') {
+			newSVG = newSVG + chet.createSVG(swatch,deg,size,[transX,transY]);
+		} else if (lett == 'aleph') {
+			newSVG = newSVG + aleph.createSVG(swatch,deg,size,[transX,transY]);
+		} else if (lett == 'he') {
+			newSVG = newSVG + he1.createSVG(swatch,deg,size,[transX,transY]);
+		} else if (lett == 'waw') {
+			newSVG = newSVG + waw.createSVG(swatch,deg,size,[transX,transY]);
+	}
+	newSVG = newSVG + `</svg>`;
+	}
+	return newSVG;
+	
+}
+
+function calcOutput(choice) {
+
+	if (choice == 'letter') {
+	//	---------------------------------------	Letter ----------------------------------
+		const lett = document.getElementById("letter").value;
+		let size = document.getElementById("size").value;
+		let degRot = document.getElementById("deg").value;
+		let transX = document.getElementById("transX").value;
+		let transY = document.getElementById("transY").value;
+		const div = document.getElementsByTagName("div")[0];
+	
+		// fill with defaults and convert to integer
+		if (size == "") {
+			size = "5";
+		}
+		size = parseFloat(size);
+		if (degRot == "") {
+			degRot = "0";
+		}
+		degRot = parseInt(degRot);
+		if (transX == "") {
+			transX = "0";
+		}
+		transX = parseInt(transX);
+		if (transY == "") {
+			transY = "0";
+		}
+		transY = parseInt(transY);
+		
+		const svg = main(lett,size,degRot,transX,transY);
+		div.innerHTML = svg;
+
+	}
+
+	else if (choice == 'word') {
+	//	---------------------------------------	Word ----------------------------------
+		let wordSize = document.getElementById("wordSize").value;
+		let wordDegRot = document.getElementById("wordDeg").value;
+		let wordTransX = document.getElementById("wordTransX").value;
+		let wordTransY = document.getElementById("wordTransY").value;
+		const wordDiv = document.getElementsByTagName("div")[1];
+
+		if (wordSize == "") {
+			wordSize = "1";
+		}
+		wordSize = parseFloat(wordSize);
+		if (wordDegRot == "") {
+			wordDegRot = "0";
+		}
+		wordDegRot = parseInt(wordDegRot);
+		if (wordTransX == "") {
+			wordTransX = "0";
+		}
+		wordTransX = parseInt(wordTransX);
+		if (wordTransY == "") {
+			wordTransY = "0";
+		}
+		wordTransY = parseInt(wordTransY);
+		const flag = false;
+		const svg = main(flag,wordSize,wordDegRot,wordTransX,wordTransY);
+		wordDiv.innerHTML = svg;
+
+	}	
+	
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Drawing B&eacute;zier Curves II: Words
+</h1>
+
+<p>
+	This is version two of Drawing B&eacute;zier Curves. It moves forward from the 
+	<a href="Bezier curves.html">first version</a>, which ended with successfully 
+	rotating, translating, scaling and rendering a swatch. The swatch is the basic shape 
+	of which everything else will be constructed.
+</p>
+
+<p>
+	Version one successfully manages the swatch. Now I need to manage letters made of 
+	multiple swatches. The Hebrew letters used are made of semi-rectangular 
+	blocks or swatches consisting of two quadratic B&eacute;zier curves sharing the same 
+	endpoints. The letters needed for this project are <em>chet</em>, <em>waw</em>, 
+	<em>he</em>, <em>dalet</em>, <em>alef</em>, and <em>yod</em>. 
+</p>
+
+<p class="hebrew">
+	&#x05D9; &#x05D0; &#x05D3; &#x05D4; &#x05D5; &#x05D7;
+</p>
+
+<p>
+	Below are the two words that will recursively produce the desired final picture. I 
+	am avoiding calling it art. These two words at the lowest level will be made from 
+	letters, themselves made from one, two or three swatches. Tiny versions of these 
+	words will be arranged to produce larger versions of the same words. These larger
+	words will again be arranged to produce a larger version of the same two words. This 
+	is the plan.
+</p>
+
+<img class=inline src="Adonai echad.png" alt="The text to be successively embedded" width="326" height="220">
+ 
+<p>	
+	The letters will look significantly different than those shown above as they are 
+	all made from the swatches successfully created in version one.
+</p>
+
+<p>
+	After writing the swatch object the next challenge is rewriting the letter object in 
+	light of a swatch object. Successfully getting the correct size, orientation and 
+	location info to the swatch so it can render itself is front and center the crux of 
+	the problem. At some point the letters will be created in order to makeup a word. 
+	The location of the letter within the word will also need to be received by the 
+	letter object and incorporated in the information sent to the swatches.
+</p>
+
+<p>
+	Once the letter object is rewritten each of the six letters must be defined. The 
+	various functions currently written must work for multiple swatches making up a 
+	single letter. Five new letters need to be defined: <em>dalet</em>, <em>he</em>, 
+	<em>aleph</em>, <em>waw</em> & <em>chet</em>. The letters will need to store only 
+	the swatches and their locations, orientations, and sizes.  The relative sizes of 
+	the swatches making up each letter are initially: <em>yod</em> - 1; 
+	<em>dalet</em> - 2, 2; <em>chet</em> - 2, 2, 2; <em>aleph</em> - 1.5, 2.5, 1; 
+	<em>he</em> - 1, 2, 2; & <em>waw</em> - 1, 2. Relative locations need to be the same 
+	across letters, i.e. the <em>yod</em> needs to be moved up in the SVG window. 
+</p>
+
+<p>
+	The letters will initially be made only of swatches. Two of the six letters currently 
+	planned may need some graphics besides swatches. The <em>aleph</em> is often rendered 
+	with a fine line connecting the upper right small swatch to the long central swatch. 
+	The <em>waw</em> is usually represented with a wide solid line as its descending part 
+	on the right side. Again I will first try imitating this with a swatch and hope for 
+	the best.
+</p>
+
+<p class="note">
+	Larger letters would only be needed to make templates for locating the words from 
+	which it will be composed. Each letter will need to be "made" and then rotated and 
+	translated to match the word's orientation and location. (Though all rotations begin 
+	at the word level or higher.) Once things have been rotated and translated at these 
+	two levels and then at the POP level, the final SVG will be generated.
+</p>
+
+<p>
+	Once we have the generic letters, we need to be able to render them as a unit, a word. 
+	The letters will now need a location different from that used to make the generic 
+	individual letter. A word object is needed for this level. Words will automatically 
+	include the appropriate spacing between letters.
+</p>
+
+<p>
+	Finally, a picture object is required. This object is made from words, with each 
+	word sized, oriented, and translated appropriately. The picture generated is, of 
+	course, just one of the same words, but with no outline.
+</p>
+
+<p>
+	There is a final level in this plan. It is not clear if it needs its own object. This 
+	level is a picture of a picture, a POP. Pictures are assembled to generate a higher 
+	level POP that represents the same picture it is assembled from. An orientation, 
+	position, and size is needed for each picture within the POP. These orientations and 
+	locations are relatively the same as those used for assembling pictures from words. 
+	That is why it is not clear if another object is needed.
+</p>
+
+<p>
+	This recursive level building is seen most clearly with the rendering process. Telling 
+	a POP to render itself causes the POP to tell the pictures composing it to render 
+	themselves. Each of these pictures will tell the words composing it to render 
+	themselves. Each of these words will tell the letters they are made of to render 
+	themselves. Finally, when carried to the ultimate extreme, each letter will tell its 
+	component swatches to render themselves.
+</p>
+
+<p class="note">
+	This raises the real conundrum with which I am now wrestling. How does one propagate 
+	the various rotations and translations down through the various levels to finally 
+	arrive at swatches that render themselves in the appropriate location and 
+	orientation?
+</p>
+
+<p>
+	Task one is rewriting swatch as an object that can produce its own SVG. Each letter, 
+	when told to produce its SVG, will tell its component swatch objects to write their 
+	own SVG. The letters will hold instructions on how to orient and locate each of their 
+	component swatches. My only concern with this approach is that by the end of the day 
+	we will end up with thousands of swatch objects. Sticking with rendering at the level 
+	of letters cuts that number by a factor of 2&nbsp;1/3. We will start with swatch 
+	objects.
+</p>
+
+<p>
+	The swatch object was defined. It contains the control point matrix for the two hard 
+	coded B&eacute;zier curves making up the basic swatch. It has a getter to retrieve 
+	the basicSwatch array. It also has a setter to modify this array if ever needed. The 
+	swatch object has one further method to create its own SVG code. This method requires 
+	three parameters: the degrees of rotation, the scale factor to size the swatch, and 
+	the array of two points for translating in the x- and y-directions. The order of 
+	events is rotating the basic swatch, scaling the rotated swatch, and translating the 
+	rotated and scaled swatch. This method returns the SVG code for the two curves. It 
+	does not include any opening or closing SVG.
+</p>
+
+<p>
+	Onto the new improved letter object. The letter object should have the following 
+	properties: name, number of swatches, and array of swatch information. The swatch 
+	information consists of rotation, size relative to the other swatches in this letter, 
+	and location also relative to the other swatches in this letter. It will have methods 
+	to produce its SVG code (or send the relevant info to the swatch objects), set its 
+	properties, and get its properties. The method which produces the letter's SVG code 
+	will take parameters that modify its swatch information array so it is drawn in the 
+	correct location and at the correct size to fit in a word.
+</p>
+
+<p>
+	Swatches rotate around their center of mass by default. Letters will rotate around 
+	their center of mass and words around their center of mass. When a word is told to 
+	render itself it sends its location, orientation and size data to its letters. This 
+	information has to be translated so the letters can use it in their own frames of 
+	reference. The same has to happen when the letters send their info in their frame of 
+	reference to the swatches. At this lowest level the info needs to be converted to the 
+	swatch's frame of reference. As an example, rotating a letter with two swatches, 
+	turns them as a unit. The two individual swatches experience both a rotation and a 
+	translation. This is a matrix manipulation of some sort.
+</p>
+
+<p>
+	Pulled out my "Elementary Linear Algebra" text by Bernard Kolman, &copy; 1970. This 
+	was not very helpful, but triggered a few memories. Drawing out the problem may have 
+	helped me find the answer. A swatch has a center of mass, CoM. The letters will be 
+	rotated around their own center of mass, CoM<sub>L</sub>. Rotating the swatch around 
+	CoM<sub>L</sub> is equivalent to a translation of CoM followed by a rotating the 
+	swatch around CoM. To rotate the swatch around a point off its CoM, first rotate the 
+	point with the rotatePt() function. Translate the swatch to the new CoM and then 
+	rotate the swatch around this new CoM. Rotating the CoM around the CoM<sub>L</sub> 
+	is accomplished by translating the CoM to the CoM<sub>L</sub>, multiplying by the 
+	rotation matrix, and then reverse translating the CoM.
+</p>
+
+<p>
+	The rotatePt function was modified to accomplish rotation around any origin point. 
+	It is now parallel to the rotateArr function. TransArr is already setup to shift the 
+	entire swatch to the new CoM. It just requires that the x- and y-differences between 
+	the two CoM's are passed as parameters for the translation. The swatch function, 
+	makeSVG, needs to add the CoM<sub>L</sub> as a parameter. If this parameter is 
+	present, then the calculation is modified to handle this off CoM rotation.
+</p>
+
+<p>
+	I am struggling with how to rotate around an arbitrary point. It is already necessary 
+	to translate the swatch array (or point) to the coordinate origin in order to perform 
+	a rotation. To rotate around an arbitrary point, the swatch array must be translated 
+	to the point, this point translated to the origin, the array (or point) rotated...
+	<em>Not True!!!</em> I have been rotating points around the center of mass. This is 
+	not arbitrary, but the same formula applies. To rotate a point B around any arbitrary 
+	point A use the following two equations for rotated B &equiv; B'.
+</p>
+
+<p>
+	B'<sub>x</sub> = ((B<sub>x</sub> - A<sub>x</sub>)cos&theta; - (B<sub>y</sub> - A<sub>y</sub>)sin&theta;) + A<sub>x</sub>
+</p>
+
+<p>
+	B'<sub>y</sub> = ((B<sub>x</sub> - A<sub>x</sub>)sin&theta; + (B<sub>y</sub> - A<sub>y</sub>)cos&theta;) + A<sub>y</sub>
+</p>
+
+<p>
+	The basicSwatch object was modified to include a new property, ctrOfMass, and a 
+	getter for ctrOfMass. This is of course the center of mass of the basic swatch and 
+	may be used frequently. The createLetters() function needs to be modified next. This 
+	requires modifying the letter{} object. The letter object needs to have a place to 
+	store spacing before and after the letter. This varies with letter and needs to be 
+	consistent as the letters are placed in words.
+</p>
+
+<p>
+	On further thought only spaceLeft was added as a property. The word object should 
+	also have a spaceLeft property. I now need to define the swatches for each letter. 
+	I need to work first with <em>yod</em>. It will be used to make sure I can actually 
+	create a letter and render it to the screen.
+</p>
+
+<p>
+	I have written two different ways to fill the already initialized letters with data. 
+	The first was letter by letter. Each letter has its own function. The characteristics 
+	that define the letter's swatches are included in the function. I also wrote a very 
+	simple function that will create any letter given the appropriate information. This 
+	includes sending the characteristics of each swatch in an array of arrays. This is 
+	probably the preferred method as it minimizes the number of functions. Also if the 
+	process needs to be changed it can be done in only one spot.
+</p>
+
+<p class="note">
+	Of course this immediately happened when I realized I had not included setting the 
+	spaceLeft property.
+</p>
+
+<p>
+	Attempted the first code run through this morning. After fixing the obvious typos, 
+	errors related to the various objects started to appear. Whether this is due to not 
+	properly initializing the objects or to not using object prototypes is unclear. My 
+	first attempt at fixing the issues is rearranging the code. Clicking the button will 
+	call a small function that gets the input. This function will call the main function, 
+	which will contain the swatch object at least. 
+</p>
+
+<p>
+	The function calcOutput() called by hitting the "Render Output" button now does three 
+	things. It gathers the input from the user, calls main(), and writes the returned SVG 
+	to the browser window. The function main() has gathered a number of activities. the 
+	swatch object now resides within main() where it can be used by all of the letter 
+	objects. These are initialized next. Then the new letters are filled. The base letter 
+	object sits outside of main(). The final major action of main is to render a letter. 
+	It does this by looking at its first parameter, lett, which holds the desired letter. 
+	This calls the letter object's method, createSVG(). Letter.createSVG() calls the 
+	swatches createSVG() method. This method calls makeSVG(), returning the SVG for the 
+	desired swatch. The SVG traverses back up the call hierarchy to calcOutput() and is 
+	rendered on the screen.
+</p>
+
+<p>
+	The first error received says that spread requires that the iterable not be null or 
+	undefined. It refers to the createLetter() function. This is where the letter's 
+	swatches are added one-by-one to the new letter. I was creating the letters 
+	incorrectly. The letter object was turned into a prototype. Initializing the letters 
+	was done with new Letter(). The createLetter() function was skipped and the letters 
+	were initialized with data as they were created.
+</p>
+
+<p>
+	Numerous bugs were fixed. They were mostly associated with using a point as a function 
+	parameter. Sometimes an array was used and sometimes two scalars were used. The <em>yod</em> 
+	is now printed to the screen, but not rotated appropriately. Unfortunately, all of 
+	the letters render only the basic swatch. A small mistake here and there including 
+	"/svg" added during swatch translation to SVG. So only the first swatch was 
+	appearing on screen. Now I need to move the various swatches around so they look like 
+	a letter.
+</p>
+
+<p>
+	Below the letters are represented as they now appear: <em>yod, dalet, chet, aleph, he</em>, 
+	and <em>waw</em>. They definitely need some tweaking, but they are acceptable.
+</p>
+
+<svg viewbox= "0 0 300 300" width="300" height="300">
+<path d= "M 7.157918362941262 8.025 C 9.084455543377231 15.488139720814415, 26.09208163705874 3.83006721042385, 24.045413736737817 17.775" stroke="black" fill="transparent" />
+<path d= "M 7.157918362941262 8.025 C 5.284455543377231 22.06993278957615, 22.292081637058732 10.411860279185586, 24.045413736737817 17.775" stroke="black" fill="transparent"/>
+
+<path d= "M 32.3158367258825265 2.049999999999999 C 36.168911086754463 16.976279441628826, 70.18416327411747 -6.339865579152301, 66.090827473475635 21.549999999999997" stroke="black" fill="transparent" />
+<path d= "M 32.3158367258825265 2.049999999999999 C 28.5689111 30.139865579152296, 62.584163274117465 6.823720558371171, 66.090827473475635 21.549999999999997" stroke="black" fill="transparent"/>
+<path d= "M 71.85 16.815836725882523 C 56.923720558371166 20.668911086754463, 80.2398655791523 54.684163274117466, 52.35 50.59082747347564" stroke="black" fill="transparent" />
+<path d= "M 71.85 16.815836725882523 C 43.760134420847697 13.068911086754465, 67.07627944162883 47.08416327411747, 52.35 50.59082747347564" stroke="black" fill="transparent"/>
+
+<path d= "M 82.3158367258825265 2.049999999999999 C 86.168911086754463 16.976279441628826, 120.18416327411747 -6.339865579152301, 116.090827473475635 21.549999999999997" stroke="black" fill="transparent" />
+<path d= "M 82.3158367258825265 2.049999999999999 C 78.5689111 30.139865579152296, 112.584163274117465 6.823720558371171, 116.090827473475635 21.549999999999997" stroke="black" fill="transparent"/>
+<path d= "M 121.85 16.815836725882523 C 106.923720558371166 20.668911086754463, 130.2398655791523 54.684163274117466, 102.35 50.59082747347564" stroke="black" fill="transparent" />
+<path d= "M 121.85 16.815836725882523 C 93.760134420847697 13.068911086754465, 117.07627944162883 47.08416327411747, 102.35 50.59082747347564" stroke="black" fill="transparent"/>
+<path d= "M 97.849999999999998 16.815836725882523 C 82.923720558371168 20.668911086754463, 106.2398655791523 54.684163274117466, 78.35 50.59082747347564" stroke="black" fill="transparent" />
+<path d= "M 97.849999999999998 16.815836725882523 C 69.7601345 13.068911086754465, 93.076279441628827 47.08416327411747, 78.35 50.59082747347564" stroke="black" fill="transparent"/>
+
+<path d= "M 143.320698571384996 2.79974830671988 C 136.564313033130498 20.84590453064927, 188.11088145406529 21.359503621272204, 163.923338831244095 46.982252924756565" stroke="black" fill="transparent" />
+<path d= "M 143.320698571384996 2.79974830671988 C 119.344465 28.875651503722565, 170.89103350036894 29.389250594345494, 163.923338831244095 46.982252924756565" stroke="black" fill="transparent"/>
+<path d= "M 153.313122455588104 30.037499999999998 C 142.17331668493415 26.942790418778376, 144.561877544411894 57.77989918436421, 127.981879 44.662499999999994" stroke="black" fill="transparent" />
+<path d= "M 153.313122455588104 30.037499999999998 C 136.473316684934151 17.070100815635776, 138.861877544411893 47.90720958122161, 127.9818799 44.662499999999994" stroke="black" fill="transparent"/>
+<path d= "M 171.542081637058736 6.0249999999999995 C 164.115544456622764 3.9618602791855846, 165.70791836294126 24.519932789576142, 154.65458626326218 15.775" stroke="black" fill="transparent" />
+<path d= "M 171.542081637058736 6.0249999999999995 C 160.315544456622767 -2.61993278957615, 161.907918362941263 17.938139720814412, 154.65458626326218 15.775" stroke="black" fill="transparent"/>
+
+<path d= "M 182.3158367258825265 2.049999999999999 C 186.168911086754463 16.976279441628826, 220.18416327411747 -6.339865579152301, 216.090827473475635 21.549999999999997" stroke="black" fill="transparent" />
+<path d= "M 182.3158367258825265 2.049999999999999 C 178.568911 30.139865579152296, 212.584163274117465 6.823720558371171, 216.090827473475635 21.549999999999997" stroke="black" fill="transparent"/>
+<path d= "M 221.85 16.815836725882523 C 206.923720558371166 20.668911086754463, 230.2398655791523 54.684163274117466, 202.35 50.59082747347564" stroke="black" fill="transparent" />
+<path d= "M 221.85 16.815836725882523 C 193.760134420847697 13.068911086754465, 217.07627944162883 47.08416327411747, 202.35 50.59082747347564" stroke="black" fill="transparent"/>
+<path d= "M 193.387499999999998 26.11187754441189 C 182.192790418778376 29.001683315065847, 199.679899184364224 54.513122455588096, 178.7625 51.443120605106735" stroke="black" fill="transparent" />
+<path d= "M 193.387499999999998 26.11187754441189 C 172.320101 23.301683315065848, 189.80720958122162 48.8131224555881, 178.7625 51.443120605106735" stroke="black" fill="transparent"/>
+
+<path d= "M 244.157918362941263 14.024999999999999 C 246.08445554337723 21.488139720814413, 263.09208163705873 9.83006721042385, 261.045413736737814 23.775" stroke="black" fill="transparent" />
+<path d= "M 244.157918362941263 14.024999999999999 C 242.284455543377232 28.069932789576146, 259.292081637058732 16.411860279185586, 261.045413736737814 23.775" stroke="black" fill="transparent"/>
+<path d= "M 267.849999999999994 16.815836725882523 C 252.92372055837117 20.668911086754463, 276.239865579152294 54.684163274117466, 248.350000000000005 50.59082747347564" stroke="black" fill="transparent" />
+<path d= "M 267.849999999999994 16.815836725882523 C 239.760134420847697 13.068911086754465, 263.07627944162883 47.08416327411747, 248.350000000000005 50.59082747347564" stroke="black" fill="transparent"/>
+
+<p>
+	Each letter needs its own center of mass for rotation; this is not a monospaced font. 
+	A center of mass was added to each letter. These were calculated from the above SVG 
+	extrema for each letter. Three are identical. These centers of mass associated with 
+	a letter need to be translated when the letter is translated. Otherwise any further 
+	rotations will be nonsensical.
+</p>
+
+<p>
+	The next task is rewriting the createSVG() code in the letter. This code does two 
+	things. It sends each swatch off to swatch.createSVG, which rotates, scales and 
+	translates the array. The code sends this modified array off to the function makeSVG(), 
+	where the array is turned into SVG. The way things are now implemented, the 
+	rotations, scaling factors, and translations from the individual letter are handled, 
+	but no user input can be accommodated. It is not yet clear to me how to manage 
+	multiple levels of rotating, scaling and translating. These transformations do not 
+	commute, (R<sub>1</sub>&nbsp;>>&nbsp;T<sub>1</sub>)&nbsp;>>&nbsp;(R<sub>2</sub>&nbsp;>>&nbsp;T<sub>2</sub>) &ne; 
+	(R<sub>2</sub>&nbsp;>>&nbsp;T<sub>2</sub>)&nbsp;>>&nbsp;(R<sub>1</sub>&nbsp;>>&nbsp;T<sub>1</sub>). This is because 
+	the rotations do not usually even utilize the same center of rotation. The letter 
+	needs to be rotated and translated last to insure its integrity and fit within its 
+	word.
+</p>
+
+<p>
+	This means that the current order of moving and turning into SVG needs to be modified. 
+	The entire process is further complicated by the need to go beyond word to picture, 
+	where the words will be moved around. The plan includes a picture within a picture 
+	level as well. So I need a way to store the movements and then implement them in the 
+	correct order. Picture2, the highest level picture is composed of Picture1's. 
+	Picture1 is composed of Words, while Words are composed of Letters. Finally, Letters 
+	are composed of Swatches.
+</p>
+
+<p>
+	An array should be constructed of the different movements corresponding to 
+	each of the levels described above: [[Letter],[Word],[Picture1],[Picture2]]. At the 
+	Swatch level this array will be walked through from Letter to Picture2. Each level 
+	will cause the Swatch to recalculate its four control points. After walking through 
+	this array the Swatch will call makeSVG() and render itself as SVG code. A global, 
+	NumOfLevels, will track the number of extant levels. Each letter will need a copy 
+	of this array, but [Word], [Picture1], and [Picture2] are somewhat constant across 
+	Letters. That is each Letter has a constant set of Swatches, each of which has a 
+	fixed position. Similarly, a Word has eight letters and each letter is in a fixed 
+	position within that word. All Words are identical except for their position.
+</p>
+
+<p>
+	Each Picture1 will be made of many, maybe hundreds of Words. Each Word will have a 
+	unique position within Picture1. Picture2 is made of many Picture1's. Each Picture1 
+	will have a unique position within Picture2. But the Words in each Picture1 will 
+	have a fixed position relative to its Picture1. So the Words in the second and all 
+	subsequent versions of Picture1 will need access to the same relative position 
+	information as the first version of Picture1. So we have some constants that will 
+	lower the burden of data carried by each letter.
+</p>
+
+<p>
+	The current plan is for this page to conclude with successfully rendering a word. 
+	(Word here actually means two lexical words, but they will always be considered as a 
+	unit in the programming Word.) So the swatch createSVG needs to be rewritten so it 
+	will perform a series of calculations based on the array it is passed. A Word object 
+	needs to be written that will contain the letters and their positions within the 
+	Word.
+</p>
+
+<p>
+	As a first step a few things were rewritten to accept user input. This is now 
+	functioning. Something realized earlier, but not followed up on, is the need to 
+	change the center of mass if the letter is translated. Otherwise any future rotations 
+	will be around the incorrect center of mass. 
+</p>
+
+<p>
+	Some time was also spent tweaking the letters. They are improved, but to make them 
+	look correct a flip function is needed. The vertical swatches on the right sides of 
+	<em>dalet, chet, he</em>, & <em>waw</em> need to be flipped about the long axis. That 
+	is a mirror image of the swatch needs to be used. I am struggling with how best to 
+	modify the Letter prototype to accomplish this. One approach is during letter 
+	creation. The parameters governing swatch creation will be increased by one, the 
+	number of the swatch to be flipped. This can be checked when the swatches are made 
+	and the flip() function called. Alternatively, Letter() can be modified so that it 
+	has a new property, flip, which will hold the number of the swatch to be flipped. 
+	Again this will need to be checked as each of the letter's swatches are created. The 
+	second seems simpler.
+</p>
+
+<p>
+	Flipping was implemented in the following way. In addition to swatch.basicSwatch a 
+	new property was added, flippedSwatch. The positionSwatch() function now accepts an
+	additional parameter, toFlip. If this is true basicSwatch is swapped for flippedSwatch. 
+	Letter() also has an additional property, flip. Flip holds the number of the swatch 
+	to be flipped. Getters and setters are included. Before positionSwatch() is called 
+	flip is checked. If it is the correct swatch, then toFlip is set to true. The 
+	appropriate letters now set their flipped swatch. After flipping it was discovered 
+	that the rotation and translation for the flipped swatch need to be changed as well. 
+	An effective implementation and the letters look much better!
+</p>
+
+<p>
+	One final change to the letters was considered, but temporarily shelved. The angled 
+	swatch at the center of the <em>aleph</em> looks too wide to my eye. To scale it 
+	appropriately it needs to be scaled differently along the x- and y-axes. Changing 
+	this requires changing the number of params for scale(), which has ramifications 
+	throughout the program. Too little gain for the effort required.
+</p>
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Create a Letter:</legend>
+		<label for="letter">Letter</label>
+		<input type="text" id="letter" placeholder="yod" autofocus><br/>
+		<label for="size">Size</label>
+		<input type="text" id="size" placeholder="5"><br/>
+		<label for="deg">Degrees of Rotation</label>
+		<input type="text" id="deg" placeholder="0"><br/>
+		<label for="trans">Translation</label>
+		<input type="text2" id="transX" placeholder="0">
+		<input type="text2" id="transY" placeholder="0"><br/>
+		<br/>
+		<input type="button" value="Render Output" onclick="calcOutput('letter')"/>
+		<br/>
+</fieldset>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+
+<p>
+	Time to build the word object. Word{} unlike Letter() will not be implemented as a 
+	prototype. There is only one word as this project is currently planned. Word{} is 
+	really two words, <em>adonai</em> and <em>echad</em>. Since they will only ever be 
+	used as a unit, it makes sense to keep them together. The word{} object will be used 
+	over and over when constructing a picture. It needs the following properties: center 
+	of mass, its letters, positions for all of the letters, and size of the space between 
+	the two lexical words. It will need methods for rotating, scaling and translating 
+	itself, as well as getting and setting its properties.
+</p>
+
+<p class="note">
+	Since I don't read Hebrew, the default will be left to right in setting up word{}. 
+	It won't matter because the output will always be two lexical words rendered as a 
+	unit.
+</p>
+
+<p>
+	The first major method added to word{} is createWord(). It simply returns an array. 
+	The array contains seven arrays, one for each of the letters in the word. Each 
+	subarray contains the appropriate letter object and its translation along the x-axis. 
+	The translation is made up of the letter's leftSpace property, the letterPos and the 
+	shiftAmt. The letterPos is essentially the location of the letter relative to the 
+	center of the word. It should compensate for the width of the letters. The shiftAmt 
+	is just there to make sure the letters appear in the SVG window.
+</p>
+
+<p>
+	While writing the word object, it became apparent that main() needed some changes. 
+	Currently, it takes the user input concerning letters as parameters. I need it to 
+	take the user input concerning a word as parameters. My plan is to send it an array 
+	of data, which can contain either letter data or word data. The button selected will 
+	inform calcOutput() whether to render a word or a letter.
+</p>
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Create a Word:</legend>
+		<label for="wordSize">Size</label>
+		<input type="text" id="wordSize" placeholder="1"><br/>
+		<label for="wordDeg">Degrees of Rotation</label>
+		<input type="text" id="wordDeg" placeholder="0"><br/>
+		<label for="wordTrans">Translation</label>
+		<input type="text2" id="wordTransX" placeholder="0">
+		<input type="text2" id="wordTransY" placeholder="0"><br/>
+		<br/>
+		<input type="button" value="Render Word" onclick="calcOutput('word')"/>
+		<br/>
+</fieldset>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+<p>
+	Four months later and I am returning to this project. The word functionality is still 
+	not working. I am rewriting the word object so it is more self contained. It does not 
+	need a create method as there will only be one word used over and over and over. That 
+	is not quite right. Properties cannot contain expressions using other properties, at 
+	least that is how I interpret my inability to make this work with or without the 
+	keyword, <em>this</em>.
+</p>
+
+<p>
+	The solution that works is to create a method, <em>createWord()</em>, that builds up 
+	the array of arrays. It accesses the properties needed with the keyword, <em>this</em>. 
+	<em>CreateWord()</em> is called just prior to rendering in this demo. Currently, the 
+	word written to the screen is a little wonky looking. Spacing between letters needs 
+	to be adjusted. The aleph looks like it is sitting too high. As of yet there are no 
+	functions for scaling, translating or rotation.
+</p>
+
+<p>
+	The spacing has been adjusted so the letters are in reasonable proximity. The aleph 
+	was moved down by adjusting params in the letter definition. The COM was not modified. 
+	I am not yet convinced it requires modification. This will be tested when I am able 
+	to rotate it. The COM of the word was adjusted and will be verified when rotations 
+	become available.
+</p>
+
+<p>
+	To include rotating, translating, and scaling a few things need to be modified. The 
+	current order of operations is as follows. <em>CalcOutput()</em> calls <em>main()</em> 
+	after collecting the user input. <em>Main()</em> creates the generic letters. The 
+	next operation in <em>main()</em>, <em>createWord()</em>, places the letters in order 
+	and assigns them a translation only along the x-axis. Also in <em>main()</em> 
+	<em>renderWord()</em> takes this array of letters with x-translations and converts 
+	the array to SVG.
+</p>
+
+<p>
+	My first guess at how this should work to take word movement into account is as 
+	follows. The created word array with its between letter spacing intact needs to have 
+	the results of word rotation, translation, and scaling added. This information can 
+	then be passed to the <em>letter.createSVG()</em> function. As before rotating should 
+	be done before translating, before scaling.
+</p>
+
+<p>
+	Rotating a word means moving each of the letters individually. The letters need to 
+	be translated to the new position and then rotated. This needs to happen relative to 
+	the COM, center of mass, of the word. The only math that needs doing is turning the 
+	word rotation into translation along the x- and y-axes. <em>RotatePt()</em> can be 
+	used to perform this operation. The COMs of the letter and word are sent to 
+	<em>rotatePt()</em>. <em>RotatePt()</em> returns the new point. The difference 
+	between this new point and the letter's COM is the needed translation. This would be 
+	the case, except the COM has not been updated after the letter was incorporated into 
+	the word.
+</p>
+
+<p>
+	Currently, the renderWord() function tells the letter to <em>createSVG()</em>. It 
+	sends the appropriate x-translation, incorrectly but it still works, and the letter 
+	is shifted appropriately relative to the other letters. My first modification to the 
+	existing code is to update the letter's COM and not send the x-translation.
+</p>
+
+<p>
+	Ran into a small problem when making this change in the code. Currently, the same 
+	letter, 'he', is used twice. The only difference is the x-translation. I need a new 
+	'he', just like the old 'he', but with a different COM. Studying letter creation 
+	raised another question. Currently each letter stores a spaceLeft property. In 
+	certain cases this shifts the swatches over, so they take up less room. Should this 
+	just be incorporated in the COM? Maybe this is not an issue. As far as I can tell the 
+	only time spaceLeft is used is during word conversion to SVG. It will be added to 
+	the letter's COM along with the rest of the x-translations.
+</p>
+
+<p>
+	The code has been changed: 'he1' and 'he2' have now been made. The x-translations 
+	needed to write a word have been added to the initial COM's for all seven letters. 
+	The javascript is now running to completion after a few tweaks, but ...
+</p>
+
+<p>
+	There is no graphical output. The SVG was printed to the console and all of the 
+	swatches consist of nothing but zeros! This bug might take a while to track down. 
+	Found the bug resulting in zeroes. I had size and rotation params switched. This 
+	was fixed and now the word is written, but all the letters sit on top of one another.
+	This bug was also traced. The letter's centers of mass are updated appropriately, 
+	however rendering a letter uses only the original swatches defined for the letter. 
+	The <em>letter.createSVG()</em> function does not utilize the letter's center of mass.
+</p>
+
+<p>
+	I need to either change <em>letter()</em> or pass parameters. I still prefer the 
+	center of mass approach. Changing <em>letter()</em> requires updating the swatches 
+	when the center of mass is modified. This makes perfect sense in retrospect! Adding 
+	the modifications to the swatches was accomplished. After fixing the few bugs the 
+	code ran. Only the first letter, dalet, is written to the screen?! So far I have not 
+	been able to trace the source of the problem.
+</p>
+
+<p>
+	Some time was spent moving the single letter word around in a larger box, but only 
+	one letter was visible. I watched as the SVG was produced and all of the SVG seemed 
+	to be produced by <em>renderWord()</em>. I then printed the SVG in the console and 
+	pasted it into TextEdit for both the individual letters and for the word. The idea 
+	was to determine where the SVG was incorrectly written. That is not the problem. The 
+	problem is that all letters beyond the first letter, dalet, have impossibly sized 
+	coordinates. Dalet's range from 20-50, chet's from 10,000-11,000, dalet's from 
+	14,000-26,000, he1's from 24,000-36,000, waw's from 23,000-38,000, he2's from 
+	35,000-52,000, and yod's from 27,000-28,000. Where did a factor of 10,000 come from? 
+</p>
+
+<p>
+	Switching from a scale of 1 to 0.1 results in a factor of 1000 for letters after 
+	dalet. At a scale of 0.01 dalet has been reduced to a dot. Twelve other dots can 
+	be seen on a line extending to the right of dalet. The rest of the dots are not 
+	appearing as letters, but as fragments. This is because not all of the SVG 
+	coordinates are multiplied by the factor. For instance, at scale 1 chet's first 
+	<em>path</em> is:
+</p>
+
+<code>
+	path d= \"M 11002.54742039847 0.054999999999999716 C 11006.78580219543 
+	16.473907385791712, 11044.202579601528 -9.17385213706753, 11039.699910220823 
+	21.505\" stroke=\"black\" fill=\"transparent\"
+</code>
+
+<p>
+	The problem was found, but the solution caused another problem. All of the swatches 
+	as initially designed are tiny. Scaling them up to size is done with a factor of 
+	220 in <em>swatch.positionSwatch()</em>. Scaling was done after rotation and 
+	translation. Once the swatch had been translated by the amount listed in 
+	<em>word.letterPos</em> the new x-coordinates were multiplied by 220 leading to the 
+	ridiculously sized control point coordinates.
+</p>
+
+<p>
+	The first solution was switching the order of translation and scaling in 
+	<em>swatch.positionSwatch()</em>. this correctly places the letters relative to one 
+	another. But the swatches within each letter are no longer in the correct position. 
+	The second approach seems more reasonable. Scale the <em>word.letterPos</em> amounts 
+	by 220. Whoops! That didn't work. Many of the SVG coordinates are off by thousands. 
+	Something is missing here. The first letter's SVG coordinates in the original were 
+	correct, even though its translation is listed as -30. Why did this translation not 
+	have the same impact as the second letter's, whose translation is 10? And why does 
+	translation work when just one letter is translated? The swatches composing each 
+	letter were translated earlier when modifying the COM!
+</p>
+
+<p>
+	The problem may be arising because the translations are added at the time of 
+	<em>swatch.positionSwatch()</em>. The swatch is still its initial tiny size. The 
+	added coordinates overwhelm the initial location of the control points. This 
+	translation needs to happen after the swatch is positioned relative to the other 
+	swatches in the letter. <em>updateComs()</em> is the culprit. This movement is taking 
+	place at the time of swatch creation and this is much too early.
+</p>
+
+<p>
+	Moving the letters into their word positions should probably take place at 
+	<em>letter.createSVG()</em>. This is the easiest place to make sure it is done after 
+	the <em>swatch.positionSwatch()</em> call. Instead of a letter have the <em>spaceLeft</em> 
+	property, which is meaningless with no adjacent letters, letters should have the 
+	<em>wordPosition</em> property. This can be added to any user assigned x-translation 
+	and implemented after <em>swatch.positionSwatch()</em>. The COM can be updated as 
+	needed. The following mods were made: <em>updateComs()</em> was commented out and 
+	the needed letter shifts were added to the x-translation info supplied by the user.
+</p>
+
+<p class="note">
+	Success!!!
+</p>
+
+<p>
+	The problems that occur due to this change now need to be remedied. Scaling the 
+	word does not scale the between letter amounts. They need to be scaled with the 
+	user supplied scaling factor. This was easily accomplished in <em>createWord()</em>. 
+	Both x- and y-translations work fine. Rotation does not work. Each letter is rotated, 
+	but the word is still printed on a horizontal line. This could be done in 
+	<em>createWord()</em>, by calculating the appropriate x- and y- translations due to 
+	rotation about the word's COM and adding them at this point. The first pass at 
+	implementing this sort of works. The line of letters is rotated, but the letters are 
+	somewhat jumbled. A 90&deg; rotation does not give a vertical line of letters, though 
+	letters are on their sides!? 
+</p>
+
+<p>
+	Part of the problem was that the positions within the word were being added twice. 
+	After removing <em>letterPos</em> if a rotation was imminent, the letters were 
+	spaced reasonably well. There is still some discrepancy in the vertical positions, 
+	which is magnified as the amount of rotation increases. Though the biggest 
+	discrepancy comes between the two words. All of the letter spacing was included for 
+	the rotation and this improved alignment. Now only three letters are off: aleph, waw, 
+	and yod. For positive rotations those letters are down. For negative rotations they 
+	are too high.
+</p>
+
+<p>
+	It is not an issue with the centers of mass of the letters. Changing these had no 
+	apparent effect on letter positions in the rotated word. On the other hand changing 
+	the COMs of the other four letters: dalet, chet, he1, and he2, did have a positive 
+	effect. Now all of the letters are reasonably well aligned. Waw is a little off, so 
+	its COM was tweaked until it looked good! Should probably check all of the centers 
+	of mass and make sure they are as accurate as needed.
+</p>
+
+<br/>
+<hr/>
+
+<p class="note">
+	Looking at sizes of words to use to make words, it quickly became obvious that the 
+	smaller words needed to be 1/10 or less the size of the word to be filled. Using this 
+	size leads to three or four words filling the larger swatch. This does not fill the 
+	corners of the swatch. Little black corners will be needed to make up this gap. The 
+	swatches come in multiple sizes, so some allowance needs to account for this. Either 
+	the filling words need to come in different sizes or the swatch needs to be scaled 
+	on demand.
+</p>
+
+<p>
+	A scalable corner needs to be made, presumably with SVG. The corner may not need to 
+	be filled. Not sure if open or filled will look best at this point. Would a 
+	sufficiently segmented line be sufficient for our needs? We might even be able to 
+	fill it. Use polyline for the former and polygon for filling. Similarly, the joins 
+	between lines  and line ends may need to be rounded in CSS. Finally, the corners 
+	might be rendered best by paths consisting of arcs or bézier curves.
+</p>
+
+<p class="code">
+	&lt;polyline points="x1 y1, x2 y2, x3 y3, ..."/&gt;
+</p>
+
+<p class="code">
+	svg {
+</p>
+<p class="code">
+	&nbsp;&nbsp;stroke-linejoin: round;
+</p>
+
+<p class="code">
+	&nbsp;&nbsp;stroke-linecap: round;
+</p>
+
+<p class="code">
+	}
+</p>
+
+
+
+
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>October 28, 2022</p>
+</footer>
+</html>

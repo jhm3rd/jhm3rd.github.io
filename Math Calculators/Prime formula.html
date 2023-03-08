@@ -1,0 +1,476 @@
+<html>
+<head>
+<title>A Prime Formula</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 600px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+let randomFlag = 0;
+function getRandom()	// returns random number between 1 and 1,000,000,000			
+{
+	randomFlag = 1;
+	return Math.trunc(1000000000*Math.random());
+}	// end getRandom
+
+function calcPrime() {
+
+	let a = parseInt(document.getElementById("a").value);
+	let b = parseInt(document.getElementById("b").value);
+	let c = parseInt(document.getElementById("c").value);
+	let d = parseInt(document.getElementById("d").value);
+	let e = parseInt(document.getElementById("e").value);
+	let f = parseInt(document.getElementById("f").value);
+	let g = parseInt(document.getElementById("g").value);
+	let h = parseInt(document.getElementById("h").value);
+	let i = parseInt(document.getElementById("i").value);
+	let j = parseInt(document.getElementById("j").value);
+	let k = parseInt(document.getElementById("k").value);
+	let l = parseInt(document.getElementById("l").value);
+	let m = parseInt(document.getElementById("m").value);
+	let n = parseInt(document.getElementById("n").value);
+	let o = parseInt(document.getElementById("o").value);
+	let p = parseInt(document.getElementById("p").value);
+	let q = parseInt(document.getElementById("q").value);
+	let r = parseInt(document.getElementById("r").value);
+	let s = parseInt(document.getElementById("s").value);
+	let t = parseInt(document.getElementById("t").value);
+	let u = parseInt(document.getElementById("u").value);
+	let v = parseInt(document.getElementById("v").value);
+	let w = parseInt(document.getElementById("w").value);
+	let x = parseInt(document.getElementById("x").value);
+	let y = parseInt(document.getElementById("y").value);
+	let z = parseInt(document.getElementById("z").value);
+	
+
+	if (!a) {a = getRandom();}
+	if (!b) {b = getRandom();}
+	if (!c) {c = getRandom();}
+	if (!d) {d = getRandom();}
+	if (!e) {e = getRandom();}
+	if (!f) {f = getRandom();}
+	if (!g) {g = getRandom();}
+	if (!h) {h = getRandom();}
+	if (!i) {i = getRandom();}
+	if (!j) {j = getRandom();}
+	if (!k) {k = getRandom();}
+	if (!l) {l = getRandom();}
+	if (!m) {m = getRandom();}
+	if (!n) {n = getRandom();}
+	if (!o) {o = getRandom();}
+	if (!p) {p = getRandom();}
+	if (!q) {q = getRandom();}
+	if (!r) {r = getRandom();}
+	if (!s) {s = getRandom();}
+	if (!t) {t = getRandom();}
+	if (!u) {u = getRandom();}
+	if (!v) {v = getRandom();}
+	if (!w) {w = getRandom();}
+	if (!x) {x = getRandom();}
+	if (!y) {y = getRandom();}
+	if (!z) {z = getRandom();}
+	
+	let line2 = Math.pow((w*z + h + j - q),2);
+	let line3 = Math.pow(((g*k + 2*y + k + 1)*(h + j) + h - z),2);
+	let line4 = Math.pow((16*Math.pow((k + 1),3)*(k + 2)*Math.pow((n + 1),2) + 1 - f*f),2);
+	let line5 = Math.pow((2*n + p + q + z - e),2);
+	let line6 = Math.pow((e*e*e*(e + 2)*Math.pow((a + 1),2) + 1 - o*o),2);
+	let line7 = Math.pow(((a*a -1)*y*y + 1 - x*x),2);
+	let line8 = Math.pow((16*r*r*y*y*y*y*(a*a - 1) + 1 - u*u),2);
+	let line9 = Math.pow((n + l + v - y),2);
+	let line10 = Math.pow(((a*a - 1)*l*l + 1 - m*m),2);
+	let line11 = Math.pow((a*i + k + 1 - l - i),2);
+	let line12 = Math.pow(((Math.pow((a + u*u*(u*u - a)),2) - 1)*Math.pow((n + 4*d*y)),2) + 1 - Math.pow((x + c*u),2),2);
+	let line13 = Math.pow((p + l*(a - n - 1) + b*(2*a*n + 2*a - n*n - 2*n - 2) - m),2);
+	let line14 = Math.pow((q + y*(a - p - 1) + s*(2*a*p + 2*a - p*p - 2*p - 2) - x),2);
+	let line15 = Math.pow((z + p*l*(a - p) + t*(2*a*p - p*p - 1) - p*m),2);
+	
+	let result = "";
+	let potentialPrime = (k+2)*(1 - line2 - line3 - line4 - line5 - line6 - line7 - line8 - line9 - line10 - line11 - line12 - line13 - line14 - line15);
+	if (potentialPrime > 0)
+	{
+		result = potentialPrime;
+	}
+	else
+	{
+		if(randomFlag)
+		{
+			randomFlag = 0;
+			calcPrime();
+		}
+		else
+		{
+			result = `Change at least one variable to get non-negative result. ${potentialPrime}`
+		}
+	}
+	
+	document.getElementById("output").value = result;
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	A Prime Formula
+</h1>
+
+<p>
+	A team of mathematicians in Canada and Japan discovered this remarkable polynomial in 
+	1976. Let its 26 variables a, b, c, - z range over the non-negative integers and it 
+	will generate all prime numbers.
+</p>
+
+<p>
+	The snag is that it will sometimes produce negative numbers, which must be ignored. 
+	But every positive result will be prime, and every prime can be generated by some set 
+	of 26 non-negative integers.
+</p>
+
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<mo>(</mo><mi>k</mi><mo>+</mo><mn>2</mn><mo>)</mo><mo>(</mo><mn>1</mn><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mi>w</mi><mi>z</mi><mo>+</mo><mi>h</mi><mo>+</mo><mi>j</mi>
+			<mo>-</mo><mi>q</mi><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mo>(</mo><mi>g</mi><mi>k</mi><mo>+</mo><mn>2</mn><mi>g</mi>
+			<mo>+</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo>)</mo><mo>(</mo><mi>h</mi><mo>+</mo>
+			<mi>j</mi><mo>)</mo><mo>+</mo><mi>h</mi><mo>-</mo><mi>z</mi><mo>]</mo></mrow>
+			<mn>2</mn></msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mn>16</mn><msup><mrow><mo>(</mo><mi>k</mi><mo>+</mo><mn>1</mn>
+			<mo>)</mo></mrow><mn>3</mn></msup><mo>(</mo><mi>k</mi><mo>+</mo><mn>2</mn>
+			<mo>)</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo>)</mo></mrow>
+			<mn>2</mn></msup><mo>+</mo><mn>1</mn><mo>-</mo><msup><mi>f</mi><mn>2</mn></msup>
+			<mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+	</math>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msup><mrow><mo>[</mo><mn>2</mn><mi>n</mi><mo>+</mo><mi>p</mi><mo>+</mo>
+			<mi>q</mi><mo>+</mo><mi>z</mi><mo>-</mo><mi>e</mi><mo>]</mo></mrow><mn>2</mn>
+			</msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><msup><mi>e</mi><mn>3</mn></msup><mo>(</mo><mi>e</mi>
+			<mo>+</mo><mn>2</mn><mo>)</mo><msup><mrow><mo>(</mo><mi>a</mi><mo>+</mo>
+			<mn>1</mn><mo>)</mo></mrow><mn>2</mn></msup><mo>+</mo><mn>1</mn><mo>-</mo>
+			<msup><mi>a</mi><mn>2</mn></msup><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mo>(</mo><msup><mi>a</mi><mn>2</mn></msup><mo>-</mo>
+			<mn>1</mn><mo>)</mo><msup><mi>y</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn><mo>-</mo>
+			<msup><mi>x</mi><mn>2</mn></msup><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+	</math>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msup><mrow><mo>[</mo><mn>16</mn><msup><mi>r</mi><mn>2</mn></msup><msup><mi>y</mi>
+			<mn>4</mn></msup><mo>(</mo><msup><mi>a</mi><mn>2</mn></msup><mo>-</mo><mn>1</mn>
+			<mo>)</mo><mo>+</mo><mn>1</mn><mo>-</mo><msup><mi>u</mi><mn>2</mn></msup><mo>]</mo></mrow>
+			<mn>2</mn></msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mi>n</mi><mo>+</mo><mi>l</mi><mo>+</mo><mi>v</mi>
+			<mo>-</mo><mi>y</mi><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mo>(</mo><msup><mi>a</mi><mn>2</mn></msup><mo>-</mo>
+			<mn>1</mn><mo>)</mo><msup><mi>l</mi><mn>2</mn></msup><mo>+</mo><mn>1</mn>
+			<mo>-</mo><msup><mi>m</mi><mn>2</mn></msup><mo>]</mo></mrow><mn>2</mn></msup>
+			<mo>-</mo>
+		</mrow>
+	</math>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msup><mrow><mo>[</mo><mi>a</mi><mi>i</mi><mo>+</mo><mi>k</mi><mo>+</mo><mn>1</mn>
+			<mo>-</mo><mi>l</mi><mo>-</mo><mi>i</mi><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mo>(</mo><msup><mrow><mo>(</mo><mi>a</mi><mo>+</mo>
+			<msup><mi>u</mi><mn>2</mn></msup><mo>(</mo><msup><mi>u</mi><mn>2</mn></msup>
+			<mo>-</mo><mi>a</mi><mo>)</mo><mo>)</mo></mrow><mn>2</mn></msup><mo>-</mo>
+			<mn>1</mn><mo>)</mo><msup><mrow><mo>(</mo><mi>n</mi><mo>+</mo><mn>4</mn>
+			<mi>d</mi><mi>y</mi><mo>)</mo></mrow><mn>2</mn></msup><mo>+</mo><mn>1</mn>
+			<mo>-</mo><msup><mrow><mo>(</mo><mi>x</mi><mo>+</mo><mi>c</mi><mi>u</mi>
+			<mo>)</mo></mrow><mn>2</mn></msup><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+	</math>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msup><mrow><mo>[</mo><mi>p</mi><mo>+</mo><mi>l</mi><mo>(</mo><mi>a</mi>
+			<mo>-</mo><mi>n</mi><mo>-</mo><mn>1</mn><mo>)</mo><mo>+</mo><mi>b</mi><mo>(</mo>
+			<mn>2</mn><mi>a</mi><mi>n</mi><mo>+</mo><mn>2</mn><mi>a</mi><mo>-</mo><msup>
+			<mi>n</mi><mn>2</mn></msup><mo>-</mo><mn>2</mn><mi>n</mi><mo>-</mo><mn>2</mn><mo>)</mo>
+			<mo>-</mo><mi>m</mi><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+		<mrow>
+			<msup><mrow><mo>[</mo><mi>q</mi><mo>+</mo><mi>y</mi><mo>(</mo><mi>a</mi>
+			<mo>-</mo><mi>p</mi><mo>-</mo><mn>1</mn><mo>)</mo><mo>+</mo><mi>s</mi>
+			<mo>(</mo><mn>2</mn><mi>a</mi><mi>p</mi><mo>+</mo><mn>2</mn><mi>a</mi><mo>-</mo>
+			<msup><mi>p</mi><mn>2</mn></msup><mo>-</mo><mn>2</mn><mi>p</mi><mo>-</mo>
+			<mn>2</mn><mo>)</mo><mo>-</mo><mi>x</mi><mo>]</mo></mrow><mn>2</mn></msup><mo>-</mo>
+		</mrow>
+	</math>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msup><mrow><mo>[</mo><mi>z</mi><mo>+</mo><mi>p</mi><mi>l</mi><mo>(</mo>
+			<mi>a</mi><mo>-</mo><mi>p</mi><mo>)</mo><mo>+</mo><mi>t</mi><mo>(</mo>
+			<mn>2</mn><mi>a</mi><mi>p</mi><mo>-</mo><msup><mi>p</mi><mn>2</mn></msup>
+			<mo>-</mo><mn>1</mn><mo>)</mo><mo>-</mo><mi>p</mi><mi>m</mi><mo>]</mo></mrow>
+			<mn>2</mn></msup><mo>)</mo><mo>&gt;</mo><mn>0</mn>
+		</mrow>
+	</math>
+
+<p>	
+	(James P. Jones et al., "Diophantine Representation of the Set of Prime Numbers," 
+	American Mathematical Monthly 83:6 [1976], 449-464.)
+</p>
+
+<p class="note">
+	This formula was posted on 
+	<a href="https://www.futilitycloset.com/2020/11/10/a-prime-formula/?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+FutilityCloset+%28Futility+Closet%29">
+	Futility Closet</a> on 11/10/20.
+</p>
+<hr />
+
+<p class="note">
+	The calculator below will use any numbers input. If a number has not been assigned 
+	to a variable a random number between 1 and 1,000,000,000 will be selected.
+</p>
+
+<p>
+	I have not been able to produce any primes. Clearly all of the squared terms in the 
+	right set of parentheses must be zero. Otherwise the result is negative. Each of 
+	those terms must be simultaneously solved and that will yield a prime that is two 
+	larger than <em>k</em>. Solving that system of equations looks like a nightmare. The 
+	random method below produces no primes in any reasonable period of time.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Up to 26 integers can be chosen for the 26 variables:</legend>
+		<label for="a">a</label>
+		<input type="text" id="a" placeholder="1" autofocus>
+		<label for="b">b</label>
+		<input type="text" id="b" placeholder="2">
+		<label for="c">c</label>
+		<input type="text" id="c" placeholder="3">
+		<label for="d">d</label>
+		<input type="text" id="d" placeholder="4">
+		<label for="e">e</label>
+		<input type="text" id="e" placeholder="5">
+		<label for="f">f</label>
+		<input type="text" id="f" placeholder="6">
+		<label for="g">g</label>
+		<input type="text" id="g" placeholder="7">
+		<label for="h">h</label>
+		<input type="text" id="h" placeholder="8">
+		<label for="i">i</label>
+		<input type="text" id="i" placeholder="9">
+		<label for="j">j</label>
+		<input type="text" id="j" placeholder="10">
+		<label for="k">k</label>
+		<input type="text" id="k" placeholder="11">
+		<label for="l">l</label>
+		<input type="text" id="l" placeholder="12">
+		<label for="m">m</label>
+		<input type="text" id="m" placeholder="13">
+		<label for="n">n</label>
+		<input type="text" id="n" placeholder="14">
+		<label for="o">o</label>
+		<input type="text" id="o" placeholder="15">
+		<label for="p">p</label>
+		<input type="text" id="p" placeholder="16">
+		<label for="q">q</label>
+		<input type="text" id="q" placeholder="17">
+		<label for="r">r</label>
+		<input type="text" id="r" placeholder="18">
+		<label for="s">s</label>
+		<input type="text" id="s" placeholder="19">
+		<label for="t">t</label>
+		<input type="text" id="t" placeholder="20">
+		<label for="u">u</label>
+		<input type="text" id="u" placeholder="21">
+		<label for="v">v</label>
+		<input type="text" id="v" placeholder="22">
+		<label for="w">w</label>
+		<input type="text" id="w" placeholder="23">
+		<label for="x">x</label>
+		<input type="text" id="x" placeholder="24">
+		<label for="y">y</label>
+		<input type="text" id="y" placeholder="25">
+		<label for="z">z</label>
+		<input type="text" id="z" placeholder="26">
+		<br/>
+		<input type="button" value="Calculate Prime Number" onclick="calcPrime()"/>
+		<br/>
+		<br />
+		<label for="prime">Prime</label>
+		<input type="text" id="output"><br />
+</fieldset>
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 11, 2020</p>
+</footer>
+</html>

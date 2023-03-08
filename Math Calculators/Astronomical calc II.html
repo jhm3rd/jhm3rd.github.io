@@ -1,0 +1,594 @@
+<html>
+<head>
+<title>Astronomical Calculator II</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	img.inline {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 45%;
+		width: 65%;
+	}
+	input[type="text"] {
+		width: 300px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script src="Astro.js"></script>
+
+<script type="text/javascript">
+<!--
+// Utility functions
+
+
+
+// Button functions
+
+
+function getDegFmHrs()
+{
+	const hms = document.getElementById("hrsMinsSecs").value;
+	
+	const outputDMS = astro.angleHMStoDeg(hms);
+	
+	const degree = String.fromCharCode(176);	// this is the only way found to insert 
+	const tick = String.fromCharCode(180);		// ASCII characters
+		
+	const outputStr = `${outputDMS[0]} ${degree} ${outputDMS[1]}${tick} ${outputDMS[2]}${tick}${tick}`
+	// template literals were used above and and entire string is surrounded by BACKTICKS
+	document.getElementById("degAmAs").value = outputStr;
+}
+
+function getHrsFmDeg()
+{
+	const dms = document.getElementById("dAmAs").value;
+	
+	const outputHMS = astro.angleDegToHMS(dms);
+	
+	const outputStr = outputHMS[0] + "h " + outputHMS[1] + "m " + outputHMS[2] + "s"
+	
+	document.getElementById("outHMS").value = outputStr;
+}
+
+function fullMnthName(abbr)
+{
+	switch (abbr)
+	{
+		case "Jan":
+			return "January";
+		case "Feb":
+			return "February";
+		case "Mar":
+			return "March";
+		case "Apr":
+			return "April";
+		case "May":
+			return "May";
+		case "June":
+			return "June";
+		case "July":
+			return "July";
+		case "August":
+			return "August";
+		case "Sep":
+			return "September";
+		case "Oct":
+			return "October";
+		case "Nov":
+			return "November";
+		case "Dec":
+			return "December";
+	}
+}
+
+
+
+function getHourAngle()
+{
+	// Find the UT and Greenwich calendar date corresponding to local time and date
+	
+	const localDT = document.getElementById("ldatetime").value;
+	const longitude = parseInt(document.getElementById("long").value);
+	const rghtAscen = document.getElementById("ra").value;
+	
+	// must reformat localDT as comma separated before using
+	
+	const dateTimeArr = astro.convertDTFormat(localDT);	
+	
+	const inputDate = new Date(...dateTimeArr);			// params need to be numbers
+	const outputDate = inputDate.toUTCString();			// universal time
+
+	// Formatted as Tue, 22 Apr 1980 18:36:51 GMT
+	// Need to get rid of Tue, and GMT and expand Apr to April
+	
+	let newDate = outputDate.slice(5,outputDate.length-3);
+
+	// Should now have 22 Apr 1980 18:36:51
+	
+	const mnthLoc = newDate.search(/\D/);				// finds any non-digit char
+	const mnthAbbr = newDate.slice(mnthLoc + 1,mnthLoc + 4)
+	newDate = newDate.replace(mnthAbbr,fullMnthName(mnthAbbr));
+	
+	// Need to reorder to year, month, day from day, month, year
+	
+	let newDateArr = newDate.split(" ");
+	
+	const temp = newDateArr[0];
+	newDateArr[0] = newDateArr[2];
+	newDateArr[2] = temp;
+	
+	newDate = newDateArr.join(" ");
+	
+	// Find corresponding Greenwich sidereal time
+	
+	newDate = astro.utToGST(newDate);					// GST
+	const dateStr = `${newDate[0]}:${newDate[1]}:${newDate[2]}.${newDate[3]}`;
+	
+	// then find local sidereal time
+	
+	const lstArr = astro.gstToLST(dateStr,longitude);	// returns array h,m,s,ms
+	const lst = astro.HMStoDec(...lstArr);				// spread array over params
+														// LST
+	// Express RA in decimal hours
+	
+	let RAarray = rghtAscen.split(":");					// strs not numbers
+	if (RAarray[2].toString().includes('.')) {			// need to split out msecs
+		const secs = RAarray[2].split(".");
+		RAarray[2] = secs[0];
+		RAarray[3] = secs[1];
+	}
+	RAarray[0] = parseInt(RAarray[0]);
+	RAarray[1] = parseInt(RAarray[1]);
+	RAarray[2] = parseInt(RAarray[2]);
+	if (RAarray[3]) {
+		RAarray[3] = parseInt(RAarray[3]);
+	}
+	else {
+		RAarray[3] = 0;
+	}
+
+	const RA = astro.HMStoDec(...RAarray);
+	
+	// Subtract this from LST. If negative add 24
+	
+	let hourAngle = lst - RA;
+	if (hourAngle < 0) hourAngle = hourAngle + 24;
+	
+	// Convert HA to hours, minutes, seconds form
+	
+	const HAarray = astro.decToHMSHour(hourAngle);
+	const outputStr = `${HAarray[0]}h ${HAarray[1]}m ${HAarray[2]}.${HAarray[3]}s`;
+	// const outputStr = lstArr[0] + "h " + lstArr[1] + "m " + lstArr[2] + "." + lstArr[3] + "s";
+	
+	document.getElementById("ha").value = outputStr;
+}
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Astronomical Calculator 2: Coordinate Systems
+</h1>
+<h2>Coordinate System Calculations</h2><br />
+
+<p>
+	Taken from "Practical Astronomy With Your Calculator or Spreadsheet" 4th ed. by 
+	P. Duffett-Smith and J. Zwart.
+</p>
+
+<h3 class="minor">Horizon Coordinates: Azimuth and Altitude</h3>
+<p>
+	The horizon coordinates, azimuth and altitude, of an object in the sky are referred 
+	to the plane of the observer's horizon. Imagine an observer standing at point O; then 
+	his or her horizon is the circle NESW, where the letters refer to the north, east, 
+	south and west points of the horizon respectively. The direction north, by the way, 
+	relates to the direction of the north pole on the Earth's rotation axis and not to 
+	the magnetic north pole. You must imagine the stars as fixed on the surface of the 
+	hemisphere with the observer at the centre as shown below; the whole sphere of which 
+	this hemisphere is part is called the celestial sphere. The point Z directly over 
+	the observer's head is called the zenith; the direction OZ is the direction defined 
+	by a plumb line held by the observer. Now consider a star X and imagine a great 
+	circle (i.e. a circle drawn on the surface of the sphere whose centre is the same 
+	as that of the sphere) going through Z and X; it meets the horizon at point B. The 
+	altitude, a, of the star is then the angle subtended at O by the points X and B. 
+	The azimuth, A, is the angle subtended by the points N and B. Hence, the altitude 
+	is 'how far up' in degrees (negative if below the horizon) and the azimuth is 'how 
+	far round' from the north direction, also measured in degrees. A increases from 
+	0&deg; to 360&deg; as you go around in the sense NESW, N being 0&deg;, S being 
+	180&deg;, etc.
+<p>	
+	The altitudes and azimuths of all heavenly bodies except geostationary satellites 
+	are continually changing with time as the Earth rotates. This coordinate system then, 
+	marvelous for setting the direction of your telescope, is not much good for fixing 
+	the positions of the stars. Another frame of reference, independent of the Earth's 
+	motion, is needed to do that.
+</p>
+
+<img class=inline src="Horizon coordinates.png" alt="Horizon coordinates" width="834" height="702">
+
+
+<br />
+
+<h3 class="minor">Equatorial Coordinates</h3>
+
+<p>
+	As their name suggests, these coordinates refer to the plane of the Earth's 
+	equator (see the Figure below). The observer (assumed to be in the northern hemisphere) 
+	is at O and the plane containing the circle NESW is again the horizon with Z the 
+	zenith point. You are to imagine now that the figure represents the view obtained 
+	at a vast distance from the Earth. The Earth, with the observer standing on it, has 
+	shrunk to a tiny dot at the centre of the diagram, but the plane of the equator has 
+	been extended to cut the celestial sphere along the circle E&gamma;RW. This is the 
+	equatorial plane and is inclined at the angle 90&deg; - &phi; to the horizon, where 
+	&phi; is the observer's geographical latitude. For observations at latitude 52&deg; 
+	N this angle is 38&deg;. At right angles to the equatorial plane along the line OP 
+	lies the axis of rotation of the Earth; it intersects the celestial sphere at P, 
+	the north celestial pole, or north pole for short. Since this is the line about 
+	which the Earth spins, all the stars appear to describe circles in the sky about P.
+</p>
+
+<img class=inline src="Equatorial coordinates.png" alt="Equatorial coordinates" width="1100" height="1380">
+
+<p>
+	The figure shows two views: the celestial sphere and as seen from the ground. The 
+	lower picture shows 
+	the south point, S, of the horizon is marked and so is the imaginary trace of the 
+	equator, C&gamma;RD. The arc extending down through R and S is the great circle which 
+	goes through NPZRS in the top diagram. The arc extending down through XC is another 
+	great circle, not marked in the top, which goes through PXC. Consider the star at X. 
+	The arc CX, or the angle subtended at O by the points C and X, is called the 
+	declination, &delta; , of X, defining 'how far up' from, or north of, the equator. 
+	The other coordinate, 'how far round', is defined with respect to a fixed direction 
+	in the sky, marked by the symbol &gamma;. This direction, called the vernal equinox 
+	or the first point of Aries, lies along the line of the intersection of the plane of 
+	the Earth's equator with that of the Earth's orbit around the Sun. But we needn't 
+	worry about such definitions at the moment. All we need to know is that the direction 
+	&gamma; remains fixed with respect to the stars except for the effects of precession 
+	and nutation (discussed later), and that we measure the other coordinate with respect 
+	to it. This coordinate is called the right ascension, &alpha;, and is the angle 
+	subtended at O by the points &gamma; and C.
+</p>
+
+<p>
+	Throughout the course of the day the star X moves steadily westwards along a circle 
+	centered on P, completing one revolution in 24 hours of sidereal time . Since this 
+	circle is a circle parallel to that of the equator the declination does not change. 
+	Furthermore, since the direction &gamma; is fixed in the heavens, it appears to move 
+	along the equator at exactly the same rate as X moves along the circle. Hence the 
+	right ascension does not change either. Thus &alpha; and &delta; are ideal coordinates 
+	for describing the positions of the stars and other 'fixed' heavenly bodies.
+</p>
+
+<p>
+	Related to the right ascension is another 'how far round' coordinate called the hour 
+	angle, H. For the star Y it is defined as the angle subtended at O by the points R 
+	and D and is a measure of how far the star has travelled along the equator from the 
+	southern point R, that is a measure of the time since it crossed the meridian. H 
+	increases uniformly as the day proceeds; when H is zero, the star crosses the great 
+	circle NPZRS (upper figure). This circle is called the meridian and the star is said 
+	to transit or culminate. Its altitude is then maximum and its azimuth is 180&deg; 
+	(provided that its declination is less than the geographical latitude).
+</p>
+
+<p>
+	The declination is measured in degrees, positive north of the equator and negative 
+	south of it. The hour angle and the right ascension may also be measured in degrees, 
+	0&deg; to 360&deg;. &alpha; is measured in the sense that it increases as you move 
+	east from &gamma;; the point &gamma; itself is at 0&deg;. (Note that this is in the 
+	opposite sense to that in which H is measured.) More commonly, however, these two 
+	coordinates H and &alpha; are measured in hours, minutes and seconds of time from 0 
+	to 24 hours. One complete revolution, 360&deg;, corresponds to 24 hours of sidereal 
+	time; thus 1 hour is equivalent to 15&deg;. The two statements 'the right ascension 
+	of X is 90&deg;' and 'the right ascension of X is 6 h' are entirely equivalent. To 
+	convert from one to the other simply multiply or divide by 15.
+</p>
+
+<p>
+	A useful result of measuring the right ascension in time is that the star transits 
+	when the local sidereal time is equal to the right ascension.
+</p>
+
+<h3 class="minor">Ecliptic Coordinates</h3>
+<p>
+	The plane containing the Earth's orbit around the Sun is called the ecliptic and the 
+	other planets in our Solar System also move in orbits close to this plane. When 
+	making calculations on objects in the Solar System it is therefore often convenient 
+	to define positions with respect to the ecliptic, that is, to use the ecliptic 
+	coordinate system. This system, like the equatorial system described above, 
+	also uses the vernal equinox, &gamma;, as its reference direction. The figure below, 
+	which is similar to the Equatorial diagram above, shows how it goes.
+</p>
+
+<img class=inline src="Ecliptic coordinates.png" alt="Ecliptic coordinates" width="1100" height="686">
+
+<p>
+	The imaginary traces of the planes of the equator and the ecliptic are drawn on the 
+	sky, and their point of intersection is the vernal equinox, &gamma;. The two planes 
+	are inclined to each other at an angle of about 23.5 degrees, called the obliquity 
+	of the ecliptic and given the symbol &epsilon;. (See Section 27 for a formula for 
+	calculating &epsilon;.) This angle is the tilt of the Earth's NS axis from the 
+	perpendicular to the plane of the ecliptic. Also marked in the diagram is a planet, 
+	V. Part of the trace of the imaginary great circle from the pole of the ecliptic 
+	(i.e. the point where the line drawn through the Sun perpendicular to the ecliptic 
+	meets the celestial sphere) down through V is marked and this cuts the ecliptic at 
+	F. Then the ecliptic longitude, &lambda;, of V is defined to be the angle subtended 
+	by the points &gamma; and F, and the ecliptic latitude, &beta; , the angle subtended 
+	by the points F and V.
+</p>
+
+<p>
+	As with equatorial coordinates, &beta; is positive if the planet is above (i.e. north 
+	of) the ecliptic and negative if it is below it. The sense of &lambda; is such that 
+	&lambda; increases as you move eastwards along the ecliptic. Both &lambda; and &beta; 
+	are usually measured in degrees.
+</p>
+
+<p>
+	During the course of the year the Sun moves eastwards along the trace of the ecliptic. 
+	By definition, its ecliptic latitude is always zero. On about 21 March, it is at the 
+	position &gamma; and its right ascension and declination are both zero. Its ecliptic 
+	longitude is also zero. Thereafter, its ecliptic longitude steadily increases until 
+	three months later it is 90&deg;, midsummer in the northern hemisphere. After the 
+	course of 1 year, the Sun has returned to its starting position having traversed 
+	360&deg; of ecliptic longitude.
+</p>
+
+
+<h3 class="minor">Galactic Coordinates</h3>
+
+<p>
+	Astronomers occasionally need to describe the relationships between stars or other 
+	celestial objects within our own Galaxy and to do so it is convenient to use the 
+	galactic coordinate system. This time, the fundamental plane is the plane of the 
+	Galaxy and the fundamental direction is the line joining our Sun to the centre of 
+	the Galaxy. The diagram below describes the situation. The point marked S represents 
+	the Sun, G is the centre of the Galaxy, and X a star which does not lie in the 
+	galactic plane. In equatorial coordinates, the position of G is &alpha; = 17h 42.4m and 
+	&delta; = -28&deg; 55'. The lines SG and SX' both lie in the plane of the Galaxy; 
+	the point X' is the projection of the star's position onto the plane. The galactic 
+	longitude is defined to be the angle <em>l</em> measured in the plane, and the 
+	galactic latitude is defined to be the angle <em>b</em> measured perpendicular to 
+	it. The longitude increases from 0&deg; to 360&deg; in the same direction as 
+	increasing right ascension, and the latitude ranges from 0&deg; to 90&deg; north of 
+	the plane and from 0&deg; to -90&deg; south of it. These coordinates may be used, 
+	for example, to express the position of a star in the Milky Way. 
+</p>
+
+<img class=inline src="Galactic coordinates.png" alt="Galactic coordinates" width="1100" height="762">
+
+<h3 class="minor">Angles Expressed in Degrees or Hours</h3>
+
+<p>
+	It is common astronomical practice to express the hour angle or right ascension of a 
+	star in hours, minutes and seconds of time rather than in degrees. We can transform 
+	one to the other by noting that 360&deg; of Earth's rotation takes place in 1 day, 
+	or 24 hours. Thus 360&deg; is equivalent to 24 hours or 15&deg; to 1 hour. To convert 
+	between angles expressed in decimal hours and angles expressed in decimal degrees, 
+	simply multiply or divide by 15. For example, the right ascension 9h 36m 10.2s is 
+	equivalent to 144&deg; 02' 33''. 
+</p>
+
+<fieldset>
+	<legend>Enter hours:minutes:seconds then hit Convert...</legend>
+		<label for="hrsMinsSecs">Hours, Minutes, Seconds</label>
+		<input type="text" id="hrsMinsSecs" placeholder="13:30:30" autofocus><br/>
+		<br/>
+		<input type="button" value="Convert Hours to Degrees" onclick="getDegFmHrs()"/>
+		<br/>
+		<br/>
+		<label for="degAmAs">Degrees, Arcminutes, Arcseconds</label>
+		<input type="text" name="degAmAs" id="degAmAs" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<fieldset>
+	<legend>Enter degrees:minutes:seconds then hit Convert...</legend>
+		<label for="dAmAs">Degrees, Arcminutes, Arcseconds</label>
+		<input type="text" id="dAmAs" placeholder="13:30:30" autofocus><br/>
+		<br/>
+		<input type="button" value="Convert Degrees to Hours" onclick="getHrsFmDeg()"/>
+		<br/>
+		<br/>
+		<label for="outHMS">Hours, Minutes, Seconds</label>
+		<input type="text" id="outHMS" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+<h3 class="minor">Converting Between Right Ascension and Hour Angle</h3>
+
+<p>
+	The hour angle, H, and the right ascension, &alpha;, are related by the simple 
+	formula:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>H</mi>
+		<mo>=</mo>
+		<mrow>
+			<mi>LST</mi>
+			<mo>-</mo>
+			<mn>&alpha;</mn>
+		</mrow>
+	</mrow>
+</math>
+
+
+<p>
+	where LST is the local sidereal time. All quantities must be expressed in the same 
+	units, i.e. as degrees or as hours. (Longitudes West are entered as negative numbers.)
+</p>
+
+<fieldset>
+	<legend>Find local Hour Angle of a given star:</legend>
+		<label for="greenDT">Star's Right Ascension</label>
+		<input type="text" id="ra" placeholder="18:32:31" autofocus><br/>
+		<label for="greenDT">Local Longitude</label>
+		<input type="text" id="long" placeholder="-64"><br/>
+		<label for="greenDT">Local Date & Time</label>
+		<input type="text" id="ldatetime" placeholder="April 22 1980 14:36:51.67"><br/>
+		<br/>
+		<input type="button" value="Calc Hour Angle" onclick="getHourAngle()"/>
+		<br/>
+		<br/>
+		<label for="ldt">Hour Angle</label>
+		<input type="text" id="ha" value="" size="25"/><br />
+		<br/>
+</fieldset>
+<br />
+
+
+
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 5, 2018</p>
+</footer>
+</html>

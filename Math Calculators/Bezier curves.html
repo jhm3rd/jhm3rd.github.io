@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Drawing Bezier Curves: The Swatch</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="programming,javascript,svg,bezier curve"/>
+	<meta name="description" content="Drawing Bezier Curves: The Swatch"/>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	p.hebrew {
+		font-size: 24px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="text2"] {
+		width: 95px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+  	svg {
+  		border: 2px solid #000;
+  	}
+  	span.pp {
+  		color: red;
+  	}
+  	span.ppb {
+  		color: blue;
+  	}
+  	span.ppp {
+  		color: purple;
+  	}
+  	span.ppg {
+  		color: gray;
+  	}
+	span.ppo {
+		color: orange;
+	}
+</style>
+
+<script type="text/javascript">
+<!--
+const swatch = [[[0.032,0.146],[0.086,0.201],[0.175,0.015],[0.227,0.146]],[[0.032,0.146],[0.086,0.277],[0.175,0.091],[0.227,0.146]]];
+// above swatch is mirror L/R mirror image of original
+// original: const swatch = [[[0.032,0.146],[0.086,0.015],[0.175,0.201],[0.227,0.146]],[[0.032,0.146],[0.086,0.091],[0.175,0.277],[0.227,0.146]]]
+
+//	just your basic swatch; serves as starting point for all swatches that make up letters
+
+function scale(arr,scalar) {		// Takes a swatch array and a scalar; 
+									// returns a scaled array
+	let x = 0;
+	let y = 0;
+	let newArr = [[],[]];
+	for (let j=0; j<=1; j++) {
+		for (let i=0; i<=3; i++) {			// add the rotated points to newArr
+			x = arr[j][i][0] * scalar;
+			y = arr[j][i][1] * scalar;
+			newArr[j][i] = [x,y];
+		}
+	}
+
+	return newArr;
+}
+
+function trans(point,vx,vy) {		// Takes a point array and returns a translated point array 
+									// shifted by vx in the x-direction and vy in the y-direction
+	return [point[0]+vx,point[1]+vy];
+}
+
+function rotate(point,theta) {		// Takes a point array and returns a rotated point array
+									// rotated by theta around the origin from the x-axis
+	const x = point[0] * Math.cos(theta) - point[1] * Math.sin(theta);
+	const y = point[0] * Math.sin(theta) + point[1] * Math.cos(theta);
+	return [x,y];
+}
+
+function rotateArr(arr,theta) {			// Arr assumed to be two sub arrays of eight control points
+//	array is rotating around the origin; need to rotate around the center or at least 
+//	one of the control points, the first is probably best
+//	to do this need to translate first ctrlPt to origin, rotate, and then translate back
+	const rad = theta * 2 * Math.PI / 360;				// convert degrees to radians
+	const sinTheta = Math.sin(rad);
+	const cosTheta = Math.cos(rad);
+	const ctrOfMass = (arr[0][3][0] + arr[0][0][0]) / 2;
+	
+	const shiftArr = transArr(arr,-ctrOfMass,-arr[0][0][1]);
+	let newArr = [[],[]];
+	let x = 0;
+	let y = 0;
+	for (let j=0; j<=1; j++) {
+		for (let i=0; i<=3; i++) {			// add the rotated points to newArr
+			x = shiftArr[j][i][0]*cosTheta - shiftArr[j][i][1]*sinTheta;
+			y = shiftArr[j][i][0]*sinTheta + shiftArr[j][i][1]*cosTheta;
+			newArr[j][i] = [x,y];
+		}
+	}
+	const unShiftArr = transArr(newArr,ctrOfMass,arr[0][0][1]);
+	return unShiftArr;
+}
+
+function transArr(arr,vx,vy) {			// Arr assumed to be two sub arrays of eight control points
+	let newArr = [[],[]];
+	let x = 0;
+	let y = 0;
+	for (let j=0; j<=1; j++) {
+		for (let i=0; i<=3; i++) {
+			x = arr[j][i][0] + vx;
+			y = arr[j][i][1] + vy;
+			newArr[j][i] = [x,y];
+		}
+	}
+	return newArr;
+}
+
+function makeSVG(cpArr) {		//	Not sure how to do this for 1 or more swatches
+	let svg = `<path d= "M `;
+	svg = svg + `${cpArr[0][0][0]} ${cpArr[0][0][1]} C `;
+	svg = svg + `${cpArr[0][1][0]} ${cpArr[0][1][1]}, `;
+	svg = svg + `${cpArr[0][2][0]} ${cpArr[0][2][1]}, `;
+	svg = svg + `${cpArr[0][3][0]} ${cpArr[0][3][1]}" stroke="black" fill="transparent" />`;
+	svg = svg + `<path d= "M `;
+	svg = svg + `${cpArr[1][0][0]} ${cpArr[1][0][1]} C `;
+	svg = svg + `${cpArr[1][1][0]} ${cpArr[1][1][1]}, `;
+	svg = svg + `${cpArr[1][2][0]} ${cpArr[1][2][1]}, `;
+	svg = svg + `${cpArr[1][3][0]} ${cpArr[1][3][1]}" stroke="black" fill="transparent"/></svg>`;
+	return svg;
+}
+
+
+
+const letter2 = {
+	name: '',
+	numOfSwatches: 0,					// The number of swatches needed to make the letter
+	swatches: [],
+		// 	array of swatches which contains the orientation, location, and size info
+		//	[[sw1Loc,sw1Size,sw1Rot],[sw2Loc,sw2Size,sw2Rot],[sw3Loc,sw3Size,sw3Rot],...] 
+		//	where swNLoc is a point, swNSize is a scalar, and swNRot is the degrees of 
+		//	rotation ccw around swNLoc 
+	
+
+	createSVG: function() {								// init loc assumed to be 0,0
+														// rotat is deg ccw from x-axis
+		let newArray = [];
+		let newSVG = `<svg viewbox= "0 0 300 300" width="300" height="300">`;
+		// Namespace declaration,  xmlns="http://www.w3.org/2000/svg", not needed unless svg is in an external file
+		for (let i=0; i<this.numOfSwatches; i++) {
+			// use the generic swatch array
+			// map the resulting array to a rotated array using an external function
+			newArray = rotateArr(swatch,this.swatches[i][2]);	//	3rd param fm ith element
+			// map the resulting array to a scaled array using an external function
+			newArray = scale(newArray,this.swatches[i][1]);		//	2nd param fm ith element
+			// map the resulting array to a translated array using an external function
+			newArray = transArr(newArray,this.swatches[i][0][0],this.swatches[i][0][1]);	//1st param fm ith element
+			// build the svg using an external function
+			newSVG = newSVG + makeSVG(newArray);
+		}
+		return newSVG;
+	},
+	getName: function() {
+		return this.name;
+	},
+	setName: function(nom) {
+		this.name = nom;
+	},
+	getNumOfSwatches: function() {
+		return this.numOfSwatches;
+	},
+	setNumOfSwatches: function(num) {
+		this.numOfSwatches = num;
+	},
+	getSwatchArr: function() {					// all control points between 0 & 1
+		return swatches;
+	},
+	setSwatchArr: function(swArray) {			// set all at once
+		this.swatches = swArray;
+	},
+	addSwatch: function(swatch) {				// or add one at a time
+		this.swatches.push(swatch); 
+	}
+}
+
+// swatch object
+
+//	initialize letters
+const aleph = Object.create(letter2);
+const chet = Object.create(letter2);
+const dalet = Object.create(letter2);
+const he = Object.create(letter2);
+const waw = Object.create(letter2);
+const yod = Object.create(letter2);
+
+//	fill the letter objects
+function createLetters(size,degRot,transX,transY) {
+	//	those parameters should not be here
+	//	each of the letters should be made up of constants specific for its swatch(es)
+	//	those parameters are only needed for writing the letters relative to one another
+	
+	//	yod with its one swatch; a yod is a high, small ~
+	yod.setName('yod');
+	yod.setNumOfSwatches(1);
+	yod.setSwatchArr([[[transX,transY],size,degRot]]);
+	//	dalet with two swatches, both twice the size of the yod swatch
+	//	dalet is a horizontal swatch with a vertical swatch descending from its right side
+	dalet.setName('dalet');
+	dalet.setNumOfSwatches(2);
+	dalet.setSwatchArr([[[transX,transY],size,degRot],[[transX,transY],size,degRot]]);
+	//	chet with three swatches, all twice the size of the yod swatch
+	//	chet is a horizontal swatch with two vertical swatches descending from its ends
+	chet.setName('chet');
+	chet.setNumOfSwatches(3);
+	chet.setSwatchArr([[[transX,transY],size,degRot],[[transX,transY],size,degRot],[[transX,transY],size,degRot]]);
+	//	aleph with three swatches, one is 1.5 times, one is 2.5 times and one is the size of the yod swatch
+	//	aleph is a long 45 degree swatch with a swatch descending from its left end and a 
+	//	smaller one ascending from its right side; this swatch may need to be flipped to look right
+	//	or it may need a skinny line connecting it to the central swatch
+	aleph.setName('aleph');
+	aleph.setNumOfSwatches(3);
+	aleph.setSwatchArr([[[transX,transY],size,degRot],[[transX,transY],size,degRot],[[transX,transY],size,degRot]]);
+	//	he with three swatches, two twice the size of the yod swatch and one the same size
+	//	he is a horizontal swatch with two vertical swatches descending from its ends
+	//	the one on the left is shorter and does not reach all the way up to the horizontal swatch
+	he.setName('he');
+	he.setNumOfSwatches(3);
+	he.setSwatchArr([[[transX,transY],size,degRot],[[transX,transY],size,degRot],[[transX,transY],size,degRot]]);
+	//	waw with two swatches, one the size of the yod swatch and one twice the size
+	//	waw is a horizontal swatch with a thick vertical line descending from its right side
+	//	not yet sure if this line can be fudged with a swatch or if it will too similar to a dalet
+	waw.setName('waw');
+	waw.setNumOfSwatches(2);
+	waw.setSwatchArr([[[transX,transY],size,degRot],[[transX,transY],size,degRot]]);
+
+
+}
+//	End createLetters()
+
+
+function produceSVG(size,degRot,transX,transY) {			// n is scaling factor
+	createLetters(size,degRot,transX,transY);
+	return yod.createSVG();
+	
+//	return `<svg width="190" height="160" xmlns="http://www.w3.org/2000/svg">
+//	<path d="M 10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80" stroke="black" fill="transparent"/>
+// 	</svg>`;
+}
+
+function calcOutput() {
+
+	let size = document.getElementById("size").value;
+	let degRot = document.getElementById("deg").value;
+	let transX = document.getElementById("transX").value;
+	let transY = document.getElementById("transY").value;
+	const div = document.getElementsByTagName("div")[0];
+	
+	// fill with defaults and convert to integer
+	if (size == "") {
+		size = "1000";
+	}
+	size = parseInt(size);
+	if (degRot == "") {
+		degRot = "30";
+	}
+	degRot = parseInt(degRot);
+	if (transX == "") {
+		transX = "0";
+	}
+	transX = parseInt(transX);
+	if (transY == "") {
+		transY = "0";
+	}
+	transY = parseInt(transY);
+	
+
+	let formula = "";
+	
+	formula = produceSVG(size,degRot,transX,transY);
+	div.innerHTML = formula;
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Drawing B&eacute;zier Curves: The Swatch
+</h1>
+
+<p>
+	I have a pseudo-artistic vision of drawing letters out of embedded letters at least 
+	two levels deep. Many letters that I want to draw use B&eacute;zier curves. I am learning 
+	about the <a href="https://pomax.github.io/bezierinfo/">math behind the curves</a> 
+	and <a href="https://ciechanow.ski/drawing-bezier-curves/">programming curve drawing</a> 
+	from two articles on the internet. A third reference covers B&eacute;zier curves in 
+	SVG and is from <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#curve_commands">
+	Mozilla</a>. My expectation is that I will be able to draw a given letter using 
+	B&eacute;zier curves and then scale, orient and place the letter as needed. I am also 
+	convinced that using SVG's textpath will not work. This doesn't allow the letters to 
+	be individually scaled to fit in place.
+</p>
+
+<p>	
+	Javascript will be used to calculate the parameters for drawing each curve. The 
+	Javascript code will output SVG to render the image in the browser. This means that 
+	a Javascript series of functions will use some input to produce the desired curves. 
+	The curves will be assembled into letters. Each of the letters to be used needs to be 
+	broken down into a set of B&eacute;zier curves. The letters will be scaled, rotated 
+	and shifted to fit into or form a larger letter. Finally, the SVG code will be 
+	generated to display the letters. This will be done by outputting the SVG code to a 
+	div on the page.
+</p>
+
+<p>
+	My first task is to write Javascript code that will output some SVG code that will 
+	be rendered to the screen. Pretty trivial. The SVG code is just placed between 
+	backticks and returned to a div.innerHTML call. Next the letters need to be defined. 
+	My first font creation!?! Most of the Hebrew letters used are made of semi-rectangular 
+	blocks. The long sides of these blocks will be cubic B&eacute;zier curves and the 
+	shorter ends might be quadratic curves. There is one letter that is slightly more 
+	complex as shown below: from the left <em>chet</em>, <em>waw</em>, <em>he</em>, 
+	<em>dalet</em>, <em>alef</em>, and <em>yod</em>. The simplicity of the letters made 
+	from these shapes will make filling larger letters simpler. Upon rethinking this in 
+	light of writing the code, I am going to initially call each of these blocks the 
+	letters are composed of, swatches. Each swatch will be made with two quadratic bezier 
+	curves.
+</p>
+
+<p class="hebrew">
+	&#x05D9; &#x05D0; &#x05D3; &#x05D4; &#x05D5; &#x05D7;
+</p>
+
+<img class=inline src="Adonai echad.png" alt="The text to be successively embedded" width="326" height="220">
+ 
+<p>	
+	Currently, I am using letters that are significantly different than those shown above. 
+	The B&eacute;zier curves needed for these letters are quadratic and cubic. The first 
+	has three control points: two locate the ends of the curve and one controls the 
+	tangency. Cubic curves have four control points: two locating the ends and two 
+	controlling tangency. Quadratic curves can be imitated by cubic curves if that 
+	simplifies programming. For the first letter from the left. The top will be made of 
+	two cubic B&eacute;zier curves connected at their ends. The vertical will be made 
+	similarly. 
+</p>
+
+<p>
+	For the JavaScript code each letter will be an object that will be able 
+	to produce the SVG code to draw itself given its starting coordinates, size, and 
+	orientation. The prototype shape will be defined first. This prototype shape, which 
+	I will call a swatch, is the basic shape used multiple times in all of the letters 
+	used here. The swatch can be scaled, rotated and translated then combined with other 
+	swatches to make a letter. For example, The <em>aleph</em> will consist of three 
+	swatches. A large swatch that is rotated 45&deg;, a medium swatch rotated 90&deg; and 
+	translated left, and a small swatch translated up and to the right.
+</p>
+
+<p>
+	My first task is creating the six letter objects. The object, "letter", is defined.
+	When a new "letter" is needed it is completed as follows. The number of swatches is
+	set with setNumOfCurves(). The control points for each of the curves is set similarly 
+	with setControlPts(). I am no longer certain I have set up letter correctly. A letter 
+	consists of some number of swatches. Each swatch consists of some number of curves. 
+	Each curve consists of four control points. Ideally, each swatch will consist of two 
+	curves (or at least the same number of curves). Scale, orientation, and location will 
+	vary from swatch to swatch. The swatches are further constrained by the location, 
+	scale and orientation of the letter. The "letter" object above needs to reflect this 
+	predominance of swatches over curves.
+</p>
+
+<p>
+	The current program assumes that all swatches are defined by two bezier curves. There 
+	is a generic swatch, <em>swatch</em>, that is used for all subsequent swatches through 
+	scaling, translating, and rotating. <em>letter2</em> is the latest iteration of this 
+	concept. It contains an array of swatches called <em>swatches</em>. This array holds 
+	the location, size and rotation for each of the swatches. The number of swatches is 
+	stored in <em>numOfSwatches</em>.
+</p>
+
+<p>
+	The <em>letter2</em> object has multiple methods. It has getters and setters for the 
+	<em>name</em>, <em>numOfSwatches</em>, <em>swatches</em>. There is also a method to 
+	add swatches one-by-one to <em>swatches</em>. Finally, there is a method to draw 
+	itself, <em>createSVG</em>. This method simply iterates over the <em>swatches</em> 
+	array for <em>numOfSwatches</em> times. It takes the translation, scale and rotation 
+	data from the individual swatch and applies this to the generic swatch. It sends the 
+	array so produced to <em>makeSVG</em> to produce the requisite text string, 
+	<em>newSVG</em>.
+</p>
+
+<p>
+	Below is the SVG for the generic swatch and a rendered generic swatch. A <em>yod</em> 
+	is just this generic swatch rotated 30&deg;. One letter completed.
+</p>
+
+<blockquote>
+<"<span class="ppb">svg</span>" viewbox= <span class="pp">"0 0 300 300"</span> <span class=ppo>width</span>=<span class="pp">"300"</span> <span class="ppo">height</span>=<span class="pp">"300"</span>><br />
+	<"<span class="ppb">path</span>" <span class="ppo">d=</span> <span class="pp">"M 32 146 C 86 201, 175 15, 227 146"</span> <span class="ppo">stroke=</span><span class="pp">"black"</span> <span class="ppo">fill=</span><span class="pp">"transparent"</span> /><br />
+	<"<span class="ppb">path</span>" <span class="ppo">d=</span> <span class="pp">"M 32 146 C 86 277, 175 91, 227 146"</span> <span class="ppo">stroke=</span><span class="pp">"black"</span> <span class="ppo">fill=</span><span class="pp">"transparent"</span> /><br />
+<"<span class="ppb">/svg</span>">
+</blockquote>
+
+<svg viewbox= "0 0 300 300" width="300" height="300">
+	<path d= "M 32 146 C 86 201, 175 15, 227 146" stroke="black" fill="transparent" />
+	<path d= "M 32 146 C 86 277, 175 91, 227 146" stroke="black" fill="transparent"/>
+</svg>
+
+<br />
+
+<p>
+	After playing with functioning <em>yod</em> output I realized that rotating around 
+	one of the control points is not a great solution. Rotation should be around the 
+	center of mass of the swatch. Since rotation is done prior to translation this should 
+	be doable in a generic sense. That is the generic swatch is first rotated, then it is 
+	scaled, and finally it is translated to its final resting spot. The center of mass of 
+	the swatch should be centered between the first and last control points and on the 
+	same line. The first control point is [0.032,0.146] and the last is [0.227,0.146]. 
+	The center point is [0.1295,0.146]. The generic swatch needs to be translated by this 
+	amount prior to rotation and then translated back. Works as planned!
+</p>
+
+<p>
+	The next steps will require modifying the code already written. I don't want to 
+	completely lose what I have accomplished, so this page will remain intact to 
+	document version one.
+</p>
+
+
+<p class="note">
+	This raises the real conundrum with which I am now wrestling. How does one propagate 
+	the various rotations and translations down through the various levels to finally 
+	arrive at swatches that render themselves in the appropriate location and 
+	orientation?
+</p>
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Create a B&eacute;zier Curve Swatch:</legend>
+		<label for="size">Size</label>
+		<input type="text" id="size" placeholder="1000" autofocus><br/>
+		<label for="deg">Degrees of Rotation</label>
+		<input type="text" id="deg" placeholder="30" ><br/>
+		<label for="trans">Translation</label>
+		<input type="text2" id="transX" placeholder="0" >
+		<input type="text2" id="transY" placeholder="0" ><br/>
+		<br/>
+		<input type="button" value="Render Output" onclick="calcOutput()"/>
+		<br/>
+</fieldset>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 9, 2021</p>
+</footer>
+</html>

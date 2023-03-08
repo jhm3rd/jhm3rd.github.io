@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Animated Particles</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="javascript,animated,particles"/>
+	<meta name="description" content="Animated Particles via JavaScript"/>
+
+<style>
+
+	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 1;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table caption {
+  		font-size: 20px;
+  		padding: 20px;
+  		text-align: left;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table td.bold{
+  		font-weight: bold;
+  	}
+  	table th {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	/* The following column widths are specifically for the planetary table data */
+  	/* in Orrery Overview.html */
+  	
+  	#planets {
+  		width: 90px;
+  	}
+  	
+  	#sunDistAU {
+  		width: 80px;
+  	}
+  	
+  	#eccentricity {
+  		width: 80px;
+  	}
+  	
+  	#sunDistMin {
+  		width: 80px;
+  	}
+
+  	#sunDistMax {
+  		width: 80px;
+  	}
+
+  	#speed {
+  		width: 80px;
+  	}
+  	
+  	/* End of planetary data column widths */
+
+</style>
+<body>
+
+<p class=first>
+	This <a href="http://slicker.me/javascript/particles.htm?utm_medium=email&utm_source=topic+optin&utm_campaign=awareness&utm_content=20190907+prog+nl&mkt_tok=eyJpIjoiTVRZMllqTTVOMlJtT0RJeCIsInQiOiJCXC96TXBzUVhhOUNEZzBQSXgrMEtZUStmQjJZeSticGdVWGlHVFVWdVhUWjgrTnZ5NmFQd2dhTzdUSlwvcnF1c2tvamVwZ3VINUk5RmZiNm1jZ3NNSzAyMUVvZ0ttdFEyUkRlZEc3NWJJbUx2VnVBYlJ5bDlObXhBeFdOMWNEMUtiIn0%3D">
+	animation</a> makes me think I might be able to create an orrery animation. To 
+	do so would require modifying much of the following code. What I would like to see 
+	the animation do is to move the planets around the sun at the correct velocity, 
+	and draw a line from the sun to the farthest planet. When this line is crossed by 
+	a planet closer to the sun, the line is drawn only to this planet, until it is 
+	crossed by an inner planet. When the line extends to the innermost planet, it jumps 
+	to the next outer planet when an invisible extension of the line crosses this 
+	next planet. In this way the jumps from the outermost through the planets to the 
+	innermost and then does the reverse.
+</p>
+
+<p>
+	The animation will proceed by first updating the location of the planets. The 
+	orbits will initially be considered perfect circles (eccentricity = 0). In this 
+	case the formula for the circle in polar coordinates is r(&phi;) = a, where a 
+	is the radius of the circle. The current cartesian coordinates will be converted 
+	to polar, the angle updated by the speed noted in the table above, and these new 
+	polar coordinates will be converted to cartesian coordinates.
+</p>
+
+Mercury eccentricity: 0.205630
+Venus: 0.006772
+Earth: 0.0167086
+Mars: 0.0934
+Jupiter: 0.0489
+Saturn: 0.0565
+Uranus: 0.046381
+Neptune: 0.009456
+<table>
+
+<colgroup>
+	<col id="planets">
+	<col id="sunDistAU">
+	<col id="eccentricity">
+	<col id="sunDistMin">
+	<col id="sunDistMax">
+	<col id="speed">
+</colgroup>
+
+<tr>
+<th rowspan="2">Planet</th>
+<th>Sun Distance</th>
+<th rowspan="2">Eccentricity</th>
+<th>Sun Distance</th>
+<th>Sun distance</th>
+<th>Speed</th>
+</tr>
+<tr>
+<th>(A.U.)</th>
+<th>(minimum)</th>
+<th>(maximum)</th>
+<th>(km/sec)</th>
+</tr>
+<tr>
+ 	<td>Mercury &#9791;</td> <!--<img class=inline src="Planet Symbols/Mercury.jpeg" alt="Mercury" width="52" height="64"> -->
+	<td>0.39</td>
+	<td>0.205630</td>
+	<td>0.307</td>
+	<td>0.467</td>
+	<td>47.4</td>
+</tr>
+<tr>
+	<td>Venus &#9792;</td>
+	<td>0.72</td>
+	<td>0.006772</td>
+	<td>0.718</td>
+	<td>0.728</td>
+	<td>35</td>
+</tr>
+<tr>
+	<td>Earth &#9793;</td>
+	<td class=hilite>1.00</td>
+	<td>0.0167086</td>
+	<td>0.983</td>
+	<td>1.017</td>
+	<td>29.8</td>
+</tr>
+<tr>
+	<td>Mars &#9794;</td>
+	<td>1.52</td>
+	<td>0.0934</td>
+	<td >1.3828</td>
+	<td>1.666</td>
+	<td>24</td>
+</tr>
+<tr><td>Jupiter &#9795;</td>
+	<td>5.20</td>
+	<td>0.0489</td>	
+	<td>4.95</td>
+	<td>5.46</td>
+	<td>13.1</td>
+</tr>
+<tr><td>Saturn &#9796;</td>
+	<td>9.54</td>
+	<td>0.0565</td>	
+	<td>9.04</td>
+	<td>9.58</td>
+	<td>9.68</td>
+</tr>
+<tr>
+	<td>Uranus &#9797;</td>	
+	<td>19.2</td>
+	<td>0.046381</td>	
+	<td>18.3</td>
+	<td>20.1</td>
+	<td>6.8</td>
+</tr>
+<tr>
+	<td>Neptune &#9798;</td>		 
+	<td>30.1</td>
+	<td>0.009456</td>	 
+	<td>29.8</td>
+	<td>30.3</td>
+	<td>5.43</td>
+</tr>
+
+</table> 
+
+<!-- 
+<canvas id="myCanvas" width="800" height="600"></canvas>
+ -->
+
+<!-- 
+<script>
+	function line(particle, particle2) {
+		context.beginPath();
+		context.moveTo(particle.x, particle.y);
+		context.lineTo(particle2.x, particle2.y);
+		context.stroke();
+	}
+	function animate() {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		for (let i = 0; i < maxParticles; i++) {
+			let particle = particles[i];
+			context.fillRect(particle.x - particleSize / 2, particle.y - particleSize / 2, particleSize, particleSize);
+			for (let j = 0; j < maxParticles; j++) {
+				if (i != j) {
+					let particle2 = particles[j];
+					let distanceX = Math.abs(particle.x - particle2.x);
+					let distanceY = Math.abs(particle.y - particle2.y);
+					if (distanceX < threshold && distanceY < threshold) {
+						context.lineWidth = ((threshold * 2) - (distanceX + distanceY)) / 50;
+						let color = 200 - Math.floor(distanceX + distanceY);
+						context.strokeStyle = 'rgb(' + color + ',' + color + ',' + color + ')';
+						line(particle, particle2);
+					}
+				}
+			}
+			particle.x = particle.x + particle.vx;
+			particle.y = particle.y + particle.vy;
+			if (particle.x > canvas.width - particleSize || particle.x < particleSize)
+				particle.vx = -particle.vx;
+			if (particle.y > canvas.height - particleSize || particle.y < particleSize)
+				particle.vy = -particle.vy;
+		}
+		window.requestAnimationFrame(animate);
+	}
+	
+	let canvas = document.getElementById('myCanvas');
+	let context = canvas.getContext('2d');
+	let particles = [];
+	let particleSize = 4;
+	let maxParticles = 40;
+	let threshold = 100;
+	
+	for (let i=0; i<maxParticles; i++) {
+		let particle = {
+			x: Math.random() * canvas.width,
+			y: Math.random() * canvas.height,
+			vx: Math.random(),
+			vy: Math.random()
+		}
+		particles.push(particle);
+	}
+	
+	context.fillStyle = 'black';
+	animate();
+</script>
+ -->
+
+<canvas id="orrery" width="800" height="800"></canvas>
+
+<script>
+	function line(sun, planet) {
+		context.beginPath();
+		context.moveTo(sun.x, sun.y);
+		context.lineTo(planet.x, planet.y);
+		context.stroke();
+	}
+	
+	function polarToRect(r,phi) {
+		const rectCoords = [0,0]
+		rectCoords[0] = r * Math.cos(phi);
+		rectCoords[1] = r * Math.sin(phi);
+		return rectCoords;
+	}
+	
+	function pyth(x,y) {
+		return Math.sqrt(x * x + y * y);
+	}
+	
+	function atan2(y,x) {
+		let phi = 0;
+		if (x > 0)
+			phi = Math.atan(y/x);
+		else if (x < 0)
+			if (y >= 0)
+				phi = Math.atan(y/x) + Math.PI;
+			else
+				phi = Math.atan(y/x) - Math.PI;
+		else
+			if (y > 0)
+				phi = Math.PI/2;
+			else if (y < 0)
+				phi = -Math.PI/2;
+			else
+				phi = "Error";
+	}
+	
+	function rectToPolar(x,y) {
+		const polarCoords = [0,0];
+		polarCoords[0] = pyth(x,y);
+		polarCoords[1] = atan2(y,x);
+		return polarCoords;
+	}
+	
+	function animate() {
+		context2.clearRect(0, 0, canvas2.width, canvas2.height);
+		context2.fillStyle = 'black';
+		context2.fill();
+		for (let i = 0; i < maxPlanets; i++) {
+			let planet = planets[i];
+			let rect = polarToRect(planet.r,planet.phi);
+			rect[0] = rect[0] + 400;
+			rect[1] = rect[1] + 400;
+			context2.fillStyle = planetColor[i];
+			context2.fillRect(rect[0] - planetSize / 2, rect[1] - planetSize / 2, planetSize, planetSize);
+			// increase phi as needed
+			planet.phi = planet.phi - 2 * Math.PI * planetSpeed[i] * speedFactor;
+			if (planet.phi >= 2 * Math.PI) planet.phi = planet.phi - 2 * Math.PI;
+		}
+		context2.fillStyle = 'yellow';
+		context2.fillRect(400 - planetSize/2, 400 - planetSize/2, 2 * planetSize, 2 * planetSize);
+		window.requestAnimationFrame(animate);
+	}
+	
+	let canvas2 = document.getElementById('orrery');
+	let context2 = canvas2.getContext('2d');
+	let planets = [];
+	let planetSize = 4;
+	let maxPlanets = 5;
+	let speedFactor = 0.000011;
+	
+	const planetR = [0.39,0.72,1,1.52,5.2,9.54,19.2,30.1];
+	const planetSpeed = [47.4,35,29.8,24,13.1,9.68,6.8,5.43];
+	const planetColor = ['white','silver','cyan','red','lime','green','olive','brown']
+	const sizeFactor = canvas2.width/2/6;
+	
+	for (let i=0; i<maxPlanets; i++) {
+		let planet = {
+			r: planetR[i] * sizeFactor,
+			phi: Math.random() * 2 * Math.PI,
+			speed: planetSpeed[i],
+		}
+		planets.push(planet);
+	}
+	context2.rect(0, 0, canvas2.width, canvas2.height);
+	animate();
+
+</script>
+
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>September 10, 2019</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>HP-25 Emulator</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="calculator,emulator,Hewlett,Packard, HP-25"/>
+	<meta name="description" content="Emulation of an HP-25 Calculator"/>
+
+<style>
+body {
+	font-family: "Gill Sans", Tahoma, Arial, Geneva, sans-serif;
+}
+div {
+    width: 306px;
+    height: 567px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+input[type='text'] {
+	color: red;
+	font-size: 12pt;
+	font-family: "Lucida Console", Monaco, monospace;
+}
+</style>
+
+<script type="text/javascript">
+<!--
+
+
+// Global flags
+
+//  19 flags at this point
+//	power, pgrm, error, newNum, lastX, sci, eng, fix, deg, rad, grad, f, g, store, recall, goto, r/s, dec, eex
+
+let FlagArray = [];
+
+//  Error conditions:
+//  1/0 (done), y^x when Y<=0 (done), sqrt(x) when x<0 (done), log x when x<=0 (done), ln x when x<=0 (done), sin^-1 x 
+//  when |x|>1 (done), cos^-1 x when |x|>1 (done), STO / when x=0, x bar when n<=0 (done), and s when n<=1 (done)
+
+// Global settings
+
+let NumDecimals = 0;	//  The number of mantissa elements displayed in given format
+
+// Global registers
+
+// Storage stack
+
+let X=0, Y=0, Z=0, T=0;
+
+let LastX = 0;
+
+// Storage registers
+
+let R07 = [];
+
+// Program registers
+
+let PgrmMem = [];
+let PgrmPos = 0;
+
+// building number storage
+
+let DigAccum = "";		// Accumulates the digits as they are pressed for display and storage in X
+let ExpAccum = "";		// Accumulates the digits and sign of the exponent
+
+// storage for +, -, *, or / after STO
+
+let storeFxn = '';
+
+// debug global
+
+let ShowHideState = false;
+
+// end of Global variables
+
+// initialization functions
+
+function initFlagArray(){
+	FlagArray = [false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false];
+}
+
+function initNumDecimals(){
+	NumDecimals = 2;
+}
+
+function initStack(){
+	X = 0;
+	Y = 0;
+	Z = 0;
+	T = 0;
+	LastX = 0;
+}
+
+function initReg(){
+	R07 = [0,0,0,0,0,0,0,0];
+}
+
+function initPrgmMem(){		// all mem cells filled with GTO 00 except 00, which has auto stop command
+	PgrmMem = ['','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00','13 00'];
+}
+
+function initPgrmPos(){
+	PgrmPos = 0;
+}
+
+function initDigAccum(){
+	DigAccum = "";
+	ExpAccum = "";
+}
+
+function setFlag(flag){
+	switch (flag)
+	{
+		case 'power':							// on/off state for calculator
+			FlagArray[0] = !FlagArray[0];
+			break;
+		case 'pgrm':							// need to record program
+			FlagArray[1] = !FlagArray[1];
+			break;
+		case 'error':							// need to clear error
+			FlagArray[2] = !FlagArray[2];
+			break;
+		case 'newNum':							// starting a new number
+			FlagArray[3] = !FlagArray[3];
+			break;
+		case 'lastX':							// need to update LastX
+			FlagArray[4] = !FlagArray[4];
+			break;
+		case 'sci':								// signals scientific display format
+			FlagArray[5] = !FlagArray[5];
+			break;
+		case 'eng':								// signals engineering display format
+			FlagArray[6] = !FlagArray[6];
+			break;
+		case 'fix':								// signals fixed display format
+			FlagArray[7] = !FlagArray[7];
+			break;
+		case 'deg':								// signals degrees for calculations
+			FlagArray[8] = !FlagArray[8];
+			break;
+		case 'rad':								// signals radians for calculations
+			FlagArray[9] = !FlagArray[9];
+			break;
+		case 'grad':							// signals gradient for calculations
+			FlagArray[10] = !FlagArray[10];
+			break;
+		case 'f':								// waiting for key press
+			FlagArray[11] = !FlagArray[11];
+			break;
+		case 'g':								// waiting for key press
+			FlagArray[12] = !FlagArray[12];
+			break;
+		case 'sto':								// waiting for register number
+			FlagArray[13] = !FlagArray[13];
+			break;
+		case 'rcl':								// waiting for register number
+			FlagArray[14] = !FlagArray[15];
+			break;
+		case 'goto':							// waiting for pgrm line number
+			FlagArray[15] = !FlagArray[15];
+			break;
+		case 'rs':								//  running a program
+			FlagArray[16] = !FlagArray[16];
+			break;
+		case 'dec':								//  waiting for number of decs to display
+			FlagArray[17] = !FlagArray[17];
+			break;
+		case 'eex':								//  waiting for number of exponent & sign
+			FlagArray[18] = !FlagArray[18];
+			break;
+		case 'sigPlus':							//  don't raise stack for RCL if true
+			FlagArray[19] = !FlagArray[19];
+			break;
+		case 'nNpushX':							// need to push X when new num is entered
+			FlagArray[20] = !FlagArray[20];
+			break;
+	}
+}
+
+function getFlag(flag){
+	switch (flag)
+	{
+		case 'power':
+			return FlagArray[0];
+			break;
+		case 'pgrm':
+			return FlagArray[1];
+			break;
+		case 'error':
+			return FlagArray[2];
+			break;
+		case 'newNum':
+			return FlagArray[3];
+			break;
+		case 'lastX':
+			return FlagArray[4];
+			break;
+		case 'sci':
+			return FlagArray[5];
+			break;
+		case 'eng':
+			return FlagArray[6];
+			break;
+		case 'fix':
+			return FlagArray[7];
+			break;
+		case 'deg':
+			return FlagArray[8];
+			break;
+		case 'rad':
+			return FlagArray[9];
+			break;
+		case 'grad':
+			return FlagArray[10];
+			break;
+		case 'f':
+			return FlagArray[11];
+			break;
+		case 'g':
+			return FlagArray[12];
+			break;
+		case 'sto':
+			return FlagArray[13];
+			break;
+		case 'rcl':
+			return FlagArray[14];
+			break;
+		case 'goto':
+			return FlagArray[15];
+			break;
+		case 'rs':
+			return FlagArray[16];
+			break;
+		case 'dec':
+			return FlagArray[17];
+			break;
+		case 'eex':
+			return FlagArray[18];
+			break;
+		case 'sigPlus':
+			return FlagArray[19];
+			break;
+		case 'nNpushX':
+			return FlagArray[20];
+			break;
+	}
+}
+
+function showRegs(){
+	
+	const registers = `<table>
+		<tbody>
+			<tr>
+				<th>X</th>
+				<td>${X}</td>
+			</tr>
+			<tr>
+				<th>Y</th>
+				<td>${Y}</td>
+			</tr>
+			<tr>
+				<th>Z</th>
+				<td>${Z}</td>
+			</tr>
+			<tr>
+				<th>T</th>
+				<td>${T}</td>
+			</tr>
+			<tr>
+				<th>LastX</th>
+				<td>${LastX}</td>
+			</tr>
+		</tbody>`;
+		return registers;
+//	if (ShowHideState){
+//		document.getElementById("demo").innerHTML = '';
+//		ShowHideState= !ShowHideState;
+//	}
+//	else {
+//		document.getElementById("demo").innerHTML = registers;
+//		ShowHideState= !ShowHideState;
+//	}
+}
+
+function showFlags(){
+	const div = document.getElementsByTagName("div")[1];
+
+	const flags = `<table>
+		<tbody>
+			<tr>
+				<th>Power</th>
+				<th>Prgm</th>
+				<th>Error</th>
+				<th>New Num</th>
+				<th>LastX</th>
+				<th>Sci</th>
+				<th>Eng</th>
+				<th>Fix</th>
+				<th>Deg</th>
+				<th>Rad</th>
+				<th>Grad</th>
+				<th>f</th>
+				<th>g</th>
+				<th>Sto</th>
+				<th>RCL</th>
+				<th>Goto</th>
+				<th>R/S</th>
+				<th>Dec</th>
+				<th>EEX</th>
+				<th>E+</th>
+			</tr>
+			<tr>
+				<td>${FlagArray[0]}</td>
+				<td>${FlagArray[1]}</td>
+				<td>${FlagArray[2]}</td>
+				<td>${FlagArray[3]}</td>
+				<td>${FlagArray[4]}</td>
+				<td>${FlagArray[5]}</td>
+				<td>${FlagArray[6]}</td>
+				<td>${FlagArray[7]}</td>
+				<td>${FlagArray[8]}</td>
+				<td>${FlagArray[9]}</td>
+				<td>${FlagArray[10]}</td>
+				<td>${FlagArray[11]}</td>
+				<td>${FlagArray[12]}</td>
+				<td>${FlagArray[13]}</td>
+				<td>${FlagArray[14]}</td>
+				<td>${FlagArray[15]}</td>
+				<td>${FlagArray[16]}</td>
+				<td>${FlagArray[17]}</td>
+				<td>${FlagArray[18]}</td>
+				<td>${FlagArray[18]}</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	<table>
+		<tbody>
+			<tr>
+				<th>Stack Pos</th>
+				<th>Value</th>
+			</tr>
+			<tr>
+				<td>X</td>
+				<td>${X}</td>
+			</tr>
+			<tr>
+				<td>Y</td>
+				<td>${Y}</td>
+			</tr>
+			<tr>
+				<td>Z</td>
+				<td>${Z}</td>
+			</tr>
+			<tr>
+				<td>T</td>
+				<td>${T}</td>
+			</tr>
+			<tr>
+				<td>LastX</td>
+				<td>${LastX}</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	<table>
+		<body>
+			<tr>
+				<th>Register</th>
+				<th>Value</th>
+			</tr>
+			<tr>
+				<td>R0</td>
+				<td>${R07[0]}</td>
+			</tr>
+			<tr>
+				<td>R1</td>
+				<td>${R07[1]}</td>
+			</tr>
+			<tr>
+				<td>R2</td>
+				<td>${R07[2]}</td>
+			</tr>
+			<tr>
+				<td>R3</td>
+				<td>${R07[3]}</td>
+			</tr>
+			<tr>
+				<td>R4</td>
+				<td>${R07[4]}</td>
+			</tr>
+			<tr>
+				<td>R5</td>
+				<td>${R07[5]}</td>
+			</tr>
+			<tr>
+				<td>R6</td>
+				<td>${R07[6]}</td>
+			</tr>
+			<tr>
+				<td>R7</td>
+				<td>${R07[7]}</td>
+			</tr>
+		</body>
+	</table>`
+	
+	if (ShowHideState){
+		div.innerHTML = '';
+		ShowHideState= !ShowHideState;
+	}
+	else {
+		div.innerHTML = flags;
+		ShowHideState= !ShowHideState;
+	}
+}
+
+function findBtnFmClk(x,y)
+{
+	const KEY_HT = 31;
+	const KEY_WN = 35;
+	const KEY_WM = 40;
+	const KEY_WW = 83;
+	
+	const PGRM_RUNX = 200;
+	const ON_OFFX = 88;
+	const PGRM_RUNY = 118;
+	const ON_OFFY = 118;
+	const PGRM_RUNW = 36;
+	const ON_OFFW = 36;
+	const PGRM_RUNH = 14;
+	const ON_OFFH = 14;
+
+	const FXN_KEY_RECT_BEGX = 49;
+	const FXN_KEY_RECT_ENDX = 266;	// 231 + 35
+	const FXN_KEY_RECT_BEGY = 162;
+	const FXN_KEY_RECT_ENDY = 300;	// 259 + 31
+
+	const KEY_PAD_RECT_BegX = 49;
+	const KEY_PAD_RECT_ENDX = 275;	// 225 + 40
+	const KEY_PAD_RECT_BegY = 323;
+	const KEY_PAD_RECT_ENDY = 515;	// 474 + 31
+	
+	let rowCol = '00';
+
+	if (PGRM_RUNY<=y && y<=PGRM_RUNY + PGRM_RUNH)	// power or pgrm
+	{
+		if (ON_OFFX<=x && x<=ON_OFFX + ON_OFFW) {rowCol = '01';}
+		if (PGRM_RUNX<=x && x<=PGRM_RUNX + PGRM_RUNW) {rowCol = '02';}
+	}
+	else if (FXN_KEY_RECT_BEGY<=y && y<=FXN_KEY_RECT_ENDY)	// function key rectangle
+	{
+		if (y<=FXN_KEY_RECT_BEGY + KEY_HT)	// first row of fxn keys
+		{
+			if (FXN_KEY_RECT_BEGX<=x && x<=FXN_KEY_RECT_BEGX + KEY_WN) {rowCol = '11';}
+			else if (97<=x && x<=97+KEY_WN) {rowCol = '12';}
+			else if (145<=x && x<=145+KEY_WN) {rowCol = '13';}
+			else if (192<=x && x<=192+KEY_WN) {rowCol = '14';}
+			else if (241<=x && x<=241+KEY_WN) {rowCol = '15';}
+		}
+		else if (216<=y && y<=216+KEY_HT)	// second row of function keys
+		{
+			if (FXN_KEY_RECT_BEGX<=x && x<=FXN_KEY_RECT_BEGX + KEY_WN) {rowCol = '21';}
+			else if (97<=x && x<=97+KEY_WN) {rowCol = '22';}
+			else if (145<=x && x<=145+KEY_WN) {rowCol = '23';}
+			else if (192<=x && x<=192+KEY_WN) {rowCol = '24';}
+			else if (241<=x && x<=241+KEY_WN) {rowCol = '25';}
+		}
+		else if (269<=y && y<=269+KEY_HT)	// third row of function keys
+		{
+			if (FXN_KEY_RECT_BEGX<=x && x<=FXN_KEY_RECT_BEGX + KEY_WW) {rowCol = '31';}
+			else if (145<=x && x<=145+KEY_WN) {rowCol = '32';}
+			else if (192<=x && x<=192+KEY_WN) {rowCol = '33';}
+			else if (241<=x && x<=241+KEY_WN) {rowCol = '34';}
+		}
+	}
+	else if (KEY_PAD_RECT_BegY<=y && y<=KEY_PAD_RECT_ENDY)	// keypad rectangle
+	{
+		if (y<=KEY_PAD_RECT_BegY + KEY_HT)	// first row
+		{
+			if (KEY_PAD_RECT_BegX<=x && x<=KEY_PAD_RECT_BegX + KEY_WN) {rowCol = '41';}
+			else if (108<=x && x<=108 + KEY_WM) {rowCol = '42';}
+			else if (172<=x && x<=172 + KEY_WM) {rowCol = '43';}
+			else if (235<=x && x<=235 + KEY_WM) {rowCol = '44';}
+		}
+		else if (376<=y && y<=376 + KEY_HT)	// second row
+		{
+			if (KEY_PAD_RECT_BegX<=x && x<=KEY_PAD_RECT_BegX + KEY_WN) {rowCol = '51';}
+			else if (108<=x && x<=108 + KEY_WM) {rowCol = '52';}
+			else if (172<=x && x<=172 + KEY_WM) {rowCol = '53';}
+			else if (235<=x && x<=235 + KEY_WM) {rowCol = '54';}
+		}
+		else if (430<=y && y<=430 + KEY_HT)	// third row
+		{
+			if (KEY_PAD_RECT_BegX<=x && x<=KEY_PAD_RECT_BegX + KEY_WN) {rowCol = '61';}
+			else if (108<=x && x<=108 + KEY_WM) {rowCol = '62';}
+			else if (172<=x && x<=172 + KEY_WM) {rowCol = '63';}
+			else if (235<=x && x<=235 + KEY_WM) {rowCol = '64';}
+		}
+		else if (484<=y && y<=483 + KEY_HT)	// fourth row
+		{
+			if (KEY_PAD_RECT_BegX<=x && x<=KEY_PAD_RECT_BegX + KEY_WN) {rowCol = '71';}
+			else if (108<=x && x<=108 + KEY_WM) {rowCol = '72';}
+			else if (172<=x && x<=172 + KEY_WM) {rowCol = '73';}
+			else if (235<=x && x<=235 + KEY_WM) {rowCol = '74';}
+		}
+	}
+	return rowCol;
+}
+
+function errorCond(warning) {
+	alert(warning);
+}
+
+function twoNumStkShft(){				// takes care of stack after two number math function
+	[Y,Z] = [Z,T];
+}
+
+function pushX(num){
+	[X,Y,Z,T] = [num,X,Y,Z];
+}
+
+// Plan to rewrite the following to display numbers formatted like the HP-25.
+// Initially shows two decimals, so 0 is shown as 0.00.
+// Have a global for the number of significant figures: NumDecimals.
+// It is initialized to two displayed decimals.
+// Need to implement three different number formats, fixed, sci, and eng.
+// Ideally this function will also display any error messages appropriately.
+// Longer term goal will be to display data via old fashioned parts of an "8".
+// In the short term will fake this with an appropriate font.
+// Downloaded Digital-7 Italic font and will see if that fits the bill (in red!)
+// A flag is needed during digital accumulation as the display is what has been 
+// entered, not X. Or a true/false parameter indicating data accumulation.
+
+// Maximum 10 digit number in fixed mode with room for the sign even when positive.
+// Decimal point does not take up a "space", but is situated close to the previous num.
+// Fixed can display from 0 to 9 decimals. Ten is maximum number of digits displayed in 
+// fixed format, 8 in sci with 7 after the decimal. One can key in SCI 8 or 9, but 
+// the rounding is lost in the display of 7 digits after the decimal.
+// Eng is sci, but only uses exponents that are multiples of 3. Number keyed in 
+// determines how many digits are displayed after the first three, eg 0->3 & 1->4.
+// Also need to ensure that if the number is too small or large to switch from fixed 
+// to SCI 7 in order to show the desired number os significant digits.
+// After an auto switch to sci 7, entering a new number or CLX causes auto shift back 
+// to FIX n that was set before the auto shift to SCI 7.
+// What number is too small varies based on the decimals shown in FIX. If it will look 
+// like zero an automatic shift to SCI 7 happens.
+// Numbers > 10^10 will cause an automatic shift to SCI 7.
+
+function display(numStr){				// display the passed string of digits
+	document.getElementById('display').value = numStr;
+}
+
+function round(num,dec){		// returns num rounded to the number of decimals
+								// specified by dec
+	const timesTen = Math.round(num * 10 ** dec);
+	return timesTen / 10 ** dec;
+}
+
+function getExp(fraction){				// finds the number of 10 factors required to increase
+	let counter = 0;					// a number to greater then 1
+	let posFrac = Math.abs(fraction);
+	while (posFrac < 1){
+		posFrac = 10 * posFrac;
+		counter++;
+	}
+	return counter;
+}
+
+function pad(numStr){								// takes a positive argument
+	let arrOfStrs = ["",""];
+	let expSign = "";
+	if (numStr.includes('+')){
+		arrOfStrs = numStr.split('e+');					// now have array [1.123,2]
+		expSign = " ";
+	}
+	else{													// numStr must be negative
+		arrOfStrs = numStr.split('e-');
+		expSign = "-";
+	}
+	const lenMan = arrOfStrs[0].length;				// includes int and .
+	const lenExp = arrOfStrs[1].length;
+	if (lenExp == 1){
+		arrOfStrs[1] = '0' + arrOfStrs[1];
+	}															// add 0 if needed
+	if (lenMan < 8){
+		arrOfStrs[0] = `${arrOfStrs[0]}${" ".repeat(9 - lenMan)}`;	// add spaces
+	}
+	return `${arrOfStrs[0]}${expSign}${arrOfStrs[1]}`;	// returns a string
+}
+
+function dispFix(num){
+	const dec = NumDecimals;
+	let numStr = "";
+	if (num > 10 ** 10){					// upper limit for numbers in FIX notation
+		numStr = dispSci(num,7);			// auto switch to SCI 7
+	}
+	else if (num != 0 && Math.abs(num) < 1 && getExp(num) > dec){	// lower limit for numbers in FIX notation
+		numStr = dispSci(num,7);			// auto switch to SCI 7
+	}
+	else {
+		numStr = new Number(num).toFixed(dec);	// get a string
+		if (num >= 0){							// if positive add space up front
+			numStr = " " + numStr;
+		}
+	}
+	return numStr;
+}
+
+function dispSci(num){							// takes a number as argument
+	let strNum = "";
+	if (num < 0){
+		let tempNum = Math.abs(num);				
+		strNum = tempNum.toExponential(NumDecimals)		// now have 1.00e+1
+	}
+	else{
+		strNum = num.toExponential(NumDecimals);		// now have 1.00e+1
+	}
+	strNum = pad(strNum);						// adds spaces between mantissa and exp
+	if (num > 0){
+		strNum = " " + strNum;					// add a space for sign
+	}
+	else {
+		strNum = "-" + strNum;
+	}
+	return strNum;
+}
+
+function updateDisp(accumulating){		// accumulating is boolean
+	let newNumStr = X.toString();		// unambiguous conversion to string
+	let numStr = "";					// displayed number is not rounded during entry
+	if (accumulating){					// display updates during the entry process
+		if (ExpAccum.length != 0){
+			numStr = `${DigAccum}${" ".repeat(9 - DigAccum.length)}${ExpAccum}`;
+		}
+		if (X < 0) {
+			display ("-" + numStr);	// need to pad and add exponent here
+		}
+		else {
+			display(" " + numStr);	// NEED TO PUT SPACE IF NOT NEGATIVE
+		}
+	}
+	
+	// need to round X, shift decimal point as needed, & pad with zeros as needed
+	// and need to check for size if in FIX mode, shifting to SCI 7 as needed
+	else {
+		if (getFlag('eng')){				// engineering format
+			numStr = dispEng(X);			// returns X formatted in ENG n
+		}
+		else if (getFlag('sci')){			// scientific format
+			numStr = dispSci(X);			// returns X formatted in SCI n
+		}
+		else {								// fixed format, the default
+			numStr = dispFix(X);			// returns X formatted in FIX n
+		}
+		if ('eex') {
+			setFlag('eex');
+			ExpAccum = "";
+		}
+		display(numStr);
+	}
+}
+ 
+/* 
+function oldUpdateDisp()					// updating from current X value at this point
+{
+	let newNumStr = X.toString();					// unambiguous conversion to string
+	
+	document.getElementById("display").value = newNumStr;
+}
+ */
+
+function recall(digit){						// put register into X and raise stack
+	if (getFlag('enter') || getFlag('clx') || getFlag('sigPlus')){
+		X = R07[digit];
+		updateDisp(false);					// don't push onto stack just replace X
+	}
+	else {
+		pushX(R07[digit]);
+		updateDisp(false);
+	}
+	setFlag('rcl');
+}
+
+function store(digit){
+	if (storeFxn == ''){				// no math fxn selected prior to register number
+		R07[digit] = X;					// store X in register specified
+	}
+	else {								// a math fxn was selected prior to reg number
+		switch (storeFxn){
+			case 'add':					// need to check for overflow > 9.999999999E99
+				R07[digit] = R07[digit] + X;
+				break;
+			case 'subtract':
+				R07[digit] = R07[digit] - X;
+				break;
+			case 'multiply':			// need to check for overflow > 9.999999999E99
+				R07[digit] = R07[digit] * X;
+				break;
+			case 'divide':
+				R07[digit] = R07[digit] / X;
+				break;
+		}
+		setFlag('sto');
+		storeFxn = '';
+	}
+}
+
+function digPressed(digit)
+{										// need to trap register number or set sigfigs
+	if (getFlag('sto')) {				// need to store a number
+		store(digit,"");
+		setFlag('sto');
+	}
+	else if (getFlag('rcl')) {			// need to recall a number
+		recall(digit);
+		setFlag('rcl');
+	}
+	else if (getFlag('dec')) {			// need to set sigfigs
+		NumDecimals = parseInt(digit);
+		setFlag('dec');					// reset flag to false
+		updateDisp(false);
+	}
+	else if (getFlag('eex')) {			// capture digits in exponent
+		if (ExpAccum.length <= 1) {		// assume complete mantissa has already been entered
+			ExpAccum = ExpAccum + digit;
+			if (ExpAccum.length == 2) {
+				setFlag('eex');			// ending here implies CHS be entered first
+				ExpAccum = "";
+			}
+			X = calcExp();				// REALLY SHOULD DO THIS ONLY UPON FXN OR ENTER
+			updateDisp(true);
+		}
+		else {
+			errorCond("Exponent is limited to two digits.")
+		}
+	}
+	else {
+		if (getFlag('newNum'))			// a new number must be started
+		{
+			setFlag('newNum');			// set newNum to false for accumulation
+			DigAccum = `${digit}`;
+			if (getFlag('nNpushX')){
+				pushX(parseFloat(DigAccum));
+				setFlag('nNpushX');
+			}
+		}
+		else										// accumulate the entered numbers
+		{
+			DigAccum = `${DigAccum}${digit}`;	 	// everything should be chars and strings
+		}
+		X = parseFloat(DigAccum);
+		updateDisp(true);
+	}
+}
+
+function power(){
+	if (getFlag('power')){									// power was on
+		setFlag('power');									// set flag to off
+		document.getElementById("display").value = '';		// blank the display
+		initStack();
+		initFlagArray();
+		initReg();
+		
+	}
+	else{													// power was off
+		initFlagArray();									// initialize globals
+		initNumDecimals();
+		initStack();
+		initReg();
+		initDigAccum();
+		initPrgmMem();
+		setFlag('power');									// set flag to on
+		setFlag('fix');										// default display
+		setFlag('deg');										// default trig
+		setFlag('newNum');									// ready for num entry
+		updateDisp(true);
+	}
+}
+
+function prefix(fg){
+	if (fg === 'f'){
+		setFlag('f');
+		const code = '14';
+	}
+	else{								// must be g
+		setFlag('g');
+		const code = '15';
+	}
+	if (getFlag('1')){					// record as prgm step
+		PrgmMem[PrgmPos] = code			// but do not advance PrgmPos
+	}
+}
+
+function calcMean() {
+	if (R07[3] <= 0){
+		errorCond("Must have two or more samples");
+	}
+	else{							// calculate the mean using R3 & R7
+		X = R07[7] / R07[3];		// sum of entries over number of entries
+		updateDisp(false);
+	}
+}
+
+function percentage() {
+	LastX = X;
+	X = Y * X / 100;				// X replaced; Y stays unchanged
+	updateDisp(false);
+}
+
+function swapXY(){					// swap X and Y registers
+	[X,Y] = [Y,X];					// destructuring to the rescue
+	updateDisp(false);
+}
+
+function stdDev() {
+	if (R07[3] <= 1) {
+		errorCond("Must have two or more samples");
+	}
+	else {
+		X = Math.sqrt((R07[7] - R07[6]*R07[6]/R07[3])/(R07[3] - 1));
+		updateDisp(false);				// sqrt((R7 - R6*R6/R3)/(R3 - 1))
+	}
+}
+
+function oneOverX() {
+	LastX = X;
+	if (X === 0) {
+		errorCond("Can't divide by zero");
+	}
+	else {
+		X = 1 / X;						// 1/X
+		updateDisp(false);
+	}
+}
+
+function rollDown(){
+	[X,Y,Z,T] = [Y,Z,T,X];			// destructuring to the rescue
+	updateDisp(false);
+}
+
+function sigmaPlus() {
+	if (getFlag('f')) {					// sigma -
+		setFlag('f');
+		R07[3]--;						
+		R07[4] = R07[4] - Y;
+		R07[5] = R07[5] - X * Y;
+		R07[6] = R07[6] - X * X;
+		R07[7] = R07[7] - X;
+		LastX = X;
+		X = R07[3];
+		setFlag('sigPlus');				// not needed here, but return to false
+		updateDisp(false);
+	}
+	else if (getFlag('g')){				// no g function on this key
+		setFlag('g');
+	}
+	else {								// use contents of X & Y registers
+		R07[3]++;						// count of entries
+		R07[4] = R07[4] + Y;			// sum of y values
+		R07[5] = R07[5] + X * Y;		// sum of x*y values
+		R07[6] = R07[6] + X * X;		// sum of squares of x values
+		R07[7] = R07[7] + X;			// sum of x values
+		LastX = X;
+		X = R07[3];
+		setFlag('sigPlus');				// not needed here, but return to false
+		updateDisp(false);
+	}
+}
+
+function frac(real) {						// returns decimal part of real number
+	return real - Math.floor(real);
+}
+
+function intPart(real){						// returns integer part of real number
+	return Math.floor(real);
+}
+
+function takeSqrt(num){
+	if (num < 0){
+		errorCond("Can't take square root of negative number");
+	}
+	else{
+		return Math.sqrt(num);
+	}
+}
+
+function squareIt(num){			// need to check for num overflow
+	return num * num;
+}
+
+function yToPowerX(numOne,numTwo){
+	if (numTwo <= 0){
+		errorCond("Can't raise negative number or 0 to a power");
+	}
+	else {
+		return numTwo ** numOne;
+	}
+}
+
+function absValue(num){
+	return Math.abs(num);
+}
+
+function naturalLog(num){
+	if (X <= 0){					// error
+		errorCond("Can't take ln of negative number or 0");
+	}
+	else {
+		return Math.log(num);
+	}
+}
+
+function eToPower(num){
+	return Math.exp(num);
+}
+
+function logarithm(num){
+	if (X <= 0){					// error
+		errorCond("Can't take log of negative number or 0");
+	}
+	else {
+		return Math.log(num)/Math.log(10);
+	}
+}
+
+function tenToPower(num){
+	return 10 ** num;
+}
+
+function polarToRect(r,phi){
+	let coordArray = new Array;
+	coordArray[0] = r * Math.cos(phi);
+	coordArray[1] = r * Math.sin(phi);
+	return coordArray;
+}
+
+function rectToPolar(x,y){
+	let coordArray = new Array;
+	coordArray[0] = Math.sqrt(x*x + y*y)
+	coordArray[1] = Math.atan2(y,x);	// need to check for X & Y = 0 => undefined
+	return coordArray;
+}
+
+function hms(decTime){
+	const hours = Math.floor(decTime);
+	let temp = 60 * frac(decTime);
+	let minutes = Math.floor(temp);
+	let seconds = frac(temp) * 60;
+	return hours + minutes/100 + seconds/10000;
+}
+
+function decFmHMS(hmsTime){
+	const hours = Math.floor(hmsTime);
+	let temp = 100*frac(hmsTime);
+	const mins = Math.floor(temp);
+	let secs = 100*frac(temp);
+	return hours + (secs/60 + mins)/60;
+}
+
+function drgConv(num,notInv){			// converts radians and grads to degrees
+	if (notInv){						// convert to degrees before calc if needed
+		if (getFlag('rad')){
+			return num*2*Math.PI/360;
+		}
+		else if (getFlag('grad')){
+			return num*400/360;
+		}
+		else{							// assumes degrees as default
+			return num;
+		}
+	}
+	else{								// converting to rads or grads after calc
+		if (getFlag('rad')){
+			return num*360/(2*Math.pi);
+		}
+		else if (getFlag('grad')){
+			return num*360/400;
+		}
+		else{							// assumes degrees as default
+			return num;
+		}
+	}
+}
+
+function trig(func,num,inv){			// returns answer dependent on deg/rad/grad
+	if (inv){							// an inverse trig function
+		switch (func){
+			case 'arcsin':
+				if (Math.abs(num) < 1){
+					return degConv(Math.asin(num),false);
+				}
+				else{
+					errorCond();
+				}
+				break;
+			case 'arccos':
+				if (Math.abs(num) < 1){
+					return  degConv(Math.acos(num),false);
+				}
+				else{
+					errorCond();
+				}
+				break;
+			case 'arctan':
+				return  degConv(Math.atan(num),false);
+				break;
+		}
+		
+	}
+	else{
+		const deg = drgConv(num,true);
+		switch (func)
+		{
+			case 'sin':
+				return Math.sin(deg);
+				break;
+			case 'cos':
+				return Math.cos(deg);
+				break;
+			case 'tan':
+				return Math.tan(deg);
+				break;
+		}
+	}
+}
+
+function numKey(keyPressed){	// In an attempt to simplify the code for number key 
+	if (getFlag('f')){			// presses the logic is moved to this numKey function.
+		setFlag('f');			// The meat of execution is passed to numKeyF() or 
+		numKeyF(keyPressed);	// numKeyG().
+	}
+	else if (getFlag('g')){
+		setFlag('g');
+		numKeyG(keyPressed);
+	}
+	else{
+		digPressed(keyPressed);
+	}
+}
+
+function numKeyF(keyPressed){	// Further refinement of the process is to define a 
+	switch (keyPressed)			// function for each 'f' or 'g' function and these 
+	{							// are called by numKeyF() or numKeyG().
+		case '0':
+			toHMS();
+			break;
+		case '1':
+			intOfX();
+			break;
+		case '2':
+			sqrt();
+			break;
+		case '3':
+			yToX();
+			break;
+		case '4':
+			sine();
+			break;
+		case '5':
+			cosine();
+			break;
+		case '6':
+			tangent();
+			break;
+		case '7':
+			natLog();
+			break;
+		case '8':
+			log();
+			break;
+		case '9':
+			polToRect();
+			break;
+		case '.':
+			lastX();
+			break;
+	}
+}
+
+function numKeyG(keyPressed){	// Further refinement of the process is to define a 
+	switch (keyPressed)			// function for each 'f' or 'g' function and these 
+	{							// are called by numKeyF() or numKeyG().
+		case '0':
+			fromHMS();
+			break;
+		case '1':
+			fracOfX();
+			break;
+		case '2':
+			square();
+			break;
+		case '3':
+			absVal();
+			break;
+		case '4':
+			arcSine();
+			break;
+		case '5':
+			arcCosine();
+			break;
+		case '6':
+			arcTangent();
+			break;
+		case '7':
+			eToX();
+			break;
+		case '8':
+			tenToX();
+			break;
+		case '9':
+			rectToPol();
+			break;
+		case '.':
+			pi();
+			break;
+	}
+}
+
+function toHMS(){				// separate memory and display changes from function
+	LastX = X;				// ->H.MS
+	X = hms(X);				// where X is of form hh.dddd
+	updateDisp(false);
+}
+
+function fromHMS(){
+	LastX = X;				// ->H
+	X = decFmHMS(X);		// where X is of form hh.mmss
+	updateDisp(false);
+}
+
+function intOfX(){			// Integer part of X
+	LastX = X;
+	X = intPart(X);
+	updateDisp(false);
+}
+
+function fracOfX(){			// Fractional part of X
+	LastX = X;
+	X = frac(X);
+	updateDisp(false);
+}
+
+function sqrt(){
+	LastX = X;
+	X = takeSqrt(X);
+	updateDisp(false);
+}
+
+function square(){
+	LastX = X;
+	X = squareIt(X);
+	updateDisp(false);
+}
+
+function yToX(){			// need to redo as two number function ?
+	LastX = X;
+	X = yToPowerX(X,Y);
+	twoNumStkShft();
+	setFlag('newNum');
+	setFlag('nNpushX');
+	updateDisp(false);
+}
+
+function absVal(){
+	LastX = X;
+	X = absValue(X);
+	updateDisp(false);
+}
+
+function sine(){
+	LastX = X;
+	X = trig('sin',X,false);
+	updateDisp(false);
+}
+
+function arcSine(){
+	LastX = X;
+	X = trig('arcsin',X,true);
+	updateDisp(false);
+}
+
+function cosine(){
+	LastX = X;
+	X = trig('cos',X,false);
+	updateDisp(false);
+}
+
+function arcCosine(){
+	LastX = X;
+	X = trig('arccos',X,true);
+	updateDisp(false);
+}
+
+function tangent(){
+	LastX = X;
+	X = trig('tan',X,false);
+	updateDisp(false);
+}
+
+function arcTangent(){
+	LastX = X;
+	X = trig('arctan',X,true);
+	updateDisp(false);
+}
+
+function natLog(){
+	LastX = X;
+	X = naturalLog(X);
+	updateDisp(false);
+}
+
+function eToX(){
+	LastX = X;
+	X = eToPower(X);
+	updateDisp(false);
+}
+
+function log(){
+	LastX = X;
+	X = logarithm(X);
+	updateDisp(false);
+}
+
+function tenToX(){
+	LastX = X;
+	X = tenToPower(X);
+	updateDisp(false);
+}
+
+function polToRect(){
+	LastX = X;
+	const coordArr = polarToRect(X,Y);	// array with two coordinates is returned
+	X = coordArr[0];
+	Y = coordArr[1];
+	updateDisp(false);
+}
+
+function rectToPol(){
+	LastX = X;
+	const coordArr = rectToPolar(X,Y);
+	X = coordArr[0];
+	Y = coordArr[1];
+	updateDisp(false);
+}
+
+function lastX(){		// note that LastX is only implemented once a number button 
+	pushX(LastX);		// has been pushed, so the triggers for this function need 
+	updateDisp(false);	// need to be rewritten at some point
+}
+
+function pi(){
+	LastX = X;
+	pushX(Math.PI());
+	updateDisp(false);
+}
+
+function funcKeyF(keyPressed){
+	switch (keyPressed)
+	{
+		case 'minus':			// x < y
+			break;
+		case 'plus':			// x >= y
+			break;
+		case 'times':			// x != y
+			break;
+		case 'divide':			// x = y
+			break;
+	}
+}
+
+function funcKeyG(keyPressed){
+	switch (keyPressed)
+	{
+		case 'minus':			// x < 0
+			break;
+		case 'plus':			// x >= 0
+			break;
+		case 'times':			// x != 0
+			break;
+		case 'divide':			// x = 0
+			break;
+	}
+}
+
+function twoNumFunc(keyPressed){
+	if (getFlag('f')){
+		setFlag('f');
+		funcKeyF(keyPressed);
+	}
+	else if (getFlag('g')){
+		setFlag('g');
+		funcKeyG(keyPressed);
+	}
+	else{
+		LastX = X;
+		switch (keyPressed)
+		{
+			case 'minus':
+				minus();
+				break;
+			case 'plus':
+				plus();
+				break;
+			case 'times':
+				times();
+				break;
+			case 'divide':
+				divide();
+				break;
+		}
+		twoNumStkShft();
+		setFlag('newNum');
+		setFlag('nNpushX');
+		updateDisp(false);
+	}
+}
+
+function minus(){
+	X = Y - X;
+}
+
+function plus(){
+	X = Y + X;			// need overflow check
+}
+
+function times(){
+	X = Y * X;			// need overflow check
+}
+
+function divide(){
+	if (X != 0){
+		X = Y / X;
+	}
+	else{
+		errorCond("Can't divide by zero");
+	}
+}
+
+
+function enter(){
+	if (getFlag('f')){					// Clear Prefix
+		setFlag('f');					// also clear STO, RCL, & GOTO
+		if (getFlag('g')){setFlag('g')};
+		if (getFlag('sto')){setFlag('sto')};
+		if (getFlag('rcl')){setFlag('rcl')};
+		if (getFlag('goto')){setFlag('goto')};
+	}
+	else if (getFlag('g')){				// unused
+		
+	}
+	else{								// Enter
+		pushX(X);						// leaves X in X and pushes it into Y
+		if ('eex') {
+			setFlag('eex');
+		}
+		setFlag('newNum');				// start new number
+		updateDisp(false);
+	}
+}
+
+function clearX(){
+	X = 0.0;
+	setFlag('newNum');
+	updateDisp(false);
+}
+
+function setFormat(format){			// set all flags to false
+	if (getFlag("fix")){
+		setFlag("fix");
+	}
+	if (getFlag("sci")){
+		setFlag("sci");
+	}
+	if (getFlag("eng")){
+		setFlag("eng");
+	}
+	setFlag(format);			// then set desired flag to true
+	setFlag('dec');
+	setFlag("f");		
+// not ready to update display as we need number
+// 	if (getFlag("accum")){		// of significant digits
+// 		updateDisp(true);
+// 	}
+// 	else{
+// 		updateDisp(false);
+// 	}
+}
+
+function lastX() {
+	pushX(LastX);
+	updateDisp(false);
+}
+
+function getPi() {
+	pushX(Math.PI);
+	updateDisp(false);
+}
+
+function clearStk() {
+	initStack();
+	setFlag('newNum');
+}
+
+function clearReg() {
+	initReg();
+	setFlag('newNum');
+}
+
+function clearPgrm() {
+	initPgrmMem();
+}
+
+function clearPrefix() {
+	if (getFlag('f')) {
+		setFlag('f');
+	}
+	if (getFlag('g')) {
+		setFlag('g');
+	}
+}
+
+// might be easiest to modify what is shown in display
+// display could consist of an array of items:
+// sign, mantissa, exp sign, exp
+// then changing signs will be simpler for both mantissa and exponent
+// will necessitate rewriting updateDisp(), digAccum() and many other parts of the code
+
+//	DispArr = new Array(4);			// YA global
+//	function initDispArr() {
+//		dispArr[0] = ' '			// space for positive sign
+//		dispArr[1] = ''				// DigAccum goes here
+//		dispArr[2] = ' '			// space for pos exp sign used in sci and eng
+//		dispArr[3] = ''				// any exponent goes here
+//	}
+//
+//	function dispArrToStr(exp) {	// exp is boolean indicating sci or eng formats
+//		if (exp) {
+//			return dispArr.toString();				// return full array if true
+//		}
+//		else {
+//			return `${dispArr[0]}${dispArr[1]}`;	// return only sign and mantissa
+//		}
+//	}
+
+function chs() {
+	if (getFlag('newNum')) {
+		if (X) {					// truthy, should only be false if X is empty
+			X = -X;
+			updateDisp(true);
+		}
+		else {
+			errorCond("A number must be entered before its sign can be changed.")
+		}
+	}
+	else if (getFlag('eex')) {
+		ExpAccum.replace(" ","-")	// need to put neg in exponent
+	}
+	else {
+		X = -X;
+		updateDisp(true);
+	}
+}
+
+function eex() {		// only works during number entry
+						// does not work outside of a given range
+						// must have already entered a digit in mantissa
+	if ((tooBig) || (tooLittle)) {
+		errorCond("Mantissa is out of range to add an exponent.")
+	}
+	else {
+		setFlag('eex')
+		ExpAccum = " ";
+	}
+}
+
+function calcExp() {		// need to calculate exp when entering num with exp
+	const power = 10 ** parseInt(ExpAccum);
+	X = parseFloat(DigAccum) * power;
+}
+
+function btnClicked(btn)
+{
+	if (btn == '01'){
+		power();
+	}
+	else{
+		if (getFlag('power')){			// power is on so buttons work
+			switch (btn)
+			{
+				case "02":	// prgm
+					break;
+				case "11":	// SST, Fix
+					if (getFlag("f")){
+						setFormat('fix');
+					}
+					break;
+				case "12":	// BST, Sci
+					if (getFlag("f")){
+						setFormat('sci');
+					}
+					break;
+				case "13":	// GTO, Eng
+					if (getFlag("f")){
+						setFormat('eng');
+					}
+					break;
+				case "14":	// f
+					prefix('f');
+					break;
+				case "15":	// g
+					prefix('g');
+					break;
+				case "21":	// x<>y, Mean, %
+					if (getFlag('f')) {
+						calcMean();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						percentage();
+						setFlag('g');
+					}
+					else {
+						swapXY();
+					}
+					break;
+				case "22":	// R down, Std dev, 1/x
+					if (getFlag('f')) {
+						stdDev();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						oneOverX();
+						setFlag('g');
+					}
+					else {
+						rollDown();
+					}
+					break;
+				case "23":	// STO
+					setFlag('sto');		// need to handle register math
+										// number entered STO or RCL is not shown
+					break;
+				case "24":	// RCL
+					setFlag('rcl');		// causes stack to lift except after Enter, CLX, Sigma+
+					break;
+				case "25":				// Sigma +	// does Sigma - as well
+					setFlag('sigPlus');	// not sure when to turn this flag off?
+					sigmaPlus();		// will need to redo this for programming
+					break;
+				case "31":	// Enter, Clear Prefix
+					if (getFlag('f')) {
+						clearPrefix();
+						setFlag('f');
+					}
+					else {
+						enter();
+					}
+					break;
+				case "32":	// CHS, Clear Pgrm, Deg
+					if (getFlag('f')) {
+						clearPgrm();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						setFlag('g');
+					}
+					else {
+						chs();
+					}
+					break;
+				case "33":	// EEX, Clear Reg, EEX
+					if (getFlag('f')) {
+						clearReg();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						setFlag('g');
+					}
+					else {
+						eex();
+					}
+					break;
+				case "34":	// CLX, Clear Stack, Grad
+					if (getFlag('f')) {
+						clearStk();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						setFlag('g');
+					}
+					else {
+						clearX();
+					}
+					break;
+				case "41":	// -, x<y, x<0
+					if (getFlag('sto')){		// STO pushed prior to minus
+						storeFxn = 'subtract';
+					}
+					else{
+						twoNumFunc('minus');
+					}
+					break;
+				case "42":	// 7, ln, e^x
+					if (getFlag('f')) {
+						natLog();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						eToX();
+						setFlag('g');
+					}
+					else {
+						numKey('7');
+					}
+					break;
+				case "43":	// 8, log, 10^x
+					if (getFlag('f')) {
+						log();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						tenToX();
+						setFlag('g');
+					}
+					else {
+						numKey('8');
+					}
+					break;
+				case "44":	// 9, ->R, ->P
+					if (getFlag('f')) {
+						polToRect();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						rectToPol();
+						setFlag('g');
+					}
+					else {
+						numKey('9');
+					}
+					break;
+				case "51":	// +, x>=y, x>=0
+					if (getFlag('sto')){		// STO pushed prior to plus
+						storeFxn = 'add';
+					}
+					else{
+						twoNumFunc('plus');
+					}
+					break;
+				case "52":	// 4, sin, sin^(-1)
+					if (getFlag('f')) {
+						sine();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						arcSine();
+						setFlag('g');
+					}
+					else {
+						numKey('4');
+					}
+					break;
+				case "53":	// 5, cos, cos^(-1)
+					if (getFlag('f')) {
+						cosine();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						arcCosine();
+						setFlag('g');
+					}
+					else {
+						numKey('5');
+					}
+					break;
+				case "54":	// 6, tan, tan^(-1)
+					if (getFlag('f')) {
+						tangent();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						arcTangent();
+						setFlag('g');
+					}
+					else {
+						numKey('6');
+					}
+					break;
+				case "61":	// *, x!=y, x!=0
+					if (getFlag('sto')){		// STO pushed prior to times
+						storeFxn = 'multiply';
+					}
+					else{
+						twoNumFunc('times');
+					}
+					break;
+				case "62":	// 1, int frac
+					if (getFlag('f')) {
+						intOfX();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						fracOfX();
+						setFlag('g');
+					}
+					else {
+						numKey('1');
+					}
+					break;
+				case "63":	// 2, sqrt, x^2
+					if (getFlag('f')) {
+						sqrt();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						square();
+						setFlag('g');
+					}
+					else {
+						numKey('2');
+					}
+					break;
+				case "64":	// 3, y^x, ABS
+					if (getFlag('f')) {
+						yToX();
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						absVal();
+						setFlag('g');			// set flag here to keep func clean
+					}
+					else {
+						numKey('3');
+					}
+					break;
+				case "71":	// /, x=y, x=0
+					if (getFlag('sto')){		// STO pushed prior to divide
+						storeFxn = 'divide';	// global to remember what to do with num
+					}
+					else{
+						twoNumFunc('divide');
+					}
+					break;
+				case "72":	// 0, ->H.MS, ->H
+					if (getFlag('f'))  {
+						toHms();					// Changes decimal hrs (degs) to H.MM.SS
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						fromHMS();
+						setFlag('g');
+					}
+					else {
+						numKey('0');
+					}
+					break;
+				case "73":	// ., LastX, pi
+					if (getFlag('f'))  {
+						lastX();					// replaces X with LastX
+						setFlag('f');
+					}
+					else if (getFlag('g')) {
+						getPi();					// replaces X with pi
+						setFlag('g');
+					}
+					else {
+						numKey('.');
+					}
+					break;
+				case "74":	// R/S, Pause, NOP
+					break;
+			}
+		} // end of if getflag('power')
+	} // end of else
+}
+
+function showCoords(event) {
+    let cX = event.clientX;
+    let sX = event.screenX;
+    let cY = event.clientY;
+    let sY = event.screenY;
+    let coords1 = "client - X: " + cX + ", Y coords: " + cY;
+    let coords2 = "screen - X: " + sX + ", Y coords: " + sY;
+    let button = findBtnFmClk(cX,cY);						// button is array
+    btnClicked(button);
+    document.getElementById("demo").innerHTML = coords1 + "<br/>" + coords2 + "<br/>" + button + "<br/>" + showRegs();
+	showRegs();
+}
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div onclick="showCoords(event)">
+
+<img class=inline src="hp25face.jpg" alt="HP-25 face" width="306" height="567">
+
+<br/><br/>
+
+<fieldset>
+	<input type="text" id="display" readOnly="True">
+</fieldset>
+
+
+<p id="demo"></p>
+<p id="demo1"></p>
+</div>
+
+<div id="divDemo" class="debug">
+
+</div>
+
+
+<footer>
+	<p><a href="Math%20Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>May 27, 2018</p>
+</footer>
+
+</body>
+</html>

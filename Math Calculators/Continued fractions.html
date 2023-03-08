@@ -1,0 +1,523 @@
+<html>
+<head>
+<title>Continued Fractions</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+// Global variables
+
+ContFrac = "";	// holds the growing continued fraction constructed by bldConFrac.
+LineNum = 0;	// holds the number of lines in the continued fraction.
+
+function bldConFrac(a)
+{
+	ContFrac = ContFrac + "<mn>" + a + "</mn><mo>+</mo><mfrac><mn>1</mn><mrow>"
+	LineNum++;
+	
+} // end bldConFrac
+
+function conFrac(n, m)	// generate the continued fraction representation using Euclid's algorithm.
+{
+	var small; 		// smaller of the two numbers entered 
+	var rem = 1;	// remainder upon division of n and m
+	var nextDiv;	// holds the result of division of n and m
+	var large;
+	var temp;
+	
+	// first determine which number is larger
+	nextDiv = Math.min(n,m);
+	large = Math.max(n,m);
+	
+	temp = Math.floor(large/nextDiv);
+	rem = large % nextDiv;
+	bldConFrac(temp);
+	
+	while (rem != 1 && rem !=0)
+	{
+		large = nextDiv;
+		nextDiv = rem;
+		temp = Math.floor(large/nextDiv);
+		rem = large % nextDiv;
+		bldConFrac(temp);
+	}
+	
+	return nextDiv;
+} // end conFrac
+
+function calcCF() {
+
+	var temp = 0;
+	var n = parseInt(document.getElementById("first").value);
+	var m = parseInt(document.getElementById("second").value);
+	var div = document.getElementsByTagName("div")[0];
+	
+	// initialize the global ContFrac with the starting MathML.
+	ContFrac = "<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'><mrow><mfrac><mn>" + n + "</mn><mn>" + m + "</mn></mfrac><mo>=</mo>"
+
+	var result = 0;
+	temp = conFrac(n,m);
+	
+	ContFrac = ContFrac + "<mn>" + temp + "</mn></mfrac>"	// enter the last denominator.
+	
+	for (var i=1; i<=LineNum; i++)	// close the mrow & mfrac started on each line.
+	{
+		ContFrac = ContFrac + "</mrow></mfrac>";
+	}	// end for
+	
+	ContFrac = ContFrac + "</mrow></math>";	// complete the MathML.
+	
+	div.innerHTML = ContFrac; // dump the continued fraction to the web page.
+
+} //end of function, calcCF
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Continued Fractions via Euclid's Algorithm
+</h1>
+	
+<p>
+	The main reason for writing GCD II was not just to employ the Euclidean algorithm, 
+	but to set up the javascript to construct continuing fractions. The Euclidean 
+	algorithm for finding the GCD of two integers leads immediately to an important 
+	method for representing the quotient of two integers as a composite fraction. 
+	Applied to the numbers 840 and 611, for example, the Euclidean algorithm yields 
+	the series of equations,
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mn>840</mn>
+		<mo>=</mo>
+		<mn>1</mn>
+		<mo>x</mo>
+		<mn>611</mn>
+		<mo>+</mo>
+		<mn>229</mn>
+	</mrow>
+	<mrow>
+		<mo>,</mo>
+	</mrow>
+	<mrow>
+		<mn>611</mn>
+		<mo>=</mo>
+		<mn>2</mn>
+		<mo>x</mo>
+		<mn>229</mn>
+		<mo>+</mo>
+		<mn>153</mn>
+	</mrow>
+	<mrow>
+		<mo>,</mo>
+	</mrow>
+	<mrow>
+		<mn>229</mn>
+		<mo>=</mo>
+		<mn>1</mn>
+		<mo>x</mo>
+		<mn>153</mn>
+		<mo>+</mo>
+		<mn>76</mn>
+	</mrow>
+	<mrow>
+		<mo>,</mo>
+	</mrow>
+	<mrow>
+		<mn>153</mn>
+		<mo>=</mo>
+		<mn>2</mn>
+		<mo>x</mo>
+		<mn>76</mn>
+		<mo>+</mo>
+		<mn>1</mn>
+	</mrow>
+</math>
+
+<p>
+	which show, incidentally, that (840, 611) = 1. From these equations we may derive the 
+	following expressions:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<mn>840</mn>
+			<mn>611</mn>
+		</mfrac>
+		<mo>=</mo>
+		<mn>1</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>229</mn>
+			<mn>611</mn>
+		</mfrac>		
+		<mo>=</mo>
+		<mn>1</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mfrac>
+				<mn>611</mn>
+				<mn>229</mn>
+			</mfrac>
+		</mfrac>
+	</mrow>
+</math>
+
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<mn>611</mn>
+			<mn>229</mn>
+		</mfrac>
+		<mo>=</mo>
+		<mn>2</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>153</mn>
+			<mn>229</mn>
+		</mfrac>		
+		<mo>=</mo>
+		<mn>2</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mfrac>
+				<mn>229</mn>
+				<mn>153</mn>
+			</mfrac>
+		</mfrac>
+	</mrow>
+</math>
+
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<mn>229</mn>
+			<mn>153</mn>
+		</mfrac>
+		<mo>=</mo>
+		<mn>1</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>76</mn>
+			<mn>153</mn>
+		</mfrac>		
+		<mo>=</mo>
+		<mn>1</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mfrac>
+				<mn>153</mn>
+				<mn>76</mn>
+			</mfrac>
+		</mfrac>
+	</mrow>
+</math>
+
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<mn>153</mn>
+			<mn>76</mn>
+		</mfrac>
+		<mo>=</mo>
+		<mn>2</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mn>76</mn>
+		</mfrac>		
+	</mrow>
+</math>
+
+
+<p>
+	On combining these equations we obtain the development of the rational number 
+	840/611 in the form
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfrac>
+			<mn>840</mn>
+			<mn>611</mn>
+		</mfrac>
+		<mo>=</mo>
+		<mn>1</mn>
+		<mo>+</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mrow>
+				<mn>2</mn>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mrow>
+						<mn>1</mn>
+						<mo>+</mo>
+						<mfrac>
+							<mn>1</mn>
+							<mrow>
+								<mn>2</mn>
+								<mo>+</mo>
+								<mfrac>
+									<mn>1</mn>
+									<mn>76</mn>
+								</mfrac>
+							</mrow>
+						</mfrac>
+					</mrow>
+				</mfrac>
+			</mrow>
+		</mfrac>
+	</mrow>
+</math>
+
+<p>
+	An expression of the form 
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>a</mi>
+		<mo>=</mo>
+		<msub><mi>a</mi><mn>0</mn></msub>
+		<mo>+</mo>
+		<mfrac>
+			<mn>1</mn>
+			<mrow>
+				<msub><mi>a</mi><mn>1</mn></msub>
+				<mo>+</mo>
+				<mfrac>
+					<mn>1</mn>
+					<mrow>
+						<msub><mi>a</mi><mn>2</mn></msub>
+						<mo>+</mo>
+						<mfrac>
+							<mn>1</mn>
+							<mrow>
+								<msub><mi>a</mi><mn>3</mn></msub>
+								<mo>+</mo>
+								<mfrac>
+									<mn>1</mn>
+									<msub><mi>a</mi><mi>n</mi></msub>
+								</mfrac>
+							</mrow>
+						</mfrac>
+					</mrow>
+				</mfrac>
+			</mrow>
+		</mfrac>
+	</mrow>
+</math>
+
+<p>
+	where the a's are positive integers, is called a <em>continued fraction</em>. The 
+	Euclidean algorithm gives us a method for expressing any rational number in this 
+	form. 
+</p>
+
+
+<p>	
+	The calculator returns the continued fraction for any two selected numbers 
+	using the Euclidean algorithm. To use the calculator simply enter the two numbers. 
+	Then hit the button to calculate the list.
+</p>
+
+<p class=note>
+	The order of entry is important. The numerator should be entered in the top box 
+	and the denominator in the bottom box.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter two numbers and hit the button:</legend>
+		<label for="first">First Number</label>
+		<input type="text" id="first" placeholder="2431" autofocus><br/>
+		<br/>
+		<label for="second">Second Number</label>
+		<input type="text" id="second" placeholder="210"><br/>
+		<br/>
+		<input type="button" value="Print Continued Fraction" onclick="calcCF()"/>
+		<br/>
+</fieldset>
+
+<p class=note>
+	Refresh between calculations to make sure global variables are reset.
+</p>
+
+<br/>
+<hr />
+<br/>
+
+<div>
+
+</div>
+
+<br/>
+<hr/>
+
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 27, 2018</p>
+</footer>
+</html>

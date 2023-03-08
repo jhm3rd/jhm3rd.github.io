@@ -1,0 +1,401 @@
+<html>
+<head>
+<title>Greatest Common Divisor Calculator II</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function gcd(n, m)	// find the greatest common divisor of n and m using Euclid's algorithm.
+{
+	var small; 		// smaller of the two numbers entered 
+	var rem = 1;	// remainder upon division of n and m
+	var nextDiv;	// holds the result of division of n and m
+	var large;
+	var temp;
+	
+	// first determine which number is larger
+	nextDiv = Math.min(n,m);
+	large = Math.max(n,m);
+	
+	temp = Math.floor(large/nextDiv);
+	rem = large % nextDiv;
+	
+	while (rem != 0)
+	{
+		large = nextDiv;
+		nextDiv = rem;
+		temp = Math.floor(large/nextDiv);
+		rem = large % nextDiv;
+	}
+	return nextDiv;
+}
+
+function calcGCD() {
+
+	var n = parseInt(document.getElementById("first").value);
+	var m = parseInt(document.getElementById("second").value);
+
+	var result = 0;
+	result = gcd(n,m);
+	document.getElementById("answer").value = result;
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Greatest Common Divisor Calculator via Euclid's Algorithm
+</h1>
+	
+<p>
+	Let <em>a</em> and <em>b</em> be any two integers, not both equal to 0, and consider 
+	the set of all positive integers which divide both <em>a</em> and <em>b</em>. Let 
+	<em>d</em> be the greatest of this set of common divisors. The integer <em>d</em> 
+	is called the greatest common divisor of <em>a</em> and <em>b</em>, and written 
+	<em>d</em> = (<em>a</em>,<em>b</em>).
+</p>
+
+<p>
+	A short and certain method for calculating the GCD is provided by the Euclidean 
+	algorithm. It is based on the fact that from any relation of the form:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>a</mi>
+		<mo>=</mo>
+		<mi>b</mi>
+		&it;
+		<mi>q</mi>
+		<mo>+</mo>
+		<mi>r</mi>
+	</mrow>
+</math>
+
+<p>
+	It follows that
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfenced>
+			<mi>a</mi><mi>b</mi>
+		</mfenced>
+		<mo>=</mo>
+		<mfenced>
+			<mi>b</mi><mi>r</mi>
+		</mfenced>
+	</mrow>
+</math>
+
+<p>
+	For any number <em>u</em> which divides both <em>a</em> and <em>b</em>, 
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>a</mi>
+		<mo>=</mo>
+		<mi>s</mi>
+		&it;
+		<mi>u</mi>
+	</mrow>
+</math>
+
+<br/>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>b</mi>
+		<mo>=</mo>
+		<mi>t</mi>
+		&it;
+		<mi>u</mi>
+	</mrow>
+</math>
+
+<p>
+	also divides <em>r</em>, since 
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mi>r</mi>
+		<mo>=</mo>
+		<mi>a</mi>
+		<mo>-</mo>
+		<mi>b</mi>
+		&it;
+		<mi>q</mi>
+		<mo>=</mo>
+		<mi>s</mi>
+		&it;
+		<mi>u</mi>
+		<mo>-</mo>
+		<mi>q</mi>
+		&it;
+		<mi>t</mi>
+		&it;
+		<mi>u</mi>
+		<mo>=</mo>
+		<mfenced>
+			<mrow>
+				<mi>s</mi>
+				<mo>-</mo>
+				<mi>q</mi>
+				&it;
+				<mi>t</mi>
+			</mrow>
+		</mfenced>
+		&invisilbletimes;
+		<mi>u</mi>
+	</mrow>
+</math>
+
+<p>
+	And conversely, every number <em>v</em> which divides <em>b</em> and <em>r</em>, 
+	also divides <em>a</em> (by the same reasoning). Hence <em>every</em> divisor of
+	<em>a</em> and <em>b</em> is at the same time a common divisor of <em>b</em> and 
+	<em>r</em>, and conversely. Since, therefore, the set of all common divisors of 
+	<em>a</em> and <em>b</em> is identical with the set of all common divisors of 
+	<em>b</em> and <em>r</em>, the <em>greatest</em> common divisor of <em>a</em> 
+	and <em>b</em> must be equal to the greatest common divisor of <em>b</em> and 
+	<em>r</em>.
+</p>
+
+<p>
+	As an example let's find the GCD of 1804 and 328. By ordinary long division
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mn>1804</mn>
+		<mo>=</mo>
+		<mn>5</mn>
+		<mo>x</mo>
+		<mn>328</mn>
+		<mo>+</mo>
+		<mn>164</mn>
+	</mrow>
+</math>
+
+<p>
+	Therefore we can conclude that
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mfenced>
+			<mn>1804</mn><mn>328</mn>
+		</mfenced>
+		<mo>=</mo>
+		<mfenced>
+			<mn>328</mn><mn>164</mn>
+		</mfenced>
+	</mrow>
+</math>
+
+<p>
+	The problem of finding the GCD of 1804 and 328 has been reduced to finding the 
+	GCD of 328 and 164. This can be continued by dividing 328 by 164:
+</p>
+
+<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+	<mrow>
+		<mn>328</mn>
+		<mo>=</mo>
+		<mn>2</mn>
+		<mo>x</mo>
+		<mn>164</mn>
+		<mo>+</mo>
+		<mn>0</mn>
+	</mrow>
+</math>
+
+<p>
+	So the GCD of 328 and 164 is the same as the GCD of 164 and 0, which is 164. 
+	Consequently, the GCD of 1804 and 328 is 164. This is the essence of the 
+	Euclidean algorithm.
+</p>
+
+
+<p>	
+	The calculator returns the Greatest common divisor for any two selected numbers 
+	using the Euclidean algorithm demonstrated above. To use the calculator simply 
+	enter the two numbers. Then hit the button to calculate the list.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter two numbers and hit the button:</legend>
+		<label for="first">First Number</label>
+		<input type="text" id="first" placeholder="391" autofocus><br/>
+		<br/>
+		<label for="second">Second Number</label>
+		<input type="text" id="second" placeholder="697"><br/>
+		<br/>
+		<input type="button" value="Calculate GCD" onclick="calcGCD()"/>
+		<br/><br/>
+		<label for="answer">Greatest Common Divisor</label>
+		<input type="text" id="answer"><br/>
+		<br/>
+</fieldset>
+
+<br/>
+<hr />
+
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 27, 2018</p>
+</footer>
+</html>

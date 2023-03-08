@@ -1,0 +1,866 @@
+<html>
+<head>
+<title>Geometric Primes</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	img.inline {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 45%;
+		width: 45%;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+  	svg {
+  		border: 1px solid;
+  		stroke-width: 1;
+  		fill: none;
+  		background-color: #464a3c;
+  		stroke-linejoin: round;
+  	}
+  	.prime {
+  		fill: white;
+  		font: 12px sans-serif;
+  	}
+  	.key {
+  		fill: white;
+  		font: 12px sans-serif;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function factorial(n)
+{
+	var factorial = 1;
+	while(n > 1)
+	{
+		factorial = factorial * n;
+		n = n - 1;
+	}		
+	return factorial;
+}
+
+function shiftArray(arr,amt) {	// shifts each element in an array by a given amount
+	const shiftedArr = [];
+
+	for (const i of arr){
+      shiftedArr.push(i + amt);
+	}
+	return shiftedArr;
+}
+
+const xCoordArr = [6.8,15.44,24.08,32.72,41.36,58.64,64.4,75.92,84.56,93.2];
+const yCoordArr = [100,90,80,70,60,40,30,20,10,0];
+const ySideArr = [75,70,65,60,55,45,40,35,30,25];
+
+function calcGP() {
+	const primeArray = [101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,
+	191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271,277,281,283,293,307,311,
+	313,317,331,337,347,349,353,359,367,373,379,383,389,397,401,409,419,421,431,433,439,443,
+	449,457,461,463,467,479,487,491,499,503,509,521,523,541,547,557,563,569,571,577,587,593,
+	599,601,607,613,617,619,631,641,643,647,653,659,661,673,677,683,691,701,709,719,727,733,
+	739,743,751,757,761,769,773,787,797,809,811,821,823,827,829,839,853,857,859,863,877,881,
+	883,887,907,911,919,929,937,941,947,953,967,971,977,983,991,997];
+	let dataArray = [];	// this array will hold each of the 143 primes, roots, and digits
+							
+	function getRoot(prime) {
+		let resultArr = [];
+		let primeString = prime.toString();
+		resultArr[1] = parseInt(primeString[0]);
+		resultArr[2] = parseInt(primeString[1]);
+		resultArr[3] = parseInt(primeString[2]);
+		let root = resultArr[1] + resultArr[2] + resultArr[3];
+		if (root >= 10) {						// should be less than 27
+			let rootStr = root.toString();
+			root = parseInt(rootStr[0]) + parseInt(rootStr[1]);
+		}
+		if (root >= 10) {						// should be catching only 10's
+			let rootStr = root.toString();
+			root = parseInt(rootStr[0]) + parseInt(rootStr[1]);
+		}
+		resultArr[0] = root
+		return resultArr;
+	}
+	
+	function getShape(root,xShift,yShift,dig100,dig10,dig1) {		// roots are 1,2,4,5,7,8
+									// returns the SVG for the given prime number
+									// assumes each picture sits in a square box 100 X 100
+		let [lgx1, lgx2, lgx3, lgx4, lgy1, lgy2, lgy3, lgy4] = [0,0,0,0,0,0,0,0];
+		let [medx1, medx2, medx3, medx4, medy1, medy2, medy3, medy4] = [0,0,0,0,0,0,0,0];
+		let [smx1, smx2, smx3, smx4, smy1, smy2, smy3, smy4] = [0,0,0,0,0,0,0,0];
+		const xCen = 50 + xShift;
+		const yCen = 50 + yShift;
+		const xArr = shiftArray(xCoordArr,xShift);
+		const yArr = shiftArray(yCoordArr,yShift);
+		const ySArr = shiftArray(ySideArr,yShift);
+		const xAr = [6.8,15.44,24.08,32.72,41.36,50,58.64,67.28,75.92,84.56,93.2];
+		const yAr = [93.2,84.56,75.92,67.28,58.64,50,41.36,32.72,24.08,15.44,6.8];
+		const yHAr = [88.88,80.24,71.6,62.96,54.32,45.68,37.04,28.4,19.76,11.12];
+				
+		const xCArr = shiftArray(xAr,xShift);
+		const yCArr = shiftArray(yAr,yShift);
+		const yCHArr = shiftArray(yHAr,yShift);
+								// yCHArr points are halfway between the yCArr points
+		const primeTxt = dig100.toString() + dig10.toString() + dig1.toString();
+
+	
+		switch(root) {
+			case 1:					// seven cubes
+									// back cubes are 100's digit
+									// middle cubes are 10's digit
+									// front cube is 1's digit
+				// starting from back most squares; top face, left face, right; start at top pt and move clockwise
+				return `<polygon points="${xCArr[5]} ${yCArr[10]},${xCArr[7]} ${yCArr[9]},${xCArr[5]} ${yCArr[8]},${xCArr[3]} ${yCArr[9]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points="${xCArr[7]} ${yCArr[9]},${xCArr[7]} ${yCArr[5]},${xCArr[5]} ${yCArr[6]},${xCArr[5]} ${yCArr[8]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points="${xCArr[3]} ${yCArr[9]},${xCArr[5]} ${yCArr[8]},${xCArr[5]} ${yCArr[6]},${xCArr[3]} ${yCArr[7]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points="${xCArr[8]} ${yCHArr[5]},${xCArr[10]} ${yCHArr[4]},${xCArr[8]} ${yCHArr[3]},${xCArr[6]} ${yCHArr[4]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points="${xCArr[10]} ${yCHArr[4]},${xCArr[10]} ${yCHArr[2]},${xCArr[8]} ${yCHArr[1]},${xCArr[8]} ${yCHArr[3]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points="${xCArr[6]} ${yCHArr[4]},${xCArr[8]} ${yCHArr[3]},${xCArr[8]} ${yCHArr[1]},${xCArr[6]} ${yCHArr[2]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points="${xCArr[2]} ${yCHArr[5]},${xCArr[4]} ${yCHArr[4]},${xCArr[2]} ${yCHArr[3]},${xCArr[0]} ${yCHArr[4]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points="${xCArr[4]} ${yCHArr[4]},${xCArr[4]} ${yCHArr[2]},${xCArr[2]} ${yCHArr[1]},${xCArr[2]} ${yCHArr[3]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points="${xCArr[0]} ${yCHArr[4]},${xCArr[2]} ${yCHArr[3]},${xCArr[2]} ${yCHArr[1]},${xCArr[0]} ${yCHArr[2]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points="${xCArr[2]} ${yCHArr[8]},${xCArr[4]} ${yCHArr[7]},${xCArr[2]} ${yCHArr[6]},${xCArr[0]} ${yCHArr[7]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points="${xCArr[4]} ${yCHArr[7]},${xCArr[4]} ${yCHArr[5]},${xCArr[2]} ${yCHArr[4]},${xCArr[2]} ${yCHArr[6]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points="${xCArr[0]} ${yCHArr[7]},${xCArr[2]} ${yCHArr[6]},${xCArr[2]} ${yCHArr[4]},${xCArr[0]} ${yCHArr[5]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points="${xCArr[8]} ${yCHArr[8]},${xCArr[10]} ${yCHArr[7]},${xCArr[8]} ${yCHArr[6]},${xCArr[6]} ${yCHArr[7]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points="${xCArr[10]} ${yCHArr[7]},${xCArr[10]} ${yCHArr[5]},${xCArr[8]} ${yCHArr[4]},${xCArr[6]} ${yCHArr[5]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points="${xCArr[6]} ${yCHArr[7]},${xCArr[8]} ${yCHArr[6]},${xCArr[8]} ${yCHArr[4]},${xCArr[6]} ${yCHArr[5]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points="${xCArr[5]} ${yCArr[4]},${xCArr[7]} ${yCArr[3]},${xCArr[5]} ${yCArr[2]},${xCArr[3]} ${yCArr[3]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points="${xCArr[7]} ${yCArr[3]},${xCArr[7]} ${yCArr[1]},${xCArr[5]} ${yCArr[0]},${xCArr[5]} ${yCArr[2]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points="${xCArr[3]} ${yCArr[3]},${xCArr[5]} ${yCArr[2]},${xCArr[5]} ${yCArr[0]},${xCArr[3]} ${yCArr[1]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points="${xCArr[5]} ${yCArr[7]},${xCArr[7]} ${yCArr[6]},${xCArr[5]} ${yCArr[5]},${xCArr[3]} ${yCArr[6]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points="${xCArr[7]} ${yCArr[6]},${xCArr[7]} ${yCArr[4]},${xCArr[5]} ${yCArr[3]},${xCArr[5]} ${yCArr[5]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points="${xCArr[3]} ${yCArr[6]},${xCArr[5]} ${yCArr[5]},${xCArr[5]} ${yCArr[3]},${xCArr[3]} ${yCArr[4]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<text x="${xCArr[5]-10}" y="${yCArr[0]+18}" class="prime">${primeTxt}</text>`;
+				break;
+			case 2:					// three stacked 3-D squares
+				const yFudge1 = yShift + yCoordArr[5] - 6;
+				const yFudge2 = yShift + (yCoordArr[6] + yCoordArr[7]) * 0.55;
+				const yFudge3 = yShift + yCoordArr[7] - 2;
+				const yFudge4 = yShift + yCoordArr[6] + 5;
+				const yFudge5 = yShift + yCoordArr[5] + 2.5;
+				const yFudge6 = yShift + yCoordArr[5] - 2.5;
+				const xFudge1 = xShift + (xCoordArr[3] + xCoordArr[4]) /2;
+				const xFudge2 = xShift + xCoordArr[6] + 4;
+				const xFudge3 = xShift + xCoordArr[7] + 2;
+
+				return `<polygon points="${xArr[0]} ${yArr[2]}, ${xArr[0]} ${yArr[3]}, ${xCen} ${yArr[1]}, ${xCen} ${yArr[0]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points="${xCen} ${yArr[0]}, ${xArr[9]} ${yArr[02]}, ${xArr[9]} ${yArr[3]}, ${xCen} ${yArr[1]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points="${xArr[0]} ${yArr[3]}, ${xCen} ${yArr[1]}, ${xArr[9]} ${yArr[3]}, ${xCen} ${yCen}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points="${xArr[0]} ${yArr[4]}, ${xCen} ${yArr[2]}, ${xCen} ${yArr[3]}, ${xArr[0]} ${yCen}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points="${xCen} ${yArr[2]}, ${xCen} ${yArr[3]}, ${xArr[9]} ${yCen}, ${xArr[9]} ${yArr[4]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points="${xArr[0]} ${yCen}, ${xCen} ${yArr[3]}, ${xArr[9]} ${yCen}, ${xCen} ${yArr[6]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points="${xArr[0]} ${yArr[5]}, ${xCen} ${yArr[4]}, ${xCen} ${yArr[5]}, ${xArr[0]} ${yArr[6]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points="${xCen} ${yArr[4]}, ${xCen} ${yArr[5]}, ${xArr[9]} ${yArr[6]}, ${xArr[9]} ${yArr[5]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points="${xArr[0]} ${yArr[6]}, ${xCen} ${yCen}, ${xArr[9]} ${yArr[6]}, ${xCen} ${yArr[8]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points="${xArr[2]} ${yArr[6]}, ${xCen} ${yFudge3}, ${xCen} ${yFudge2}, ${xArr[3]} ${yFudge1}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points="${xCen} ${yFudge3}, ${xCen} ${yFudge2}, ${xFudge2} ${yFudge4}, ${xFudge3} ${yArr[6]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points="${xCen} ${yFudge5}, ${xArr[3]} ${yFudge1}, ${xCen} ${yFudge2}, ${xFudge2} ${yFudge4}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points="${xCen} ${yFudge1}, ${xCen} ${yFudge5}, ${xArr[4]} ${yFudge6}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points="${xCen} ${yFudge1}, ${xCen} ${yFudge5}, ${xArr[5]} ${yFudge6}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<text x="${xCArr[5]-10}" y="${yCArr[0]+18}" class="prime">${primeTxt}</text>`;
+				break;
+			case 4:					// hexagons within hexagons my oh my
+
+				// proceeding clockwise around each hexagon starting from the outermost hexagon
+				return `<polygon points = "${xArr[0]} ${ySArr[0]}, ${xArr[1]} ${ySArr[1]}, ${xCen} ${yArr[1]}, ${xCen} ${yArr[0]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[0]} ${ySArr[0]}, ${xArr[1]} ${ySArr[1]}, ${xArr[1]} ${ySArr[8]}, ${xArr[0]} ${ySArr[9]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[0]} ${ySArr[9]}, ${xArr[1]} ${ySArr[8]}, ${xCen} ${yArr[8]}, ${xCen} ${yArr[9]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCen} ${yArr[9]}, ${xCen} ${yArr[8]}, ${xArr[8]} ${ySArr[8]}, ${xArr[9]} ${ySArr[9]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[9]} ${ySArr[9]}, ${xArr[8]} ${ySArr[8]}, ${xArr[8]} ${ySArr[1]}, ${xArr[9]} ${ySArr[0]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[9]} ${ySArr[0]}, ${xArr[8]} ${ySArr[1]}, ${xCen} ${yArr[1]}, ${xCen} ${yArr[0]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[1]} ${ySArr[1]}, ${xArr[2]} ${ySArr[2]}, ${xCen} ${yArr[2]}, ${xCen} ${yArr[1]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[1]} ${ySArr[1]}, ${xArr[2]} ${ySArr[2]}, ${xArr[2]} ${ySArr[7]}, ${xArr[1]} ${ySArr[8]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xArr[1]} ${ySArr[8]}, ${xArr[2]} ${ySArr[7]}, ${xCen} ${yArr[7]}, ${xCen} ${yArr[8]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCen} ${yArr[8]}, ${xCen} ${yArr[7]}, ${xArr[7]} ${ySArr[7]}, ${xArr[8]} ${ySArr[8]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[7]} ${ySArr[7]}, ${xArr[8]} ${ySArr[8]}, ${xArr[8]} ${ySArr[1]}, ${xArr[7]} ${ySArr[2]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xArr[7]} ${ySArr[2]}, ${xArr[8]} ${ySArr[1]}, ${xCen} ${yArr[1]}, ${xCen} ${yArr[2]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xArr[2]} ${ySArr[2]}, ${xArr[3]} ${ySArr[3]}, ${xCen} ${yArr[3]}, ${xCen} ${yArr[2]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xArr[2]} ${ySArr[2]}, ${xArr[3]} ${ySArr[3]}, ${xArr[3]} ${ySArr[6]}, ${xArr[2]} ${ySArr[7]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xArr[2]} ${ySArr[7]}, ${xArr[3]} ${ySArr[6]}, ${xCen} ${yArr[6]}, ${xCen} ${yArr[7]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCen} ${yArr[7]}, ${xCen} ${yArr[6]}, ${xArr[6]} ${ySArr[6]}, ${xArr[7]} ${ySArr[7]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xArr[6]} ${ySArr[6]}, ${xArr[7]} ${ySArr[7]}, ${xArr[7]} ${ySArr[2]}, ${xArr[6]} ${ySArr[3]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points = "${xArr[6]} ${ySArr[3]}, ${xArr[7]} ${ySArr[2]}, ${xCen} ${yArr[2]}, ${xCen} ${yArr[3]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points = "${xArr[3]} ${ySArr[3]}, ${xArr[4]} ${ySArr[4]}, ${xCen} ${yArr[4]}, ${xCen} ${yArr[3]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xArr[3]} ${ySArr[3]}, ${xArr[4]} ${ySArr[4]}, ${xArr[4]} ${ySArr[5]}, ${xArr[3]} ${ySArr[6]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points = "${xArr[3]} ${ySArr[6]}, ${xArr[4]} ${ySArr[5]}, ${xCen} ${yArr[5]}, ${xCen} ${yArr[6]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points = "${xCen} ${yArr[6]}, ${xCen} ${yArr[5]}, ${xArr[5]} ${ySArr[5]}, ${xArr[6]} ${ySArr[6]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xArr[5]} ${ySArr[5]}, ${xArr[6]} ${ySArr[6]}, ${xArr[6]} ${ySArr[3]}, ${xArr[5]} ${ySArr[4]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xArr[5]} ${ySArr[4]}, ${xArr[6]} ${ySArr[3]}, ${xCen} ${yArr[3]}, ${xCen} ${yArr[4]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCen} ${yArr[5]}, ${xArr[5]} ${ySArr[5]}, ${xCen} ${yCen}, ${xArr[4]} ${ySArr[5]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xArr[4]} ${ySArr[5]}, ${xCen} ${yCen}, ${xCen} ${yArr[4]}, ${xArr[4]} ${ySArr[4]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xArr[5]} ${ySArr[5]}, ${xArr[5]} ${ySArr[4]}, ${xCen} ${yArr[4]}, ${xCen} ${yCen}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<text x="${xCArr[5]-10}" y="${yCArr[0]+18}" class="prime">${primeTxt}</text>`;
+				break;
+			case 5:					// three complex worms
+									// 100's are the top, 10's are left side, and 1's are right side
+				return `<polygon points = "${xCArr[5]} ${yCArr[10]}, ${xCArr[10]} ${yCHArr[7]}, ${xCArr[7]} ${yCArr[6]}, ${xCArr[6]} ${yCHArr[6]}, ${xCArr[8]} ${yCHArr[7]}, ${xCArr[5]} ${yCArr[9]}, ${xCArr[2]} ${yCHArr[7]}, ${xCArr[1]} ${yCArr[8]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[7]}, ${xCArr[10]} ${yCHArr[6]}, ${xCArr[8]} ${yCHArr[5]}, ${xCArr[8]} ${yCHArr[3]}, ${xCArr[6]} ${yCHArr[2]}, ${xCArr[6]} ${yCHArr[3]}, ${xCArr[7]} ${yCArr[4]}, ${xCArr[7]} ${yCArr[6]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[9]}, ${xCArr[5]} ${yCArr[8]}, ${xCArr[3]} ${yCArr[7]}, ${xCArr[2]} ${yCHArr[7]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[9]}, ${xCArr[8]} ${yCHArr[7]}, ${xCArr[7]} ${yCArr[7]}, ${xCArr[5]} ${yCArr[8]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xCArr[6]} ${yCHArr[6]}, ${xCArr[7]} ${yCArr[6]}, ${xCArr[7]} ${yCArr[4]}, ${xCArr[6]} ${yCHArr[4]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[5]}, ${xCArr[7]} ${yCArr[4]}, ${xCArr[6]} ${yCHArr[3]}, ${xCArr[4]} ${yCHArr[4]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						
+						<polygon points = "${xCArr[0]} ${yCHArr[7]}, ${xCArr[3]} ${yCArr[6]}, ${xCArr[3]} ${yCArr[5]}, ${xCArr[1]} ${yCArr[6]}, ${xCArr[1]} ${yCHArr[3]}, ${xCArr[4]} ${yCHArr[1]}, ${xCArr[4]} ${yCHArr[0]}, ${xCArr[0]} ${yCHArr[2]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xCArr[1]} ${yCArr[8]}, ${xCArr[3]} ${yCArr[7]}, ${xCArr[5]} ${yCArr[8]}, ${xCArr[7]} ${yCArr[7]}, ${xCArr[6]} ${yCHArr[6]}, ${xCArr[5]} ${yCArr[7]}, ${xCArr[3]} ${yCArr[6]}, ${xCArr[0]} ${yCHArr[7]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[7]}, ${xCArr[6]} ${yCHArr[6]}, ${xCArr[6]} ${yCHArr[4]}, ${xCArr[5]} ${yCArr[5]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xCArr[1]} ${yCArr[6]}, ${xCArr[2]} ${yCHArr[5]}, ${xCArr[2]} ${yCHArr[3]}, ${xCArr[1]} ${yCArr[3]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points = "${xCArr[2]} ${yCHArr[3]}, ${xCArr[4]} ${yCHArr[2]}, ${xCArr[4]} ${yCHArr[1]}, ${xCArr[1]} ${yCArr[3]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[7]}, ${xCArr[5]} ${yCArr[6]}, ${xCArr[3]} ${yCArr[5]}, ${xCArr[3]} ${yCArr[6]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						
+						<polygon points = "${xCArr[8]} ${yCHArr[3]}, ${xCArr[9]} ${yCArr[3]}, ${xCArr[6]} ${yCHArr[1]}, ${xCArr[6]} ${yCHArr[2]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[6]}, ${xCArr[10]} ${yCHArr[2]}, ${xCArr[5]} ${yCArr[0]}, ${xCArr[5]} ${yCArr[3]}, ${xCArr[6]} ${yCHArr[3]}, ${xCArr[6]} ${yCHArr[1]}, ${xCArr[9]} ${yCArr[3]}, ${xCArr[9]} ${yCArr[6]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points = "${xCArr[2]} ${yCHArr[5]}, ${xCArr[3]} ${yCArr[5]}, ${xCArr[3]} ${yCArr[4]}, ${xCArr[5]} ${yCArr[3]}, ${xCArr[5]} ${yCArr[0]}, ${xCArr[4]} ${yCHArr[0]}, ${xCArr[4]} ${yCHArr[2]}, ${xCArr[2]} ${yCHArr[3]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[6]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[3]} ${yCArr[4]}, ${xCArr[3]} ${yCArr[5]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points = "${xCArr[4]} ${yCHArr[4]}, ${xCArr[6]} ${yCHArr[3]}, ${xCArr[5]} ${yCArr[3]}, ${xCArr[3]} ${yCArr[4]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xCArr[9]} ${yCArr[6]}, ${xCArr[9]} ${yCArr[3]}, ${xCArr[8]} ${yCHArr[3]}, ${xCArr[8]} ${yCHArr[5]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						
+						<text x="${xCArr[5]-10}" y="${yCArr[0]+18}" class="prime">${primeTxt}</text>`;
+				
+				break;
+			case 7:					// fingers maybe?				
+				return `<polygon points = "${xCArr[5]} ${yCArr[10]}, ${xCArr[7]} ${yCArr[9]}, ${xCArr[5]} ${yCArr[8]}, ${xCArr[3]} ${yCArr[9]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCArr[7]} ${yCArr[9]}, ${xCArr[7]} ${yCArr[8]}, ${xCArr[5]} ${yCArr[7]}, ${xCArr[5]} ${yCArr[8]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCArr[3]} ${yCArr[9]}, ${xCArr[5]} ${yCArr[8]}, ${xCArr[5]} ${yCArr[7]}, ${xCArr[3]} ${yCArr[8]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						
+						<polygon points = "${xCArr[2]} ${yCHArr[8]}, ${xCArr[5]} ${yCArr[7]}, ${xCArr[8]} ${yCHArr[8]}, ${xCArr[9]} ${yCArr[8]}, ${xCArr[5]} ${yCArr[6]}, ${xCArr[1]} ${yCArr[8]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[1]} ${yCArr[8]}, ${xCArr[5]} ${yCArr[6]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[1]} ${yCArr[7]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xCArr[9]} ${yCArr[8]}, ${xCArr[5]} ${yCArr[6]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[9]} ${yCArr[7]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+
+						<polygon points = "${xCArr[0]} ${yCHArr[6]}, ${xCArr[5]} ${yCHArr[4]}, ${xCArr[4]} ${yCHArr[0]}, ${xCArr[3]} ${yCArr[1]}, ${xCArr[3]} ${yCArr[4]}, ${xCArr[0]} ${yCHArr[5]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xCArr[1]} ${yCArr[7]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[4]} ${yCHArr[4]}, ${xCArr[0]} ${yCHArr[6]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[5]}, ${xCArr[5]} ${yCArr[1]}, ${xCArr[4]} ${yCHArr[0]}, ${xCArr[4]} ${yCHArr[4]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+
+						<polygon points = "${xCArr[10]} ${yCHArr[6]}, ${xCArr[10]} ${yCHArr[5]}, ${xCArr[7]} ${yCArr[4]}, ${xCArr[7]} ${yCArr[1]}, ${xCArr[6]} ${yCHArr[0]}, ${xCArr[6]} ${yCHArr[4]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points = "${xCArr[9]} ${yCArr[7]}, ${xCArr[10]} ${yCHArr[6]}, ${xCArr[6]} ${yCHArr[4]}, ${xCArr[5]} ${yCArr[5]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[5]}, ${xCArr[6]} ${yCHArr[4]}, ${xCArr[6]} ${yCHArr[0]}, ${xCArr[5]} ${yCArr[1]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+
+						<polygon points = "${xCArr[0]} ${yCHArr[4]}, ${xCArr[2]} ${yCHArr[3]}, ${xCArr[2]} ${yCHArr[1]}, ${xCArr[0]} ${yCHArr[2]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[1]} ${yCArr[5]}, ${xCArr[3]} ${yCArr[4]}, ${xCArr[2]} ${yCHArr[3]}, ${xCArr[0]} ${yCHArr[4]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xCArr[3]} ${yCArr[4]}, ${xCArr[3]} ${yCArr[2]}, ${xCArr[2]} ${yCHArr[1]}, ${xCArr[2]} ${yCHArr[3]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+	
+						<polygon points = "${xCArr[10]} ${yCHArr[4]}, ${xCArr[10]} ${yCHArr[2]}, ${xCArr[8]} ${yCHArr[1]}, ${xCArr[8]} ${yCHArr[3]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points = "${xCArr[9]} ${yCArr[5]}, ${xCArr[10]} ${yCHArr[4]}, ${xCArr[8]} ${yCHArr[3]}, ${xCArr[7]} ${yCArr[4]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xCArr[7]} ${yCArr[4]}, ${xCArr[8]} ${yCHArr[3]}, ${xCArr[8]} ${yCHArr[1]}, ${xCArr[7]} ${yCArr[2]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<text x="${xCArr[5]-10}" y="${yCArr[0]+18}" class="prime">${primeTxt}</text>`;
+				break;
+			case 8:					// three keys
+				return  `<polygon points = "${xCArr[0]} ${yCHArr[7]}, ${xCArr[2]} ${yCHArr[6]}, ${xCArr[2]} ${yCHArr[5]}, ${xCArr[3]} ${yCArr[5]}, ${xCArr[3]} ${yCArr[4]}, ${xCArr[2]} ${yCHArr[4]}, ${xCArr[2]} ${yCHArr[1]}, ${xCArr[0]} ${yCHArr[2]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xCArr[2]} ${yCHArr[8]}, ${xCArr[5]} ${yCArr[7]}, ${xCArr[4]} ${yCHArr[6]}, ${xCArr[3]} ${yCArr[7]}, ${xCArr[2]} ${yCHArr[6]}, ${xCArr[0]} ${yCHArr[7]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[7]}, ${xCArr[5]} ${yCArr[5]}, ${xCArr[3]} ${yCArr[4]}, ${xCArr[3]} ${yCArr[5]}, ${xCArr[4]} ${yCHArr[5]}, ${xCArr[4]} ${yCHArr[6]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCArr[2]} ${yCHArr[4]}, ${xCArr[3]} ${yCArr[4]}, ${xCArr[3]} ${yCArr[2]}, ${xCArr[2]} ${yCHArr[1]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+						<polygon points = "${xCArr[3]} ${yCArr[7]}, ${xCArr[4]} ${yCHArr[6]}, ${xCArr[4]} ${yCHArr[5]}, ${xCArr[3]} ${yCArr[6]}" stroke = "${colorArray[dig100][2]}" fill = "${colorArray[dig100][2]}"/>
+						<polygon points = "${xCArr[3]} ${yCArr[6]}, ${xCArr[4]} ${yCHArr[5]}, ${xCArr[3]} ${yCArr[5]}, ${xCArr[2]} ${yCHArr[5]}" stroke = "${colorArray[dig100][3]}" fill = "${colorArray[dig100][3]}"/>
+						<polygon points = "${xCArr[3]} ${yCArr[7]}, ${xCArr[3]} ${yCArr[6]}, ${xCArr[2]} ${yCHArr[5]}, ${xCArr[2]} ${yCHArr[6]}" stroke = "${colorArray[dig100][1]}" fill = "${colorArray[dig100][1]}"/>
+
+						<polygon points = "${xCArr[7]} ${yCArr[4]}, ${xCArr[7]} ${yCArr[3]}, ${xCArr[10]} ${yCHArr[4]}, ${xCArr[10]} ${yCHArr[2]}, ${xCArr[5]} ${yCArr[0]}, ${xCArr[5]} ${yCArr[2]}, ${xCArr[6]} ${yCHArr[2]}, ${xCArr[6]} ${yCHArr[3]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+						<polygon points = "${xCArr[3]} ${yCArr[4]}, ${xCArr[4]} ${yCHArr[3]}, ${xCArr[4]} ${yCHArr[2]}, ${xCArr[5]} ${yCArr[2]}, ${xCArr[5]} ${yCArr[0]}, ${xCArr[3]} ${yCArr[1]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[5]}, ${xCArr[7]} ${yCArr[4]}, ${xCArr[6]} ${yCHArr[3]}, ${xCArr[5]} ${yCArr[4]}, ${xCArr[4]} ${yCHArr[3]}, ${xCArr[3]} ${yCArr[4]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[7]} ${yCArr[4]}, ${xCArr[9]} ${yCArr[5]}, ${xCArr[10]} ${yCHArr[4]}, ${xCArr[7]} ${yCArr[3]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[4]}, ${xCArr[6]} ${yCHArr[3]}, ${xCArr[6]} ${yCHArr[2]}, ${xCArr[5]} ${yCArr[3]}" stroke = "${colorArray[dig10][2]}" fill = "${colorArray[dig10][2]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[3]}, ${xCArr[6]} ${yCHArr[2]}, ${xCArr[5]} ${yCArr[2]}, ${xCArr[4]} ${yCHArr[2]}" stroke = "${colorArray[dig10][3]}" fill = "${colorArray[dig10][3]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[4]}, ${xCArr[5]} ${yCArr[3]}, ${xCArr[4]} ${yCHArr[2]}, ${xCArr[4]} ${yCHArr[3]}" stroke = "${colorArray[dig10][1]}" fill = "${colorArray[dig10][1]}"/>
+
+						<polygon points = "${xCArr[5]} ${yCArr[10]}, ${xCArr[10]} ${yCHArr[7]}, ${xCArr[8]} ${yCHArr[6]}, ${xCArr[7]} ${yCArr[7]}, ${xCArr[6]} ${yCHArr[6]}, ${xCArr[5]} ${yCArr[7]}, ${xCArr[6]} ${yCHArr[7]}, ${xCArr[3]} ${yCArr[9]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xCArr[10]} ${yCHArr[7]}, ${xCArr[10]} ${yCHArr[5]}, ${xCArr[7]} ${yCArr[4]}, ${xCArr[7]} ${yCArr[5]}, ${xCArr[8]} ${yCHArr[5]}, ${xCArr[8]} ${yCHArr[6]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<polygon points = "${xCArr[5]} ${yCArr[7]}, ${xCArr[6]} ${yCHArr[6]}, ${xCArr[6]} ${yCHArr[5]}, ${xCArr[7]} ${yCArr[5]}, ${xCArr[7]} ${yCArr[4]}, ${xCArr[5]} ${yCArr[5]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[3]} ${yCArr[9]}, ${xCArr[6]} ${yCHArr[7]}, ${xCArr[5]} ${yCArr[7]}, ${xCArr[3]} ${yCArr[8]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[7]} ${yCArr[7]}, ${xCArr[8]} ${yCHArr[6]}, ${xCArr[8]} ${yCHArr[5]}, ${xCArr[7]} ${yCArr[6]}" stroke = "${colorArray[dig1][2]}" fill = "${colorArray[dig1][2]}"/>
+						<polygon points = "${xCArr[7]} ${yCArr[6]}, ${xCArr[8]} ${yCHArr[5]}, ${xCArr[7]} ${yCArr[5]}, ${xCArr[6]} ${yCHArr[5]}" stroke = "${colorArray[dig1][3]}" fill = "${colorArray[dig1][3]}"/>
+						<polygon points = "${xCArr[7]} ${yCArr[7]}, ${xCArr[7]} ${yCArr[6]}, ${xCArr[6]} ${yCHArr[5]}, ${xCArr[6]} ${yCHArr[6]}" stroke = "${colorArray[dig1][1]}" fill = "${colorArray[dig1][1]}"/>
+						<text x="${xCArr[5]-10}" y="${yCArr[0]+18}" class="prime">${primeTxt}</text>`;
+
+				break;
+			default:
+				return "Bad root";
+				break;
+		}
+	}
+	
+	
+	/* Now a constructor is needed to produce the 143 objects filling this array
+	function GeometricPrime(arrPos,root,geom) {
+		this.prime = primeArray[arrPos];	// grab the prime from the array
+		this.digAndRoot = getRoot(this.prime);	// An array for the digital root and digits
+	}*/
+	
+	/* A function to produce the objects and put them in objectArray[]
+	function createObjArray() {
+		let prime = 0;
+		let root = 0;
+		let shape = 0;
+		for (let i=1; i<=143; i++) {
+			prime = primeArray[i];
+			root = getRoot(prime);
+			shape = getShape(root);							// will be the SVG
+			objectArray= new GeometricPrime(i,root,shape);
+		}
+	}*/
+	
+	function buildArray() {		// build the 2D array with a row for each prime 
+								// with its root and digits
+		let tempData = [];
+		for(i=0; i<143; i++) {
+			tempData = getRoot(primeArray[i]);
+			dataArray[i,0] = primeArray[i];		// the prime number
+			dataArray[i,1] = tempData[0];		// the digital root
+			dataArray[i,2] = tempData[1];		// the 100's digit
+			dataArray[i,3] = tempData[2];		// the 10's digit
+			dataArray[i,4] = tempData[3];		// the 1's digit
+		}
+	}
+	
+	const viewBoxHt = 1860;
+	const viewBoxWdth = 1000;
+	const div = document.getElementsByTagName("div")[0];
+	//					Main	dark	medium	light
+	const nineClrs = ["#784c3c","#513328","#784939","#9f5f4a"];
+	const eightClrs = ["#9f5f3e","#7f422d","#a75d40","#b87d51"];
+	const sevenClrs = ["#c8773b","#b85128","#c5773f","#d7994f"];
+	const sixClrs = ["#db9841","#d17830","#de974c","#e1b955"];
+	const fiveClrs = ["#e3be4d","#dbab37","#e4bf4c","#e9d269"];
+	const fourClrs = ["#cec95c","#b8bb3c","#cbcb5d","#dada7f"];
+	const threeClrs = ["#a7bf6d","#89ab4d","#a6bf6d","#c0d38e"];
+	const twoClrs = ["#a4bd80","#86a85c","#a2bd81","#bdcfa7"];
+	const oneClrs = ["#d0d0a1","#bec386","#cdd2a1","#dbe1bf"];
+	const zeroClrs = ["#efe9cc","#e9e5bd","#f0e8c9","#f5f0dd"];
+	const bkgnd = "#464a3c"
+	const nmbrs = "#6e7467"
+	
+	let colorArray = [];
+	colorArray[0] = zeroClrs;
+	colorArray[1] = oneClrs;
+	colorArray[2] = twoClrs;
+	colorArray[3] = threeClrs;
+	colorArray[4] = fourClrs;
+	colorArray[5] = fiveClrs;
+	colorArray[6] = sixClrs;
+	colorArray[7] = sevenClrs;
+	colorArray[8] = eightClrs;
+	colorArray[9] = nineClrs;
+	
+
+	
+	let svg = `<svg viewBox="0 0 1000 1860" width=${viewBoxWdth} height=${viewBoxHt}>`;
+	for (let i=0; i<143; i++) {	// grab prime, get root, get shape's SVG, modify coordinates
+		const data = getRoot(primeArray[i]);
+		let xShift = 0;
+		let yShift = 0;
+		if (0 <= i && i <= 9) {
+			xShift = i * 100;
+			yShift = 0;
+		}
+		else if (10 <= i && i <= 18) {			// row of nine
+			xShift = (i - 10) * 100 + 50;
+			yShift = 110;
+		}
+		else if (19 <= i && i <= 28) {
+			xShift = (i - 19) * 100;
+			yShift = 220;
+		}
+		else if (29 <= i && i <= 37) {			// row of nine
+			xShift = (i - 29) * 100 + 50;
+			yShift = 330;
+		}
+		else if (38 <= i && i <= 47) {
+			xShift = (i - 38) * 100;
+			yShift = 440;
+		}
+		else if (48 <= i && i <= 56) {			// row of nine
+			xShift = (i - 48) * 100 + 50;
+			yShift = 550;
+		}
+		else if (57 <= i && i <= 66) {
+			xShift = (i - 57) * 100;
+			yShift = 660;
+		}
+		else if (67 <= i && i <= 75) {			// row of nine
+			xShift = (i - 67) * 100 + 50;
+			yShift = 770;
+		}
+		else if (76 <= i && i <= 85) {
+			xShift = (i - 76) * 100;
+			yShift = 880;
+		}
+		else if (86 <= i && i <= 94) {			// row of nine
+			xShift = (i - 86) * 100 + 50;
+			yShift = 990;
+		}
+		else if (95 <= i && i <= 104) {
+			xShift = (i - 95) * 100;
+			yShift = 1100;
+		}
+		else if (105 <= i && i <= 113) {			// row of nine
+			xShift = (i - 105) * 100 + 50;
+			yShift = 1210;
+		}
+		else if (114 <= i && i <= 123) {
+			xShift = (i - 114) * 100;
+			yShift = 1320;
+		}
+		else if (124 <= i && i <= 132) {			// row of nine
+			xShift = (i - 124) * 100 + 50;
+			yShift = 1430;
+		}
+		else if (133 <= i && i <= 142) {
+			xShift = (i - 133) * 100;
+			yShift = 1540;
+		}
+		svg = svg + getShape(data[0],xShift,yShift,data[1],data[2],data[3]);
+	}
+	const theDate = new Date();
+	const today = theDate.toDateString();
+	// the key is added at the bottom between 1660 and 1860
+	svg = svg + `<text x="200" y="1700" class="key">Digital roots are sums of the prime\'s digits.</text>
+	<text x="200" y="1720" class="key">All roots of primes > 3 are 1, 2, 4, 5, 7, or 8.</text>
+	<text x="200" y="1740" class="key">Each root is represented by a different picture.</text>
+	<text x="200" y="1760" class="key">1: cubes, 2: square donuts, 4: hexagons,</text>
+	<text x="200" y="1780" class="key">5: worms, 7: fingers, 8: keys.</text>
+	<polygon points = "700 1700, 715 1700, 715 1715, 700 1715" stroke = "${colorArray[0][0]}" fill = "${colorArray[0][0]}"/>
+	<polygon points = "720 1700, 735 1700, 735 1715, 720 1715" stroke = "${colorArray[1][0]}" fill = "${colorArray[1][0]}"/>
+	<polygon points = "740 1700, 755 1700, 755 1715, 740 1715" stroke = "${colorArray[2][0]}" fill = "${colorArray[2][0]}"/>
+	<polygon points = "760 1700, 775 1700, 775 1715, 760 1715" stroke = "${colorArray[3][0]}" fill = "${colorArray[3][0]}"/>
+	<polygon points = "780 1700, 795 1700, 795 1715, 780 1715" stroke = "${colorArray[4][0]}" fill = "${colorArray[4][0]}"/>
+	<polygon points = "800 1700, 815 1700, 815 1715, 800 1715" stroke = "${colorArray[5][0]}" fill = "${colorArray[5][0]}"/>
+	<polygon points = "820 1700, 835 1700, 835 1715, 820 1715" stroke = "${colorArray[6][0]}" fill = "${colorArray[6][0]}"/>
+	<polygon points = "840 1700, 855 1700, 855 1715, 840 1715" stroke = "${colorArray[7][0]}" fill = "${colorArray[7][0]}"/>
+	<polygon points = "860 1700, 875 1700, 875 1715, 860 1715" stroke = "${colorArray[8][0]}" fill = "${colorArray[8][0]}"/>
+	<polygon points = "880 1700, 895 1700, 895 1715, 880 1715" stroke = "${colorArray[9][0]}" fill = "${colorArray[9][0]}"/>
+	<text x="707" y="1730" class="key">0</text>
+	<text x="727" y="1730" class="key">1</text>
+	<text x="747" y="1730" class="key">2</text>
+	<text x="767" y="1730" class="key">3</text>
+	<text x="787" y="1730" class="key">4</text>
+	<text x="807" y="1730" class="key">5</text>
+	<text x="827" y="1730" class="key">6</text>
+	<text x="847" y="1730" class="key">7</text>
+	<text x="867" y="1730" class="key">8</text>
+	<text x="887" y="1730" class="key">9</text>
+	<text x="670" y="1750" class="key">A color is assigned to each digit of the prime.</text>
+	<text x="670" y="1770" class="key">Each picture is composed of the prime\'s three colors.</text>
+	<text x="450" y="1820" class="key">${today}</text>`;
+
+	
+	
+	svg = svg + "</svg>";
+	
+	div.innerHTML = svg;
+	
+	/*let daRoot = 0;
+	let testPrime = 0;
+	let testShape = "";
+	
+	for (let i=0; i<143; i++) {
+		testPrime = primeArray[i];
+		daRoot = getRoot(testPrime);
+		testShape = testShape + ", " + getShape(daRoot);
+		if (i % 5 == 0) {testShape = testShape + "</p><p>"}
+	}
+	testGetRoot = testShape + "</p>"
+	*/
+	
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Geometric Primes
+</h1>
+<h2>The Three Digit Primes</h2><br />
+
+<p>
+	<a href="https://kottke.org/23/01/geometric-primes">Kottke</a> shared an interesting 
+	representation of the triple digit primes. The idea and implementation is by 
+	<a href="https://www.c82.net/work/?id=392">Nicholas Rougeux</a>. Each prime is represented 
+	by a geometric figure. The basic shape of the figure is defined by the digital root 
+	of each prime number. This is the number found when the digits of the prime are added 
+	and added again as needed to get to a single digit, 1,2,4,5,7, or 8 (true for all 
+	primes greater than 3).
+</p>
+
+<p class="note">
+	Nicholas has turned this idea into nine posters, which are for sale on his website.
+</p>
+
+<p>
+	Within the basic shapes three parts of each shape are then colored by the three digits 
+	of the prime number. So this is not a math calculator as such, but just a clever way 
+	to represent a segment of the prime number line. The basic shapes here will be copied 
+	from Nicholas. A set of ten colors are used to color the basic shapes. A further 
+	color modification is a slightly darker version of each of the ten colors, that is 
+	used to represent the shadowed face of a digit's part of the shape. This helps to 
+	provide the three dimensional effect desired. After perusing the nine variations 
+	Nicholas has implemented, I prefer the one implemented here.
+</p>
+
+<p>	
+	The challenge here is drawing the shapes based on decoding the prime number with the 
+	aid of JavaScript. A color scheme also needs to be selected and a uniform way to 
+	darken each color.
+</p>
+
+<p>
+	The overarching logic of this program is described here. The 143 (not a prime) primes 
+	are each assigned to an object. This object contains the prime, the digital root of 
+	the prime after calculation, the basic picture for that digital root, and the three 
+	colors based on the prime's digits. Once an object has been created for each prime 
+	a function will walk through the set of objects and draw the picture. The pictures, 
+	following Nicholas's precedent, will be drawn to the screen in 15 rows, alternating 
+	between ten and nine primes per row.
+</p>
+
+<p>
+	The drawing function will have six different drawing subroutines, corresponding to 
+	the six possible digital roots. Each will draw and color the geometric representation. 
+	The prime number will be written below the geometric representation. SVG will be used 
+	for all drawing actions. The colors below were extracted from the poster picture on 
+	Kottke's site using Firefox:More Tools:Eyedropper, a great tool. Two other colors 
+	were also pulled from the poster: the background and the prime numbers.
+</p>
+
+<table>
+	<tr><th>Number</th><th>Main</th><th>Dark</th><th>Medium</th><th>Light</th></tr>
+	<tr><td>9</td><td>#784c3c</td><td>#513328</td><td>#784939</td><td>#9f5f4a</td></tr>
+	<tr><td>8</td><td>#9f5f3e</td><td>#7f422d</td><td>#a75d40</td><td>#b87d51</td></tr>
+	<tr><td>7</td><td>#c8773b</td><td>#b85128</td><td>#c5773f</td><td>#d7994f</td></tr>
+	<tr><td>6</td><td>#db9841</td><td>#d17830</td><td>#de974c</td><td>#e1b955</td></tr>
+	<tr><td>5</td><td>#e3be4d</td><td>#dbab37</td><td>#e4bf4c</td><td>#e9d269</td></tr>
+	<tr><td>4</td><td>#cec95c</td><td>#b8bb3c</td><td>#cbcb5d</td><td>#dada7f</td></tr>
+	<tr><td>3</td><td>#a7bf6d</td><td>#89ab4d</td><td>#a6bf6d</td><td>#c0d38e</td></tr>
+	<tr><td>2</td><td>#a4bd80</td><td>#86a85c</td><td>#a2bd81</td><td>#bdcfa7</td></tr>
+	<tr><td>1</td><td>#d0d0a1</td><td>#bec386</td><td>#cdd2a1</td><td>#dbe1bf</td></tr>
+	<tr><td>0</td><td>#efe9cc</td><td>#e9e5bd</td><td>#f0e8c9</td><td>#f5f0dd</td></tr>
+</table>
+
+<p class = "note">
+	An odd discovery when doing some exploratory SVG. Using a string literal for composing 
+	the SVG requires enclosing the stroke and fill colors from the array with ${}. This 
+	worked fine for stroke, but no color showed up for fill until quotes went around the 
+	${}, e.g. fill = "${nineClrs[3]}".
+</p>
+
+<p>
+	With the SVG working for a simple test case, it was time to move to all 143 primes 
+	using still the simple three-square SVG picture. This will be done with a simple loop. 
+	First a test script will be run to make sure the getRoot() function is working. After 
+	a few fixes the getRoot() function is now working. The next item to check is does 
+	the root pull the correct geometric pattern. That worked as no "Bad root" message 
+	was in the listing.
+</p>
+
+<p>
+	The next big step is to put in the SVG for simple shapes for each of the roots and 
+	get the output to resemble the poster being emulated. Objects had been planned for 
+	each prime number. After a few loops it seemed simpler to skip the objects and just 
+	manage each lookup in the loop. Then I started considering how to modify the SVG so 
+	each figure will be positioned in the correct row and column. This pushed me back to 
+	the object model, but the object needs to be different than planned and the SVG will 
+	need to be written on the fly. The object will store the root identifying its geometric 
+	figure. The object will also store its digits for correct coloring.
+</p>
+
+<p>
+	To this end getRoot() was rewritten to return an array containing the digital root 
+	and the three digits of the original prime. Again the plan was changed. All the object 
+	is now storing is the prime, the root and the three digits. This sounds like an array 
+	to me. Instead of constructing an array of objects an array of arrays will be built 
+	from the prime array. This 2-dimensional array is called dataArray.
+</p>
+
+<p>
+	The next step is converting this dataArray into an array of pictures displayed on 
+	the screen. Currently the SVG is in the function getShape(). This will be split into 
+	two functions. Function, getShape() will return the a 2-dimensional array of 
+	coordinates. The coordinates will be shifted to the correct place in the picture. 
+	The coordinates will finally be turned into the SVG to be displayed. The challenge 
+	with this approach is the number of coordinates change from picture to picture. An 
+	alternative is for getShape() to handle everything. To do this getShape() will need 
+	to accept the needed shifts as coordinates. Each picture will have its own code for 
+	handling the shift and the conversion to SVG. As the SVG also needs the color data 
+	getShape() will also accept the three digits.
+</p>
+
+<p>
+	The above work was just finished after a couple hours of coding. Modifying the SVG 
+	was a pain, but after discovering and fixing numerous typos the code works and 
+	produces the following output. The two screenshots below show the top and bottom 
+	halves of the graphic produced by the program at this stage.
+</p>
+
+<img class=inline src="GP simple 1.png" alt="The top half of the produced image with simple figures." width="1001" height="801">
+<img class=inline src="GP simple 2.png" alt="The bottom half of the produced image with simple figures." width="1001" height="699">
+
+<p>
+	After a day's work the first Nicholas picture has been implemented, root = 2. I have 
+	not figured out the math to calculate the parallel lines and endpoints, so defaulted 
+	to trial and error for many of the coordinates. The three stacked rectangles are 
+	colored from the bottom with the 100's place digit to the top rectangle colored with 
+	the one's digit.
+</p>
+
+<p>
+	May have made a breakthrough in calculating the points. All of the pictures are 
+	based on a regular hexagon. Taking some measurements from the screen indicates that 
+	the ratio of the point-to-point distance relative to the line-to-line width is 1.16. 
+	The hexagon can be divided into five decreasing hexagons. The points on these five 
+	hexagons define all of the points that are needed for the pictures! The other thing 
+	realized is that with the width and the height different sizes the 10 to 90 distances 
+	used for both in the first picture is incorrect. Instead the vertical distances will 
+	be based on 0 to 100 and the horizontal distances are based on 6.8 to 93.2. This 
+	incorporates the ratio given above.
+</p>
+
+<p>
+	With the information provided above the ten vertical coordinates differ by 11.11 
+	and are 0, 11.11, 22.22, 33.33, 44.44, 55.55, 66.66, 77.77, 88.88, and 100. The ten 
+	horizontal or y-coordinates differ by 9.6 and are 6.8, 16.4, 26, 35.6, 45.2, 54.8, 
+	64.4, 74, 83.6, and 93.2. This should suffice for all needed coordinates. Time to 
+	try it out. (Plus the center point (50,50) is used on occasion.) Hold on a minute! 
+	The above suffices for the horizontal coordinates, but not for the vertical coords. 
+	The vertical coords above are for the top and bottom vertices. The two vertical 
+	coords on the two vertical sides of the hexagons do not align with the coordinates 
+	above and these ten coords need to be specified. These are listed in pairs based 
+	on the hexagon they reside in: (25,75), (30.55,69.45), (36.11,63.88), (41.66,58.33), 
+	and (47.22,52.72).
+</p>
+
+<p>
+	With a limited number of known points a new opportunity is available for shifting 
+	and selecting the points for the SVG. Two arrays can be made for the x-coordinates 
+	and y-coordinates respectively. The arrays can be shifted as needed for each trip 
+	through the loop. The SVG would then include points as follows; ${xArr[3],yArr[7]}. 
+	An iterator will be used to return a shifted array.
+</p>
+
+<p>
+	This new approach is being tried out on root 4. It is three hexagons, one within the 
+	next. The coloring will start on the outside with the 100's digit. After getting most 
+	of the SVG completed (simplified with the use of the diagram below) the last hexagon 
+	was deemed too small (second picture below). The x-coordinates were redone to make 
+	this last hexagon two standard widths. This gave a squashed hexagon in the center, so 
+	both sets of vertical coords were also changed to double the gap between the central 
+	coords.
+</p>
+
+<img class=inline src="GP coord diagram.jpg" alt="The hexagon coordinate diagram to simplify SVG production." width="2498" height="2494">
+<img class=inline src="GP small hexagon.png" alt="The too small center hexagon." width="452" height="456">
+
+<p>
+	The three stacked squares for root 2 were tackled next. The corners did not always 
+	sit on the same coordinates so a number of manually adjusted coordinates were used. 
+	Root 2 is now complete. The set of cubes for root 1 were mapped to the hexagon with 
+	an additional set of y-coordinates that are halfway between the standard y-coordinates. 
+	After a lot of fiddling and debugging the set of cubes is really not a set of cubes, 
+	but squashed cubes as seen in the screen grab below. The x to y ratio was changed to 
+	1 and now we have cubes. Three roots left.
+</p>
+
+<img class=inline src="GP cubes.png" alt="The squashed cubes." width="452" height="456">
+
+<p>
+	Root 8 was the next choice. As it turns out it is also based on the same numbers as 
+	root 1, which became obvious after sketching it out. All of the corners were labeled. 
+	This surface has multiple areas that are not rectangular, but the SVG should handle 
+	them with no problems. This is essentially three pieces. The top piece is the one's 
+	digit, the bottom piece is the ten's digit, and the last piece on the left is the 
+	hundred's digit. The pieces will be displayed in the opposite order, 100's, 10's, 
+	and then 1's. Wow! Almost worked right out of the box. Just two simple array index 
+	errors needed to be fixed.
+</p>
+
+<p class="note">
+	Relooking at the three open squares one above the other reminded me that it is not 
+	very well done. I believe it can be redone with the same coordinates as roots 1 & 8. 
+	This will be explored at some point.
+</p>
+
+<p>
+	The SVG for root 5 was also built using the whole and half y-coordinates. Surprisingly, 
+	it is an optical illusion with surfaces changing levels with no apparent step. This 
+	gave me some problems early on until I realized what was going on. In the end it 
+	was straightforward. I did no take hidden surfaces into account with this shape and 
+	it worked fine.
+</p>
+
+<p>
+	Root 7 mapped to the same set of coordinates as 5 & 8. Had to fix a mistyped variable 
+	that was copied multiple times and then the picture was perfect. Getting better with 
+	practice. Now I will redo the three stacked square donuts of root 2. So far, I have 
+	not been able to rewrite root 2 in full and half y-coordinates. It is not clear why 
+	as the picture seems to fit.
+</p>
+
+<p>
+	To add the prime numbers below the figures, space needs to be added. This was 
+	accomplished by adding ten, cumulatively, to each of the yShift's in the loop. Adding 
+	the SVG for the text is done in each of the root SVG builds. Excellent! The primes 
+	are all listed below their respective representation. A key needs to be added to 
+	explain the roots and the coloring.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Hit the button to reveal the Geometric Primes</legend>
+		<input type="button" value="Produce the Geometric Primes" onclick="calcGP()"/>
+		<br/>
+</fieldset>
+<br />
+<hr />
+
+<div>
+
+</div>
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>February 13, 2023</p>
+</footer>
+</html>

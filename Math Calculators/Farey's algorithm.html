@@ -1,0 +1,313 @@
+<html>
+<head>
+<title>Farey Algorithm</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 600px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function breakNum(num)	// breaks a number into its whole and fractional parts
+						// returns an object with two properties: whole, frac
+{
+	const parts = {whole:0,frac:0,error:0};
+	if (num > 1)
+	{
+		parts.whole = Math.trunc(num);
+		parts.frac = num - parts.whole;
+	}
+	else
+	{
+		parts.frac = num;
+	}
+	return parts;
+}
+
+
+function farey(n,iter)	// takes a fraction and a limit on the number iterations
+						// returns a string representing a rational fraction
+						// that approximates the given fraction
+{
+	let a = 0;			// these values represent the two fractions that get closer
+	let b = 1;			// and closer to the number we are approximating
+	let c = 1;			// a/b and c/d
+	let d = 1;			// "add" the fractions: a/b '+' c/d = (a+c)/(b+d)
+	
+	const parts = breakNum(n);	// now we have parts.whole and parts.frac
+	let mediant = 0;
+	let numerator = 0;
+	let denominator = 0;
+	let i = 0;
+	
+	for (i = 0; i <= iter; i++)
+	{
+		// create the mediant
+		numerator = a + c;
+		denominator = b + d;
+		mediant = numerator/denominator;
+		if (parts.frac < mediant)
+		{
+			c = numerator;
+			d = denominator;
+		}
+		else
+		{
+			a = numerator;
+			b = denominator;
+		}
+	}
+	parts.error = (parts.whole * denominator + numerator)/denominator - n;
+	
+	return `${parts.whole * denominator + numerator}/${denominator}; ${parts.error}`;
+}	// end farey
+
+function calcApprox() {
+
+	const limit = parseInt(document.getElementById("n").value);
+	const trans = document.getElementById("trans").value;
+	
+	const pi = 3.141592653589793238462643383279;
+	const e = 2.71828182845904523536028747135266249;
+	const phi = 1.6180339887498948482;
+	const sqrt2 = 1.41421356237309504880168872420969807
+	
+	let result = "";
+
+	switch (trans)
+	{
+		case "pi":
+			result = farey(pi,limit);
+			break;
+		case "e":
+			result = farey(e,limit);
+			break;
+		case "phi":
+			result = farey(phi,limit);
+			break;
+		case "sqrt2":
+			result = farey(sqrt2,limit);
+			break;
+	}
+	document.getElementById("output").value = result;
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Farey Algorithm for Approximating Transcendentals
+</h1>
+
+<p>
+	The Farey is conceptually very simple. Consider a transcendental (or irrational) 
+	number's fractional 
+	part. This number lies somewhere between 0/1 and 1/1. Add these numbers in a unique 
+	way (0+1)/(1+1) and the resulting fraction is guaranteed to lie between the original 
+	fractions. Using this unique addition always produces a number that lies between the 
+	two starting fractions. It is called the mediant.
+</p>
+
+<p>
+	Farey's algorithm uses this property to find rational approximations of transcendental 
+	numbers. For instance, if one is approximating &pi;, then take the fractional part, 
+	0.1415..., and start with the same two fractions as above. You now have three 
+	fractions, 0/1, 1/2, and 1/1. The desired fraction lies between 0/1 and 1/2. Drop the 
+	1/1 and repeat the unique addition with 0/1 and 1/2 to get 1/3. Our number lies 
+	between 0/1 and 1/3, so repeat with these fractions to get 1/4. About 10,000 
+	repetitions later you should have a very accurate rational approximation of &pi; 
+	once you correctly add the three back to the fraction.
+</p>
+
+<p>	
+	The calculator returns the best rational approximation to the selected transcendental 
+	based on the limit provided by the user. 
+</p>
+
+<p class=note>
+	I am not sure if there is a reasonable limit. The algorithm is very fast. Errors go 
+	to zero before 100 iterations except for &pi;. It is above 0 at 500 iterations.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Select a transcendental and enter a limit:</legend>
+		<label for="trans">Select a transcendental:</label>
+		<select name="trans" id="trans">
+			<option value="pi" selected>&pi;</option>
+			<option value="e"><em>e</em></option>
+			<option value="phi">&phi;</option>
+			<option value="sqrt2">&radic;2</option>
+			// e^pi
+		</select><br/>
+		<br/>
+		<label for="depth">Limit</label>
+		<input type="text" id="n" placeholder="1000" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate Approximation" onclick="calcApprox()"/>
+		<br/>
+		<br />
+		<label for="fraction">Final rational approximation</label>
+		<input type="text" id="output"><br />
+</fieldset>
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>July 17, 2020</p>
+</footer>
+</html>

@@ -1,0 +1,305 @@
+<html>
+<head>
+<title>Finding Rationals to Approximate Irrationals</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 200px;
+		font-size: 150%;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+	var result = new Array(0,0);
+
+function approximator(irrat, error)
+
+	// this works by going through denominators, picking a close approximating numerator 
+	// and checking a few numerators above and below the approximating numerator
+
+{
+	var i = 1;
+	var diff = 1;
+	var diff1, diff2;
+	var trialNum;
+	var flag;
+	
+	while (diff > error)
+	{
+		i++;
+		trialNum = i * irrat;
+		trialNum = Math.floor(trialNum);
+		diff1 = Math.abs(irrat - trialNum/i);
+		diff2 = Math.abs(irrat - (trialNum + 1)/i);
+		diff = Math.min(diff1,diff2);
+		
+		if (diff==diff1)
+		{
+			flag = 1;
+		}
+		else
+		{
+			flag = 0;
+		}
+		
+	}
+	
+	if (flag)
+	{
+		result[0] = trialNum;
+	}
+	else
+	{
+		result[0] = trialNum + 1;
+	}
+	
+	result[1] = i;
+	
+	return result;
+	
+}
+
+function approx() {
+	var irrat = 0;
+	var n = document.getElementById("depth").value;
+	var choice = document.getElementById("irr").value;
+
+	
+		switch (choice)
+	{
+		case "A":
+			irrat = 3.14159265358979323846264338327950288419716939937510;
+			result = approximator(irrat, n);
+			document.getElementById("rat").value = result[0] + "/" + result[1];
+			document.getElementById("irrSel").value = irrat;
+			document.getElementById("ratApp").value = result[0]/result[1];
+			break;
+		case "B":
+			irrat = 1.61803398874989484820458683436563811772030917980576;
+			result = approximator(irrat, n);
+			document.getElementById("rat").value = result[0] + "/" + result[1];
+			document.getElementById("irrSel").value = irrat;
+			document.getElementById("ratApp").value = result[0]/result[1];
+			break;
+		case "C":
+			irrat = 2.71828182845904523536028747135266249775724709369995;
+			result = approximator(irrat, n);
+			document.getElementById("rat").value = result[0] + "/" + result[1];
+			document.getElementById("irrSel").value = irrat;
+			document.getElementById("ratApp").value = result[0]/result[1];
+			break;
+		case "D":
+			irrat = 1.41421356237309504880168872420969807856967187537695;
+			result = approximator(irrat, n);
+			document.getElementById("rat").value = result[0] + "/" + result[1];
+			document.getElementById("irrSel").value = irrat;
+			document.getElementById("ratApp").value = result[0]/result[1];
+			break;
+	} // end switch
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Finding Rationals that Approximate Irrationals
+</h1>
+<h2>For the irrationals: &pi;, &phi;, <em>e</em>, & &radic;2</h2><br />
+
+<p>
+	The calculator uses an iterative process to find a rational approximation that is 
+	within the input difference. The algorithm proceeds by selecting successively 
+	larger denominators and then exploring a few numerators to find the closest match. 
+	The process is repeated until the difference between the rational and the irrational 
+	is within the acceptable difference specified.
+</p>
+
+<p>	
+	Select an irrational to approximate, enter an acceptable difference, and press the 
+	"Approximate" button.
+</p>
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Approximations for Irrationals:</legend>
+		<label for="irr">Select irrational to approximate:</label>
+		<select name="irr" id="irr">
+			<option value="A" selected>&pi;</option>
+			<option value="B">&phi;</option>
+			<option value="C"><em>e</em></option>
+			<option value="D">&radic;2</option>
+		</select><br/>
+		<label for="depth">Acceptable Difference (< 1)</label>
+		<input type="text" id="depth" placeholder="0.01" autofocus><br/>
+		<br/>
+		<label for="btn"></label>
+		<input type="button" id = "btn" value="Approximate" onclick="approx()"/>
+		<br/>
+		<br/>
+		<label for="rat">Rational Approximation</label>
+		<input type="text" name="rat" id="rat" value="" size="25" disabled/><br />
+		<br/>
+		<label for="irrSel">Selected Irrational</label>
+		<input type="text" name="irrSel" id="irrSel" value="" size="25" disabled/><br />
+		<br/>
+		<label for="ratApp">Decimal Expansion of Rational</label>
+		<input type="text" name="ratApp" id="ratApp" value="" size="25" disabled/><br />
+		<br/>
+</fieldset>
+
+<br />
+<hr />
+
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>December 1, 2017</p>
+</footer>
+</html>

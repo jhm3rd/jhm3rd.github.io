@@ -1,0 +1,345 @@
+<html>
+<head>
+<title>Scherk's Prime Conjecture</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function isItPrime(n)	
+
+{
+	var j;
+	var flag = 1;
+	
+	if (n % 2 == 0)
+	{
+		flag = 0;
+	}
+	
+	if (n == 2)
+	{
+		flag = 1;
+	}
+	
+	for (j=3; j<=Math.floor(Math.sqrt(n)); j+=2 )
+	{
+		if (n % j == 0)
+		{
+			flag = 0;
+			break;
+		}
+	}
+	
+	if (flag)
+	{
+		return 1;
+	}
+	else 
+	{
+		return 0;
+	}
+	
+} // end isItPrime 
+
+function findSmallerPrimes(n)	// returns an array of all primes smaller than n and 1
+{
+	let primeArray = [1,2];
+		
+	for (let i = 3; i <= n; i += 2 )
+	{
+		if (isItPrime(i))	// add it to the list
+		{
+			primeArray[primeArray.length + 1] = i;
+		}
+	}
+	return primeArray;
+}
+
+function sumSmallPrimes(smPr)	// takes the array of small primes and returns their sum
+{
+	let total = 0;
+	for (const i of smPr)
+	{
+   		total = total + i;
+	}
+	return total;
+}
+
+function findMaxLT(arr,target)	// assumes array is sorted as primeArray is
+{
+	for (let i = arr.length-1; i >= 0; i--)
+	if (arr[i] <= target)
+	{
+		
+	}
+}
+
+function scherkIt(n)	
+						// First check to make sure entered number is prime
+{
+	let formula = "";
+	
+	if (isItPrime(n))	// Now find the formula
+	{
+		const smallPrimes = findSmallerPrimes(n);
+		let smallPrimesLeft = smallPrimes;	// don't want to lose list as we use them 
+		const target = (sumSmallPrimes(smallPrimes) - n)/2;
+		//	Now subtract the largest prime smaller than or equal to target and reduce 
+		//	target. Repeat and rinse.
+		let numPrimes = smallPrimes.length + 1;
+		for (let i = 0; i = smallPrimes.length; i++)
+		{
+			
+		}
+		
+		
+	}
+	else
+	{
+		formula = "Entered number is not a prime!"
+	}
+	
+	return formula;
+}	// end factorion
+
+function calcFormula() {
+
+	const n = parseInt(document.getElementById("n").value);
+	const div = document.getElementsByTagName("div")[0];
+
+	let formula = "";
+	
+	formula = scherkIt(n);
+	div.innerHTML = formula;
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Scherk's Prime Conjecture
+</h1>
+
+<p>
+	In 1833, Heinrich Scherk conjectured that every prime of odd rank (accepting 1 as 
+	prime) can be composed by adding and subtracting all the smaller primes, each taken 
+	once. For instance, 13 is the 7th prime and 13 = 1 + 2 - 3 - 5 + 7 + 11.
+</p>
+
+<p>	
+	Scherk's conjecture was proved to be true by J. L. Brown, Jr. in 1967. Information 
+	from FutilityCloset.
+</p>
+
+<p>
+	This calculator will produce the formula of smaller primes that produces any prime 
+	number input. It will also tell you if the 'prime' entered is not a prime. The first 
+	100 primes are listed as examples to try with the calculator.
+</p>
+
+<p>
+	The first 50 prime numbers of odd rank: 3, 
+	7, 13, 19, 29, 37, 43, 53, 61, 71, 79, 89, 
+	101, 107, 113, 131, 139, 151, 163, 173, 
+	181, 193, 199, 223, 229, 239, 251, 263, 271, 
+	281, 293, 311, 317, 337, 349, 359, 373,  
+	383, 397, 409, 421, 433, 443, 457, 463, 479, 
+	491, 503, 521, 541
+</p>
+
+<p>
+	The algorithm for finding the formula will proceed as follows. All of the smaller 
+	primes will be summed. Assuming this sum is larger than the prime, half of the 
+	difference needs to be subtracted. The largest prime smaller than half of the 
+	difference (or equal) will be subtracted. This process is repeated until the 
+	difference is matched. If not matched the process will go back a step and try a 
+	different prime to subtract. 
+</p>
+
+<p class=note>
+	The limit is based solely on your patience. A limit of 100,000,000 takes about 20 
+	seconds to calculate. Of course, the largest possible factorion is less than 
+	99,999,999 as 8 X 9! = 2,903,040. Further digits do not grow fast enough as 9! < 
+	1,000,000.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a prime (&ne;2) and hit the button:</legend>
+		<label for="depth">Limit</label>
+		<input type="text" id="n" placeholder="10" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate formula" onclick="calcFormula()"/>
+		<br/>
+</fieldset>
+
+<p class=note>
+	Reload the browser window/tab between calculations if you don't want successive 
+	calculations appended.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>February 3, 2021</p>
+</footer>
+</html>

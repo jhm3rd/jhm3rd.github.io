@@ -1,0 +1,524 @@
+<html>
+<head>
+<title>Pythagorean Triple Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function gcd(n, m)	// find a common divisor of n and m greater than 1; NOT GCD!
+{					// m < n
+	var i;
+	var divGT1 = 1;
+	var lim = m;
+	
+	if (n%2==0 && m%2==0)	// 2 is a common divisor
+	{
+		divGT1 = 2;
+	}
+	else
+	{
+		for (i=3; i<=lim; i=i+2)
+		{
+			if (n%i==0 && m%i==0)	// i is a common divisor
+			{
+				divGT1 = i;
+				break;
+			}
+		}
+	}
+	return divGT1;
+}
+
+function checkParity(n,m)	// returns true if not both even or odd
+{
+	var tf = true;
+	
+	if (n%2==0)		// n is even
+	{
+		if (m%2==0)	// m is even
+		{
+			tf = false;
+		}
+	}
+	else			// n is odd
+	{
+		if (m%2!=0)	// m is odd
+		{
+			tf = false;
+		}
+	}
+	return tf;
+}
+
+function pythag(n,flag,angle) // select n & m pairs, check for GCD = 1, return a, b, & c
+{
+	var result = 0;
+	var i, j, a, b, c;
+	var listing = "";
+	
+	var hyp = 0;
+	var shortLeg = 0;
+	var curAngle = new Number(0);
+	var tempBstTrpl = "";
+	var tempLowErr = 0;
+	var lowestErr = new Number(100); // pick a number arbitrarily high
+	
+	for (i=1; i <= n; i++)
+	{
+		for (j=1; j<i; j++)
+		{
+			if (gcd(i,j) == 1 && checkParity(i,j))	// i and j are coprime not both odd or even
+			{
+				a = Math.pow(i,2)-Math.pow(j,2);
+				b = 2*i*j;
+				c = Math.pow(i,2)+Math.pow(j,2);
+				listing = listing + "{" + a + ", " + b + ", " + c + "} ";
+				if (flag)
+				{
+					hyp = Math.max(a,Math.max(b,c));
+					shortLeg = Math.min(a,Math.min(b,c));
+					curAngle = 180 * Math.asin(shortLeg/hyp)/Math.PI; // need to convert radians to degrees
+					tempLowErr = Math.abs(angle - curAngle);
+					if (tempLowErr < lowestErr)
+					{
+						lowestErr = tempLowErr;
+						tempBstTrpl = "Triple: " + a + ", " + b + ", " + c + "; " + "Angle: " + curAngle.toFixed(3);
+					}	
+					
+				}
+			}
+		}
+	}
+	if (!flag)
+	{	
+		return listing;
+	}
+	else
+	{
+		return tempBstTrpl + "; " + "Error: " + lowestErr.toFixed(3);
+	}
+}
+
+function calcBestTriple() {
+
+	var n = document.getElementById("n").value;
+	var angle = parseFloat(document.getElementById("angle").value);
+	var div = document.getElementsByTagName("div")[0];
+	var flag = 1;
+	var output = "";
+	
+	output = pythag(n,flag,angle);
+	div.innerHTML = output;
+}
+
+function calcTriples() { // need a GDC calculator
+
+	var n = document.getElementById("n").value;
+	var div = document.getElementsByTagName("div")[0];
+
+	var result = 0;
+	var list = "";
+	var flag = 0;
+	
+	list = pythag(n,flag);
+	div.innerHTML = list;
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Pythagorean Triple Calculator
+</h1>
+
+<p>
+	A Pythagorean Triple is any <em>a, b, & c</em> where 
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='inline'>
+		<mrow>
+			<msup>
+				<mi>a</mi>
+				<mn>2</mn>
+			</msup>
+			<mo>+</mo>
+			<msup>
+				<mi>b</mi>
+				<mn>2</mn>
+			</msup>
+			<mo>=</mo>
+			<msup>
+				<mi>c</mi>
+				<mn>2</mn>
+			</msup>
+		</mrow>
+	</math>
+
+</p>
+
+<p>
+	Let n and m be integers where n > m. Then define 
+	</br>
+	</br>
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mi>a</mi>
+				<mo>=</mo>
+				<mrow>
+					<msup>
+						<mi>n</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>-</mo>
+					<msup>
+						<mi>m</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mrow>
+		</math>
+		</br>
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mi>b</mi>
+				<mo>=</mo>
+				<mn>2</mn>
+				<mi>n</mi>
+				<mi>m</mi>
+			</mrow>
+		</math>
+		</br>
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mi>c</mi>
+				<mo>=</mo>
+				<mrow>
+					<msup>
+						<mi>n</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>+</mo>
+					<msup>
+						<mi>m</mi>
+						<mn>2</mn>
+					</msup>
+				</mrow>
+			</mrow>
+		</math>
+	</br>
+	The three numbers <em>a, b, & c</em> always form a Pythagorean Triple. The 
+	proof is simple:
+	</br>
+	</br>
+
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mrow>
+			<msup>
+				<mrow>
+					<mo>(</mo>
+					<msup>
+						<mi>n</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>-</mo>
+					<msup>
+						<mi>m</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>)</mo>
+				</mrow>
+				<mn>2</mn>
+			</msup>
+			<mo>+</mo>
+			<msup>
+				<mrow>
+					<mo>(</mo>
+					<mn>2</mn>
+					<mi>m</mi>
+					<mi>n</mi>
+					<mo>)</mo>
+				</mrow>
+				<mn>2</mn>
+			</msup>
+			<mo>=</mo>
+			<msup>
+				<mi>n</mi>
+				<mn>4</mn>
+			</msup>
+			<mo>-</mo>
+			<mn>2</mn>
+			<msup>
+				<mi>n</mi>
+				<mn>2</mn>
+			</msup>
+			<msup>
+				<mi>m</mi>
+				<mn>2</mn>
+			</msup>
+			<mo>+</mo>
+			<msup>
+				<mi>m</mi>
+				<mn>4</mn>
+			</msup>
+			<mo>+</mo>
+			<mn>4</mn>
+			<msup>
+				<mi>n</mi>
+				<mn>2</mn>
+			</msup>
+			<msup>
+				<mi>m</mi>
+				<mn>2</mn>
+			</msup>
+		</mrow>
+	</math>
+	</br>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mo>=</mo>
+        <mrow>
+			<msup>
+				<mi>n</mi>
+				<mn>4</mn>
+			</msup>
+			<mo>+</mo>
+			<mn>2</mn>
+			<msup>
+				<mi>n</mi>
+				<mn>2</mn>
+			</msup>
+			<msup>
+				<mi>m</mi>
+				<mn>2</mn>
+			</msup>
+			<mo>+</mo>
+			<msup>
+				<mi>m</mi>
+				<mn>4</mn>
+			</msup>
+        </mrow>
+	</math>
+	</br>
+	<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+		<mo>=</mo>
+        <mrow>
+			<msup>
+				<mrow>
+					<mo>(</mo>
+					<msup>
+						<mi>n</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>+</mo>
+					<msup>
+						<mi>m</mi>
+						<mn>2</mn>
+					</msup>
+					<mo>)</mo>
+				</mrow>
+				<mn>2</mn>
+			</msup>
+        </mrow>
+	</math>
+
+<p>	
+	The calculator returns a list of Pythagorean Triples up to any limit defined. To 
+	use the calculator simply enter the upper limit for the calculation. Then hit the 
+	buttom to calculate the list.
+</p>
+
+<p class=note>
+	Only coprime and differing parity triples are listed. Coprime numbers do not have a 
+	common divisor greater then one. Differing parity means that two numbers are not 
+	both even or both odd.
+</p>
+
+<p class=note>
+	A limit of 100 will produce about 2000 triples.
+</p>
+
+<p>
+	The second function of the calculator is to find a Pythagorean triple that closely 
+	approximates the desired angle. These can then be used for accurately setting an 
+	angle on any surface. Enter the desired angle and the triple limit. The first 
+	triple found to approximate the angle within the triple upper limit is displayed 
+	along with the error. Raising the limit (note the limit comment above) should find 
+	triples with smaller errors.
+</p>
+
+<br />
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a limit and hit the button:</legend>
+		<label for="depth">Limit</label>
+		<input type="text" id="n" placeholder="10" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate Triples" onclick="calcTriples()"/>
+		<br/>
+		<hr/>
+		<br/>
+		<label for="angle">Angle (&deg;)</label>
+		<input type="text" id="angle" placeholder="30"><br/>
+		<br/>
+		<input type="button" value="Find Best Triple" onclick="calcBestTriple()"/>
+		<br/>
+</fieldset>
+
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>January 26, 2018</p>
+</footer>
+</html>

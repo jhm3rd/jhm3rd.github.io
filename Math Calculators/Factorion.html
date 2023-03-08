@@ -1,0 +1,324 @@
+<html>
+<head>
+<title>Factorion Calculator</title>
+<style type="text/css">
+	body {
+		margin-left: 40px;
+		background-color: #F7F7F7;
+		font-family: Tahoma, Geneva, sans-serif;
+		line-height: 1.4;
+		max-width: 900px;
+	}
+	h1 {
+		font-variant: small-caps;
+		text-shadow: 0.1em 0.1em 0.2em rgba(0,0,0,0.4);
+		text-align: center;
+	}
+	h2 {
+		text-align: center;
+	}
+	h3.minor {
+		font-variant: small-caps;
+	}
+	address {
+		margin-left: 250px;
+	}
+	p.indent {
+		margin-left: 20px;
+	}
+	p.centered {
+		text-align: center;
+	}
+	p.note {
+		text-align: center;
+		font-variant: small-caps;
+		width: 80%;
+		margin-left: 50px;
+	}
+	div p {
+		margin-left: 20px;
+	}
+	li.indent {
+		margin-left: 20px;
+	}
+	dt.indent {
+		margin-left: 60px;
+		font-weight: bold;
+	}
+	dt {
+		font-size: 14px;
+	    list-style-position: inside;
+    	text-indent: -1em;
+    	padding-left: 1em;
+    	font-variant: italic;
+	}
+	dl.centered {
+		text-align: center;
+	}
+	canvas {
+		float: left;
+		margin: 3px 15px 30px 10px;
+	}
+	label {
+		display: inline-block;
+		width: 500px;
+		font-weight: bold;
+	}
+	label.output {
+		text-align: right;
+	}
+	form {
+		margin-left: 60px;
+	}
+	input[type="text"] {
+		width: 200px;
+		font-size: 80%;
+	}
+	input[type="button"] {
+		width: 300px;
+	}
+	footer {
+		font-size: 9px;
+		text-align: center;
+	}
+  	table {
+  		border-collapse: collapse; 
+  		table-layout: fixed; 
+  		width: 100%;
+  		cellspacing: 5;
+  		border: 2px solid #000;
+  		cellpadding: 5;
+  	}
+  	table td {
+  		border: solid 1px #fab;
+  		width: 9%;
+  		word-wrap: break-word;
+  		text-align: center;
+  	}
+  	table thead {
+  		border: 2px solid #000;
+  		font-style: italic;
+  	}
+  	
+  	table.narrow {
+  		width: 30%;
+  	}
+  	
+  	td.thirtyTwo {
+  		background-color: #C7F0E5;
+  		text-align: center;
+  	}
+  	td.sixteen {
+  		background-color: #FFFF99;
+  		text-align: right;
+  	}
+  	td.eight {
+  		background-color: #FCE4EC;
+  		text-align: right;
+  	}
+  	td.quarter {
+  		background-color: #CCEAC5;
+  		text-align: right;
+  	}
+  	td.sixtyFour {
+  		text-align: left;
+  	}
+  	
+  	td.num {
+  		text-align: right;
+  	}
+  	td.frac {
+  		text-align: left;
+  	}
+  	td.mm {
+  		text-align: right;
+  		background-color: #EEEEDD;
+  	}
+  	td.smcps {
+  		font-variant: small-caps;
+  	}
+  	tag.num {
+  		font-size: 80%;
+  	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+function factorial(n)	// since we are only seeking factorials, we should get a speed 
+						// bump if we just plug in the correct answer.
+{	
+	var ans=0;
+	n = parseInt(n);
+	switch (n)
+	{
+		case 0:
+			ans = 1;
+			break;
+		case 1:
+			ans = 1;
+			break;
+		case 2:
+			ans = 2;
+			break;
+		case 3:
+			ans = 6;
+			break;
+		case 4:
+			ans = 24;
+			break;
+		case 5:
+			ans = 120;
+			break;
+		case 6:
+			ans = 720;
+			break;
+		case 7:
+			ans = 5040;
+			break;
+		case 8:
+			ans = 40320;
+			break;
+		case 9:
+			ans = 362880;
+			break;
+	}
+	
+	// var factorial = 1;
+	// while(n > 1)
+	// {
+	//	factorial = factorial * n;
+	//	n = n - 1;
+	// }		
+	return ans;
+}
+
+function factorion(n)	// separate numbers into digits and then compute the result
+						// keep factorions in a list to return to calling function
+{
+	var i;
+	var stringI = "";
+	var strLen = 0;
+	var j;
+	var total = 0;
+	var result = 0;
+	var listing = "1, 2";
+	
+	for (i=3; i<n+1; i++)
+	{
+		// need to get number of digits: 
+		stringI = "" + i;
+		strLen = stringI.length;
+		// need to get digits: i - (i % 10) * 10 = last digit
+		// alternatively, just grab a digit, convert to number and use
+		total = 0;
+		
+		for (j=0; j<strLen; j++)
+		{
+			total = total + factorial(stringI.charAt(j));
+			if (total == i) // found a factorion
+			{
+				listing = listing + ", " + i;
+			}
+		}
+	}	// end for
+	
+	return listing;
+}	// end factorion
+
+function calcFactorion() {
+
+	var n = parseInt(document.getElementById("n").value);
+	var div = document.getElementsByTagName("div")[0];
+
+	var list = "";
+	
+	list = factorion(n);
+	div.innerHTML = list;
+
+		
+
+} //end of function
+
+// -->
+</script>
+</head>
+
+<body>
+<h1>
+	Factorion Number Calculator
+</h1>
+
+<p>
+	Definition of a factorion:
+</p>
+
+		<math xmlns='http://www.w3.org/1998/Math/MathML' display='block'>
+			<mrow>
+				<mi>ABCDE</mi>
+				<mo>=</mo>
+				<mrow>
+					<mi>A</mi>
+					<mo>!</mo>
+					<mo>+</mo>
+					<mi>B</mi>
+					<mo>!</mo>
+					<mo>+</mo>
+					<mi>C</mi>
+					<mo>!</mo>
+					<mo>+</mo>
+					<mi>D</mi>
+					<mo>!</mo>
+					<mo>+</mo>
+					<mi>E</mi>
+					<mo>!</mo>
+				</mrow>
+			</mrow>
+		</math>
+
+<p>	
+	The calculator returns a list of factorions up to the limit input by the user. 
+</p>
+
+<p class=note>
+	The limit is based solely on your patience. A limit of 100,000,000 takes about 20 
+	seconds to calculate. Of course, the largest possible factorion is less than 
+	99,999,999 as 8 X 9! = 2,903,040. Further digits do not grow fast enough as 9! < 
+	1,000,000.
+</p>
+
+
+<br />
+
+<hr />
+<br />
+
+<fieldset>
+	<legend>Enter a limit and hit the button:</legend>
+		<label for="depth">Limit</label>
+		<input type="text" id="n" placeholder="10" autofocus><br/>
+		<br/>
+		<input type="button" value="Calculate Factorions" onclick="calcFactorion()"/>
+		<br/>
+</fieldset>
+
+<p class=note>
+	Reload the browser window/tab between calculations if you don't want successive 
+	calculations appended.
+</p>
+
+<hr />
+
+<div>
+
+</div>
+
+<hr />
+
+</body>
+<footer>
+	<p><a href="Math Calculators.html">Math Calculators</a></p>
+	<p>John H. McDonald, III</p>
+	<p>November 5, 2017</p>
+</footer>
+</html>
