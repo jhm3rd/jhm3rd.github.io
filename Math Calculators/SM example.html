@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>State machine example</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="programming,state machine,javascript"/>
+	<meta name="description" content="A Simple State Machine Example"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<script type="text/javascript">
+<!--
+/* 
+	function createMachine(stateMachineDefinition)
+	{
+		const machine = 
+		{
+			value: stateMachineDefinition.initialState,
+			transition(currentState, event);		// based on code below event would be "switch"
+			{
+				const currentStateDefinition = stateMachineDefinition[currentState];
+				const destinationTransition = currentStateDefinition.transitions[event];
+
+					// event is checked against current state's transitions
+					// if a transition matches the event, that transition happens
+				if (!destinationTransition)
+				{
+					return
+				}
+					// next we need to call the action for the transition, the
+					// onExit for the current state and the onEnter for the next state
+				const destinationState = destinationTransition.target;
+				const destinationStateDefinition = stateMachineDefinition[destinationState];
+
+				destinationTransition.action();
+				currentStateDefinition.actions.onExit();
+				destinationStateDefinition.actions.onEnter();
+				
+					// finally we need to update the machines state to the new state
+				machine.value = destinationSate;
+				
+				return machine.value;
+			},
+		}
+		return machine;
+	}
+	
+	const intersection = createMachine	// traffic light and crosswalk sign
+	({
+		// state machine definition object here
+		
+		initialState: 'off',
+		off: 						// 'off' state
+		{
+			actions: 
+			{
+				onEnter()			// functions called as needed upon exit & entry
+				{
+					console.log("off: onEnter")
+				},
+				onExit()
+				{
+					console.log("off: onExit")
+				},
+			},
+			transitions: 			// move between states as needed
+			{
+				switch: 
+				{
+					target: 'on',	// where the transition takes us
+					action()		// can also have actions occurring upon transitions
+					{
+						console.log('transition action for "switch" in "off" state')
+					},
+				},
+			},
+		},
+		on: 						// 'on' state
+		{
+			actions: 
+			{
+				onEnter()			// functions called as needed upon exit & entry
+				{
+					console.log("on: onEnter")
+				},
+				onExit()
+				{
+					console.log("on: onExit")
+				},
+			},
+			transitions: 			// move between states as needed
+			{
+				switch: 
+				{
+					target: 'off',	// where the transition takes us
+					action()		// can also have actions occurring upon transitions
+					{
+						console.log('transition action for "switch" in "on" state')
+					},
+				},
+			},
+		},
+	})
+	
+	let state = machine.value;
+	console.log(`current state: ${state}`);		// current state: off
+	
+	state = machine.transition(state, 'switch');
+	console.log(`current state: ${state}`);		// current state: on
+	
+	state = machine.transition(state, 'switch');
+	console.log(`current state: ${state}`);		// current state: off
+ */
+ 
+ let currState = "noNum";	// initial state for this state machine
+ let theNum = 0;
+ 
+ const NoNum = {		// only one action leaving this state
+ 						// no actions to take on entry
+ 	emptyNum: function() {
+ 		eraseNum();
+ 		currState = NoNum;
+ 	}
+ }
+ 
+ const NumEnt = {
+ 	onEntry: function() {		// only one entry transition
+ 		theNum = getNum();		// grab entered number and store it
+ 		if (getPFselector()=="Prime") {
+ 			currState = NumEnt.Prime;
+ 		}
+ 		else {
+ 			currState = NumEnt.Fibo;
+ 		}
+ 	},
+ 	Prime = {
+ 		
+ 	}
+ 
+ }
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>A Simple State Machine Example</h2>
+<h3 class='minor'>January 25, 2020</h3>
+
+<div class=tools>
+	<h2>Calculation Tools</h2>
+	<ul>
+		<li class=indent><a href="Tools/Bolt Hole Circles.html">Bolt Hole Circles</a></li>
+		<li class=indent><a href="Tools/Circle Calculations.html">Circle Calculations</a></li>
+		<li class=indent><a href="Tools/Compound Miter.html">Compound Miter</a></li>
+		<li class=indent><a href="Tools/Countersink Depth.html">Countersink Depth</a></li>
+		<li class=indent><a href="Tools/Ball Cutting.html">Cutting Hemispheres</a></li>
+		<li class=indent><a href="Tools/Keyway.html">Cutting Keyways</a></li>
+		<li class=indent><a href="Tools/Density Data.html">Density Data</a></li>
+		<li class=indent><a href="Tools/Drills and Threads.html">Drills & Threads</a></li>
+		<li class=indent><a href="Tools/Files.html">Files</a></li>
+		<li class=indent><a href="Tools/Flywheel.html">Flywheel</a></li>
+		<li class=indent><a href="Tools/Gear.html">Gears</a></li>
+		<li class=indent><a href="Tools/Gear Cutter Buttons.html">Gear Cutter Buttons</a></li>
+		<li class=indent><a href="Tools/Gearspur.html">Spur Gears</a></li>
+		<li class=indent><a href="Tools/Calc Hex Dimensions.html">Hexagon Dimensions</a></li>
+		<li class=indent><a href="Tools/Hints.html">Hints</a></li>
+		<li class=indent><a href="Tools/Diameter - Speed Calculator.html">Lathe Speeds</a></li>
+		<li class=indent><a href="Tools/Lathe and Mill Speeds.html">Lathe & Mill Speeds</a></li>
+		<li class=indent><a href="Tools/Links.html">Making Links</a></li>
+		<li class=indent><a href="Tools/Osborne.html">Osborne</a></li>
+		<li class=indent><a href="Tools/Protractor.html">Protractor</a></li>
+		<li class=indent><a href="Tools/Polycone.html">Pyramids</a></li>
+		<li class=indent><a href="Tools/Radius.html">Radius</a></li>
+		<li class=indent><a href="Tools/Railroad Gage.html">Railroad Gage</a></li>
+		<li class=indent><a href="Tools/Rattle.html">Rattle</a></li>
+		<li class=indent><a href="Tools/Sun.html">Sun</a></li>
+		<li class=indent><a href="Tools/Tapers.html">Tapers</a></li>
+		<li class=indent><a href="Tools/Taper pins.html">Taper Pins</a></li>
+		<li class=indent><a href="Tools/Temper.html">Temper</a></li>
+		<li class=indent><a href="Tools/Vernier.html">Vernier</a></li>
+		<li class=indent><a href="Tools/Wire Gage.html">Wire Gage</a></li>
+		<li class=indent><a href="Tools/Round groove cutting.html">Lathe Cutting Round Grooves</a></li>
+		<li class=indent><a href="Tools/Bezier groove cutting.html">Lathe Cutting Bezier Grooves</a></li>
+		<li class=indent><a href="Tools/Measuring dovetails.html">Measuring Dovetails</a></li>
+	</ul>
+</div>
+
+
+<p class=first>
+	In order to learn how to program a state machine I have come up with an example that 
+	has four states and four or so transitions. It is hierarchical, has a default state, 
+	and uses a selector to switch between two of the states. It is a simple calculator 
+	that determines either the primes or fibonacci sequence numbers up to a provided 
+	limit. The user enters a limit in a text field, uses a drop down menu to choose 
+	either primes or fibonacci sequence numbers, and hits a button to trigger the 
+	calculation.
+</p>
+
+<p>
+	The four states of the finite state machine are "no number entered", "number entered", 
+	"prime", and "fibo". The latter two are contained within the "number entered" state. 
+	"Prime" is the default state. Nothing is triggered until the "Calculate" button is 
+	hit. At that point if there is no number entered, the "no number entered" state 
+	becomes active. If a number has been entered, then the "number entered" state becomes 
+	active. The "prime" state becomes active by default upon entry into the "number 
+	entered" state. If the selector has been used, then either the "prime" or "fibo" 
+	state is entered. Entry into either state triggers the calculation and output. One 
+	thing I forgot. Every state must have a transition in as well as a transition out. 
+	(Though the latter might take place at a higher level in the hierarchy.) So two 
+	other transitions for this state machine are clearing the number field upon calculation. 
+	Both the "prime" and "fibo" states have this transition back to "no number entered".
+</p>
+
+<img class=inline src="images/SM chart.jpg" alt="State machine chart" width="2757" height="1857">
+
+<p>
+	Kent Dodds has a 
+	<a href="https://kentcdodds.com/blog/implementing-a-simple-state-machine-library-in-javascript">
+	write-up</a> at a beginner level on programming a simple finite state machine from 
+	scratch. I will use his format to encode the state machine described above. The 
+	following is his code for a two state entity.
+</p>
+
+<img class=inline src="images/Code 1.png" alt="Beginning of code" width="1758" height="1320">
+<img class=inline src="images/Code 2.png" alt="Middle of code" width="1756" height="1078">
+<img class=inline src="images/Code 3.png" alt="End of code" width="1756" height="1412">
+
+<p>
+	After a year I am still struggling to understand the above code, so I will attempt 
+	to implement a simple state machine just using familiar code. I will start by 
+	defining the state machine with an object.
+</p>
+
+
+
+
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>December 5, 2020</p>
+</footer>
+
+</body>
+</html>

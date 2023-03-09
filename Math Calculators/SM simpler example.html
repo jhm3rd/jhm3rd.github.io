@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>State machine simple example</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="programming,state machine,javascript"/>
+	<meta name="description" content="A Simple State Machine Example"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<style type="text/css">
+	td.redLight1 {
+		background-color: red;
+	}
+	td.yellowLight1 {
+		background-color: yellow;
+	}
+	td.greenLight1 {
+		background-color: green;
+	}
+	td.redLight2 {
+		background-color: red;
+	}
+	td.yellowLight2 {
+		background-color: yellow;
+	}
+	td.greenLight2 {
+		background-color: green;
+	}
+	input[type="text"] {
+		width: 160px;
+		font-size: 80%;
+	}
+</style>
+
+<script type="text/javascript">
+<!--
+
+let stateOne = {
+	state: "stateOne",
+	onEntry: function() {
+		alert(`Entered ${this.state}`);
+		currState = stateOne},
+	onExit: function() {
+		alert(`Exited ${this.state}`);
+		currState = stateTwo;
+		currState.onEntry()}
+}
+
+let stateTwo = {
+	state: "stateTwo",
+	onEntry: function() {
+		alert(`Entered ${this.state}`);
+		currState = stateTwo},
+	onExit: function() {
+		alert(`Exited ${this.state}`);
+		currState = stateOne;
+		currState.onEntry()}
+}
+
+let currState = stateOne;
+
+function handleClick() {
+	currState.onExit();
+}
+
+// Traffic light example with four states
+
+function changeLights(elem,color) {
+	element = document.querySelector(`${elem}`); // did not need single quotes as well
+	element.style.backgroundColor = color;
+}
+
+let r1g2 = {
+	state: "r1g2",
+	onEntry: function() {					// change lights in state only to color
+		// alert("Entered r1g2");
+		changeLights(".redLight1","red");
+		changeLights(".greenLight2","green");
+	},
+	onExit: function() {					// change lights in state only to white
+		// alert("Exited r1g2");
+		currentState = r1y2;					// change currState on exit only
+		changeLights(".greenLight2","black");
+		currentState.onEntry();
+	}
+}
+
+let r1y2 = {
+	state: "r1y2",
+	onEntry: function() {					// change lights in state only to color
+		// alert("Entered r1y2");
+		changeLights(".yellowLight2","yellow");
+	},
+	onExit: function() {					// change lights in state only to white
+		// alert("Exited r1y2");
+		currentState = g1r2;					// change currState on exit only
+		changeLights(".redLight1","black");
+		changeLights(".yellowLight2","black");
+		currentState.onEntry();
+	}
+}
+
+let g1r2 = {
+	state: "g1r2",
+	onEntry: function() {					// change lights in state only to color
+		// alert("Entered g1r2");
+		changeLights(".greenLight1","green");
+		changeLights(".redLight2","red");
+	},
+	onExit: function() {					// change lights in state only to white
+		// alert("Exited g1r2");
+		currentState = y1r2;					// change currState on exit only
+		changeLights(".greenLight1","black");
+		currentState.onEntry();
+	}
+}
+
+let y1r2 = {
+	state: "y1r2",
+	onEntry: function() {					// change lights in state only to color
+		// alert("Entered y1r2");
+		changeLights(".yellowLight1","yellow");
+	},
+	onExit: function() {					// change lights in state only to white
+		// alert("Exited y1r2");
+		currentState = r1g2;					// change currState on exit only
+		changeLights(".yellowLight1","black");
+		changeLights(".redLight2","black");
+		currentState.onEntry();
+	}
+}
+
+let currentState;
+
+function initTL() {
+	currentState = r1g2;
+
+	changeLights(".redLight1","black");
+	changeLights(".yellowLight1","black");
+	changeLights(".greenLight1","black");
+	changeLights(".redLight2","black");
+	changeLights(".yellowLight2","black");
+	changeLights(".greenLight2","black");
+	r1g2.onEntry();
+
+}
+
+function trafficLights() {
+	currentState.onExit();
+}
+
+//	The simple calculator state machine
+
+let xReg = 0;
+let yReg = 0;
+let display = "0";
+const xRegDisplay = document.getElementById("xr");
+const yRegDisplay = document.getElementById("yr");
+
+//	let currState;
+
+function updateDisplay(){
+	displayX = xReg.toString();
+	displayY = yReg.toString();
+	xRegDisplay.value = displayX;
+	yRegDisplay.value = displayY;
+}
+
+let accum = {					// the accumulate state; the default state
+	state: "accum",
+	onEntry: function() {
+		alert(`Entered &{state}`);
+	},
+	append: function(digit,first) {	// fxn ignores decimal, first is boolean
+		if (first) xReg = 0;
+		if (digit != ".") {
+			let num = xReg * 10;
+			num = num + parseInt(digit);
+			xReg = num;
+			updateDisplay();
+		}
+	},
+	fxn: function(operator) {		// when accum gets the fxn message it shifts to 
+		if (operator = "add") {		// function state
+			currState = this.add;
+			this.add.onEntry();
+		}
+		else if (operator = "subtract") {
+			currState = this.subtract;
+			this.subtract.onEntry();
+		}
+		else if (operator = "multiply") {
+			currState = this.multiply;
+			this.multiply.onEntry();
+		}
+		else if (operator = "divide") {
+			currState = this.divide;
+			this.divide.onEntry();
+		}
+	},
+	let add = {
+		state: "add",
+		onEntry: function() {		// wait for either equals or +
+			alert(`Entered &{state})`;
+		},
+		fxn: function(operator) {			// when add gets fxn message it adds depending 
+			if (operator = "equals") { 		// on which operator was selected
+				let temp = xReg;			// multiple equals don't function this way
+				xReg = xReg + yReg;			// only the first saves xReg in yReg!!
+				yReg = temp;				// so an equals state is needed as in each fxn?
+				updateDisplay();
+				currState = accum;
+				accum.entry();
+			}
+			else if (operator = "add") {
+				
+			}
+		},
+	},
+}
+
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>A Simple State Machine Example</h2>
+<h3 class='minor'>June 19, 2021</h3>
+
+<div class=tools>
+	<h2>Calculation Tools</h2>
+	<ul>
+		<li class=indent><a href="Tools/Bolt Hole Circles.html">Bolt Hole Circles</a></li>
+		<li class=indent><a href="Tools/Circle Calculations.html">Circle Calculations</a></li>
+		<li class=indent><a href="Tools/Compound Miter.html">Compound Miter</a></li>
+		<li class=indent><a href="Tools/Countersink Depth.html">Countersink Depth</a></li>
+		<li class=indent><a href="Tools/Ball Cutting.html">Cutting Hemispheres</a></li>
+		<li class=indent><a href="Tools/Keyway.html">Cutting Keyways</a></li>
+		<li class=indent><a href="Tools/Density Data.html">Density Data</a></li>
+		<li class=indent><a href="Tools/Drills and Threads.html">Drills & Threads</a></li>
+		<li class=indent><a href="Tools/Files.html">Files</a></li>
+		<li class=indent><a href="Tools/Flywheel.html">Flywheel</a></li>
+		<li class=indent><a href="Tools/Gear.html">Gears</a></li>
+		<li class=indent><a href="Tools/Gear Cutter Buttons.html">Gear Cutter Buttons</a></li>
+		<li class=indent><a href="Tools/Gearspur.html">Spur Gears</a></li>
+		<li class=indent><a href="Tools/Calc Hex Dimensions.html">Hexagon Dimensions</a></li>
+		<li class=indent><a href="Tools/Hints.html">Hints</a></li>
+		<li class=indent><a href="Tools/Diameter - Speed Calculator.html">Lathe Speeds</a></li>
+		<li class=indent><a href="Tools/Lathe and Mill Speeds.html">Lathe & Mill Speeds</a></li>
+		<li class=indent><a href="Tools/Links.html">Making Links</a></li>
+		<li class=indent><a href="Tools/Osborne.html">Osborne</a></li>
+		<li class=indent><a href="Tools/Protractor.html">Protractor</a></li>
+		<li class=indent><a href="Tools/Polycone.html">Pyramids</a></li>
+		<li class=indent><a href="Tools/Radius.html">Radius</a></li>
+		<li class=indent><a href="Tools/Railroad Gage.html">Railroad Gage</a></li>
+		<li class=indent><a href="Tools/Rattle.html">Rattle</a></li>
+		<li class=indent><a href="Tools/Sun.html">Sun</a></li>
+		<li class=indent><a href="Tools/Tapers.html">Tapers</a></li>
+		<li class=indent><a href="Tools/Taper pins.html">Taper Pins</a></li>
+		<li class=indent><a href="Tools/Temper.html">Temper</a></li>
+		<li class=indent><a href="Tools/Vernier.html">Vernier</a></li>
+		<li class=indent><a href="Tools/Wire Gage.html">Wire Gage</a></li>
+		<li class=indent><a href="Tools/Round groove cutting.html">Lathe Cutting Round Grooves</a></li>
+		<li class=indent><a href="Tools/Bezier groove cutting.html">Lathe Cutting Bezier Grooves</a></li>
+		<li class=indent><a href="Tools/Measuring dovetails.html">Measuring Dovetails</a></li>
+	</ul>
+</div>
+
+
+<p class=first>
+	In order to learn how to program a state machine I have come up with an example that 
+	has two states and two transitions for each. Exiting the current state is triggered 
+	by clicking the mouse. Exiting one state causes entry into the other state. The 
+	initial state is "stateOne".
+</p>
+
+<a href="#" onclick="handleClick()">Click here</a>
+
+<p>
+	The states are each implemented as an object. They are almost equivalent. Each state
+	has one property: "state" and two methods: "onEntry" and "onExit". The "onExit" 
+	method causes entry into the other state. All methods trigger an alert indicating 
+	the state and the method. The current state is tracked by the variable: "currState".
+</p>
+
+<p>
+	After correcting a few glaring errors the above state machine functions!! Clicking 
+	the link correctly causes a transition from one state to another and back again.
+</p>
+
+<p>
+	Now I would like to implement a traffic light initially activated by the same 
+	clicking a link method. This is done with four states. Each state represents the 
+	states of two lights. That is which color on light one is paired with which color on 
+	light two. There are four combinations, so there are four states. 
+</p>
+
+<p>
+	An "Initialize" button turns all of the lights white via hooks to the CSS. Clicking 
+	on "Light One" in the table header cycles through each of the four states. The initial 
+	state is Light One: Red, Light Two: Green. When the button is clicked state "r1g2" 
+	is exited changing the green light to white. State "r1y2" is entered and the yellow 
+	light is changed from white to yellow. This repeats with lights turning off upon exit 
+	and on upon entry. I think I now know how to program a state machine. Now let's see 
+	if I can apply it to the HP-25 calculator with its 35 or so states.
+</p>
+
+<fieldset>
+	<legend>Initialize Traffic Lights</legend>
+		<input type="button" value="Initialize" onclick="initTL()"/>
+</fieldset>
+
+<table>
+<th><a href="javascript:void(0)" onclick="trafficLights()">Light One</a></th>
+<th></th>
+<th>Light Two</th>
+<tr>
+	<td class="redLight1">Red</td>
+	<td>&nbsp;</td>
+	<td class="redLight2">Red</td>
+</tr>
+<tr>
+	<td class="yellowLight1">Yellow</td>
+	<td>&nbsp;</td>
+	<td class="yellowLight2">Yellow</td>
+</tr>
+<tr>
+	<td class="greenLight1">Green</td>
+	<td>&nbsp;</td>
+	<td class="greenLight2">Green</td>
+</tr>
+</table>
+
+<p>
+	Before jumping to the HP-25 where the definition of state is still not 100% clear, a 
+	simpler calculator will be written. Standard keypad, +-*/, enter, clear, and a 
+	display. It will have two registers: the display register and the just entered 
+	number register.
+</p>
+
+<img class=inline src="images/Reg calc.png" alt="Regular calculator state plan" width="1246" height="1554">
+<img class=inline src="images/Reg calc 2.png" alt="Regular calculator state plan" width="1246" height="860">
+
+<p>
+	This is how the calculator works (at least the calculator on my phone). A number is 
+	entered assuming the memory has been cleared. There are two registers. The X-register 
+	is always shown in the display. The Y-register is used as temporary storage. The 
+	X-register holds the number entered and the Y-register is still empty. Upon hitting 
+	a function key, e.g. +, the X-register is pushed to the Y-register. The X-register 
+	still has the entered number as well. The X-register is now ready to accept a new 
+	number. If a number key is hit the new number is accumulated in the X-register 
+	overwriting the old number in the X-register. If the equals key is hit instead the 
+	current Y-register is added to the current X-register. The equals can be hit 
+	repeatedly.
+</p>
+
+<p>
+	A slightly different path is when the function key is hit repeatedly, for instance, 
+	when adding a list of numbers. In this case we have hit the function key once. The 
+	X- and Y-registers hold the same number. If we enter a number it overwrites the 
+	X-register. If instead of hitting equals, the same function key is hit again. The 
+	Y-register is added to the X-register and the X-register is pushed to the Y-register. 
+	Both registers have the same value. This can be seen by hitting equals at this point. 
+	The two registers are added and the result is displayed in the X-register.
+</p>
+
+<p>
+	Even this calculator I found confusing when attempting to construct the state 
+	machine. My first pass was two overarching states: accumulate and compute. Accumulate 
+	is the state selected when a number is entered. I was struggling with how to 
+	"remember" which function had been hit and found that I needed to have four function 
+	states in both the accumulate state and the compute state. A better way to do this 
+	is seen in the second attempt at state machine design. I will write this state machine 
+	up and see if it delivers the calculator described in the previous two paragraphs.
+</p>
+
+<fieldset>
+	<label for="yr">Y-Register</label>
+	<input type="text" name="yr" id="yr" value="" size="100"/>
+	<label for="xr">X-Register</label>
+	<input type="text" name="xr" id="xr" value="" size="100"/>
+</fieldset>
+
+<table>
+<th><a href="javascript:void(0)" onclick="clear()">Clear</a></th>
+<th>&plusmn;</th>
+<th>%</th>
+<th><a href="javascript:void(0)" onclick="divide()">&#x247;</a></th>
+<tr>
+	<td><a href="javascript:void(0)" onclick="seven()">7</a></td>
+	<td><a href="javascript:void(0)" onclick="eight()">8</a></td>
+	<td><a href="javascript:void(0)" onclick="nine()">9</a></td>
+	<td><a href="javascript:void(0)" onclick="times()">X</a></td>
+</tr>
+<tr>
+	<td><a href="javascript:void(0)" onclick="four()">4</a></td>
+	<td><a href="javascript:void(0)" onclick="five()">5</a></td>
+	<td><a href="javascript:void(0)" onclick="six()">6</a></td>
+	<td><a href="javascript:void(0)" onclick="minus()">-</a></td>
+</tr>
+<tr>
+	<td><a href="javascript:void(0)" onclick="one()">1</a></td>
+	<td><a href="javascript:void(0)" onclick="two()">2</a></td>
+	<td><a href="javascript:void(0)" onclick="three()">3</a></td>
+	<td><a href="javascript:void(0)" onclick="plus()">&plus;</a></td>
+</tr>
+<tr>
+	<td><a href="javascript:void(0)" onclick="zero()">0</a></td>
+	<td>&nbsp;</a></td>
+	<td><a href="javascript:void(0)" onclick="dec()">&#x25CF;</a></td>
+	<td><a href="javascript:void(0)" onclick="eq()">=</a></td>
+</tr>
+</table>
+
+
+<p>
+	Things started simply enough, but the equals tripped me up. The first equals does not 
+	work the same as subsequent equals. The first equals pushes xReg to yReg. Subsequent 
+	equals continue to perform the function, but no longer push xReg to yReg. yReg is 
+	just continuously added to the xReg with each new equals. Interestingly, Rhea's 
+	hand calculator does not work this way. It requires + then = each time. I will focus 
+	on just getting it to work for the simpler cases.
+</p>
+
+<p>
+	I am returning to this after 1&nbsp;1/2 years. It is difficult to wrap my head around 
+	the complexity in the state machine challenge. My first issue is a bug in the 
+	JavaScript, where a let keyword is thought to be a new property of the enclosing 
+	object. I am guessing that one can't define a variable directly in an object. That 
+	means the enclosed states need to be defined as functions or properties. After 
+	reviewing a video saved in my reading list in Safari, I decided this was too difficult 
+	for my current mental state. I will return on a day that I don't wake with a migraine.
+</p>
+
+
+
+
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>December 4, 2022</p>
+</footer>
+
+</body>
+</html>
