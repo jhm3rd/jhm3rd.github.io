@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Rotating & Mirroring Text</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="rotate,text,css,flip,mirror"/>
+	<meta name="description" content="rotating and mirroring text with CSS"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nova+Mono">
+
+<script type="text/javascript">
+<!--
+	
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>Rotating and Mirroring Text</h2>
+<h3 class='minor'>December 8, 2018</h3>
+
+<div class=tools>
+	<h2>Calculation Tools</h2>
+	<ul>
+		<li class=indent><a href="Tools/Bolt Hole Circles.html">Bolt Hole Circles</a></li>
+		<li class=indent><a href="Tools/Circle Calculations.html">Circle Calculations</a></li>
+		<li class=indent><a href="Tools/Compound Miter.html">Compound Miter</a></li>
+		<li class=indent><a href="Tools/Countersink Depth.html">Countersink Depth</a></li>
+		<li class=indent><a href="Tools/Ball Cutting.html">Cutting Hemispheres</a></li>
+		<li class=indent><a href="Tools/Keyway.html">Cutting Keyways</a></li>
+		<li class=indent><a href="Tools/Density Data.html">Density Data</a></li>
+		<li class=indent><a href="Tools/Drills and Threads.html">Drills & Threads</a></li>
+		<li class=indent><a href="Tools/Files.html">Files</a></li>
+		<li class=indent><a href="Tools/Flywheel.html">Flywheel</a></li>
+		<li class=indent><a href="Tools/Gear.html">Gears</a></li>
+		<li class=indent><a href="Tools/Gear Cutter Buttons.html">Gear Cutter Buttons</a></li>
+		<li class=indent><a href="Tools/Gearspur.html">Spur Gears</a></li>
+		<li class=indent><a href="Tools/Calc Hex Dimensions.html">Hexagon Dimensions</a></li>
+		<li class=indent><a href="Tools/Hints.html">Hints</a></li>
+		<li class=indent><a href="Tools/Diameter - Speed Calculator.html">Lathe Speeds</a></li>
+		<li class=indent><a href="Tools/Lathe and Mill Speeds.html">Lathe & Mill Speeds</a></li>
+		<li class=indent><a href="Tools/Links.html">Making Links</a></li>
+		<li class=indent><a href="Tools/Osborne.html">Osborne</a></li>
+		<li class=indent><a href="Tools/Protractor.html">Protractor</a></li>
+		<li class=indent><a href="Tools/Polycone.html">Pyramids</a></li>
+		<li class=indent><a href="Tools/Radius.html">Radius</a></li>
+		<li class=indent><a href="Tools/Railroad Gage.html">Railroad Gage</a></li>
+		<li class=indent><a href="Tools/Rattle.html">Rattle</a></li>
+		<li class=indent><a href="Tools/Sun.html">Sun</a></li>
+		<li class=indent><a href="Tools/Tapers.html">Tapers</a></li>
+		<li class=indent><a href="Tools/Taper pins.html">Taper Pins</a></li>
+		<li class=indent><a href="Tools/Temper.html">Temper</a></li>
+		<li class=indent><a href="Tools/Vernier.html">Vernier</a></li>
+		<li class=indent><a href="Tools/Wire Gage.html">Wire Gage</a></li>
+		<li class=indent><a href="Tools/Round groove cutting.html">Lathe Cutting Round Grooves</a></li>
+		<li class=indent><a href="Tools/Bezier groove cutting.html">Lathe Cutting Bezier Grooves</a></li>
+		<li class=indent><a href="Tools/Measuring dovetails.html">Measuring Dovetails</a></li>
+	</ul>
+</div>
+
+
+<p class=first>
+	Below is a div that will hold text, which we will try to flip to create its mirror 
+	image. We will then see if we can put this mirror image text around a circle. If 
+	successful this will allow putting quotes around circles for printing and engraving. 
+</p>
+
+<p>
+	Older versions of Safari may have needed to use "-webkit-transform", but the current 
+	version seems to work fine with "transform". Doing just a transform:rotateY(180) 
+	flips the quote end for end with the origin near the left end of the text. The 
+	default should be at the center of the line of text or maybe it is at the center 
+	of the div?? So we add transform-origin:center and see what that does. I think I 
+	need to move the reflected div down below the "Calculation Tools" to understand what 
+	is going on. Nothing I have tried seems to move the origin of the rotation!!
+</p>
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class=flip>
+	<p>
+		"I’ve never been to Mars but I imagine it’s quite lovely." Kramer
+	</p>
+</div>
+
+<p>
+	Notice the mono-spaced font used above. It is an open source font found on 
+	fonts.google and is called Nova Mono. Most mono-spaced fonts are quite plain. This 
+	is the most interesting of the bunch on fonts.google. Now let's see if we can put 
+	the text around a circle of a given dimension. [Note: only monospaced fonts work. 
+	All of the fonts that are not monospaced get replaced by a default!!!] Just found 
+	"Savoye LET" works well and looks pretty nice as well.
+</p>
+
+<p>
+	And now for something completely different: SVG???
+</p>
+
+<svg viewBox="0 0 500 500">
+  <path id="curve" fill="transparent" d="M73.2,148.6c4-6.1,65.5-96.8,178.6-95.6c111.3,1.2,170.8,90.3,175.1,97" />
+  <text width="500">
+    <textPath alignment-baseline="top" xlink:href="#curve">
+      "I’ve never been to Mars but I imagine it’s quite lovely." Kramer
+    </textPath>
+  </text>
+</svg>
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<!-- Let's try a path that makes a circle -->
+<!-- Make the radius = 100 and the center at 150,??? -->
+<!-- The first two Arc parameters are the x and y radii -->
+<!-- The third parameter can be ignored -->
+<!-- The fourth determines the size of the connecting chord -->
+<!-- The fifth sets clock- or counterclockwise pen movement -->
+<!-- The final two parameters are th endpoint of the arc -->
+
+<!-- Note: Firefox is very sensitive to the y value listed below and -->
+<!-- it not only flips the text backwards, but also turns it upside down -->
+
+<div class=flip>
+<svg viewBox="0 0 350 350">
+	<path id="hole"  fill="none"; d="M50,200 A100,100 0 1,1 51,201"
+		style="stroke:#ff0000";/>
+	<text x="0" y="100" style="stroke: none; fill: #000000; ">
+    	<textPath alignment-baseline="top" xlink:href="#hole">
+      		"I’ve never been to Mars but I imagine it’s quite lovely." Kramer
+		</textPath>
+	</text>
+</svg>
+</div>
+
+<!-- Now I just need to figure out how to scale it for the printed version -->
+<!-- to fit the planet rings.  -->
+
+<p class=note>
+	I discovered transfer paper (Saral graphite). That is print something out normally, 
+	place the transfer paper under the printed design, and go over the design with a pen 
+	to transfer the printed design to the metal underneath. I've got to check it out!
+</p>
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>December 8, 2018</p>
+</footer>
+
+</body>
+</html>
