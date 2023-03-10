@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Etching Printout</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="etching,print,inverted"/>
+	<meta name="description" content="A printout of things to etch in brass"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css?family=Charm" rel="stylesheet">
+<style type="text/css">
+/* Style definitions go here */
+
+	p.charm{
+		font-family: 'Charm', cursive;
+		font-size: 150%;
+		text-align: center;
+		font-weight: bold;
+		color: white;
+		background-color: black;
+		padding: 10px;
+	}
+	div.flip {
+		border: 1px solid #BFBFBF;
+		font-family: 'Charm', cursive;
+		font-weight: bold;
+		font-size: 55%;
+		transform:rotateY(180deg);
+	}
+	div.flipMonths {
+		border: 1px solid #BFBFBF;
+		transform:rotateY(180deg);
+	}
+	
+	@media print
+		{
+		.noprint {display:none;}
+		}
+		
+	img.inlineConst
+		{
+		height: 70%;
+		width: 70%;		
+		}
+	img.inlineConst2
+		{
+		height: 100%;
+		width: 100%;		
+		}
+	img.inlineOphi
+		{
+		height: 10%;
+		width: 10%;		
+		}
+	p.constell {
+		font-size: 200%;
+		background-color: black;
+		padding: 10px;
+	}
+	svg {
+		background-color: black;
+	}
+
+</style>
+
+
+<script type="text/javascript">
+<!--
+	
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+
+<h2 class="noprint">Orrery Etching Printouts</h2>
+
+
+
+<p class="noprint">
+	This is an attempt to create a complete page of items to print on silicone paper 
+	for etching onto the brass parts of the orrery. The items need to be reversed 
+	left to right and inverted, e.g. white text on a black background. I am using 
+	SVG to accomplish this as seen in <a href="Mirroring & rotating text.html">
+	Rotating and Mirroring Text</a>. 
+</p>
+
+<p class="noprint">
+	The first text to put on the page is just the month abbreviations. CSS is used to 
+	produce the graphic. The white on black seen on the screen does not print out the 
+	same way!!!. Consequently, a screen shot was taken replacing the text. It is 
+	repeated so it can be tested in various ways.
+</p>
+<!-- ><div class="flipMonths">
+	<p class="charm">
+		Jan&#x2000;&#x2000;Feb&#x2000;&#x2000;Mar&#x2000;&#x2000;Apr&#x2000;&#x2000;
+		May&#x2000;&#x2000;Jun&#x2000;&#x2000;Jul&#x2000;&#x2000;Aug&#x2000;&#x2000;
+		Sep&#x2000;&#x2000;Oct&#x2000;&#x2000;Nov&#x2000;&#x2000;Dec
+	</p>
+	<p class="charm">
+		Jan&#x2000;&#x2000;Feb&#x2000;&#x2000;Mar&#x2000;&#x2000;Apr&#x2000;&#x2000;
+		May&#x2000;&#x2000;Jun&#x2000;&#x2000;Jul&#x2000;&#x2000;Aug&#x2000;&#x2000;
+		Sep&#x2000;&#x2000;Oct&#x2000;&#x2000;Nov&#x2000;&#x2000;Dec
+	</p>
+</div> -->
+
+<p>
+	<img class=inlineConst2 src="images/Months.png" alt="Inverted months" width="1623" height="2137">
+</p>
+<p>
+	<img class=inlineConst2 src="images/Months.png" alt="Inverted months" width="1623" height="2137">
+</p>
+
+
+<p class="noprint">
+	The constellation symbols. This may be a challenge the way their HTML entities are 
+	rendered as symbols inside of boxes. Opened with GIMP, flipped, and then used the 
+	paint bucket followed by the paintbrush to replace purple with black.
+</p>
+
+
+<!-- <p class="constell">
+	&#9800;&#x2000;&#9801;&#x2000;&#9802;&#x2000;&#9803;&#x2000;&#9804;&#x2000;&#9805;&#x2000;&#9806;&#x2000;&#9807;&#x2000;&#x26CE;&#x2000;&#9808;&#x2000;&#9809;&#x2000;&#9810;&#x2000;&#9811;
+</p> -->
+
+<p>
+	<img class=inlineConst src="images/Const symbols.png" alt="Inverted constellations" width="1623" height="2137">
+</p>
+<p>
+	<img class=inlineConst src="images/Const symbols.png" alt="Inverted constellations" width="1623" height="2137">
+</p>
+
+<p class="noprint">
+	Then the constellations need to be printed.
+</p>
+
+<p>
+	<img class=inlineConst src="images/Constellations II invert.png" alt="Inverted constellations" width="1623" height="2137">
+</p>
+<p>
+	<img class=inlineConst src="images/Constellations II invert.png" alt="Inverted constellations" width="1623" height="2137">
+</p>
+
+<p>
+	<img class=inlineOphi src="images/Ophiucus fix.png" alt="Inverted Ophiucus" width="1623" height="2137">
+	<img class=inlineOphi src="images/Ophiucus fix II.png" alt="Inverted Ophiucus" width="1623" height="2137">
+	<img class=inlineOphi src="images/Ophiucus fix II.png" alt="Inverted Ophiucus" width="1623" height="2137">
+</p>
+
+<p class="noprint">
+	Finally, we need to try out some quotes for decorating the planetary rings. To size 
+	the quote rings the baseline should be 1/3 up from the inside diameter of the ring. 
+	The descendents of letters are about 1/3 of the total height, lower case about 1/3, 
+	and ascendents (and upper case) about 1/3. A margin of 1/16" top and bottom should 
+	be sufficient. So Baseline Radius = ((OD - ID)/2 - 1/8)/3 + ID/2 + 1/16 (Error Here!)
+</p>
+
+<table class="noprint">
+	<tr>
+		<th>Planet</th>
+		<th>ID</th>
+		<th>OD</th>
+		<th>Baseline</th>
+	</tr>
+	<tr>
+		<td>Mercury</td>
+		<td>1.500</td>
+		<td>2.063</td>
+		<td>0.865</td>
+	</tr>
+	<tr>
+		<td>Venus</td>
+		<td>2.815</td>
+		<td>3.563</td>
+		<td>1.554</td>
+	</tr>
+	<tr>
+		<td>Earth</td>
+		<td>4.000</td>
+		<td>5.000</td>
+		<td>2.188</td>
+	</tr>
+	<tr>
+		<td>Mars</td>
+		<td>6.313</td>
+		<td>7.375</td>
+		<td>3.355</td>
+	</tr>
+</table>
+
+<p class="noprint">
+	The SVG path begins by Moving the pen to M50,200. An Arc is then drawn. The first 
+	two numbers (100, 100) are the radii in x and y directions. The last two numbers 
+	(51,201) are the endpoint of the arc. The zero is a flag for x-axis rotation and is 
+	seldom used. The first 1 is a flag for "large arc". When on, a large arc is drawn 
+	to connect the two points, while off a smaller connecting arc is drawn. The last 
+	flag sets the direction of the arc. 1 is clockwise. A test version was printed out 
+	with black letters on a white background. The printed circles are 7% larger than 
+	the screen sizes, so the SVG code was adjusted accordingly. The following SVG code 
+	gives the correct sizes for Mercury, Venus and Earth. To easily cut out the circles 
+	the SVG should include inside and outside circles for each planet or marked 
+	centerpoints. Need longer quotes for Venus (30%) and Earth (50%) as well as adding 
+	inside and outside circles. [<em>Note: this was all done with the Safari browser.</em>]
+	The following SVG code was optimized in <a href="etch test.html">the testing page</a> 
+	and pasted in place here. As seen above this does not print out what is seen on 
+	the screen so a screen shot was taken, the SVG code was commented out, and the 
+	screen shot was used in its place.
+</p>
+
+<!-- <div class="flip">
+<svg viewBox="0 0 350 350">
+	<path id="holeMerc" fill="none"; d="M118,158 A40,40 0 1,1 117.7,159" 
+		style="stroke:#ff0000";/>
+	<text x="0" y="100" style="stroke: none; fill: white">
+    	<textPath alignment-baseline="top" xlink:href="#holeMerc">
+			The stars arise, and the night is holy. HW Longfellow
+		</textPath>
+	</text>
+	<circle cx="156" cy="170" r="35.7" style="stroke:#ff0000; fill:none"/>
+	<circle cx="156" cy="170" r="49.1" style="stroke:#ff0000; fill:none"/>
+	
+	<path id="holeVenus" fill="none"; d="M103.6,117.5 A74,74 0 1,1 103,118.1" 
+		style="stroke:#ff0000";/>
+	<text x="0" y="100" style="stroke: none; fill: white;">
+    	<textPath alignment-baseline="top" xlink:href="#holeVenus">
+			The heavenly motions... are nothing but a song... perceived not by the ear, 
+			but by the intellect. J Kepler
+		</textPath>
+	</text>
+	<circle cx="156" cy="170" r="67" style="stroke:#ff0000; fill:none"/>
+	<circle cx="156" cy="170" r="84.8" style="stroke:#ff0000; fill:none"/>
+
+	<path id="holeEarth" fill="none"; d="M82.7,96 A104.2,104.2 0 1,1 81.9,96.8" 
+		style="stroke:#ff0000";/>
+	<text x="0" y="100" style="stroke: none; fill: white;">
+    	<textPath alignment-baseline="top" xlink:href="#holeEarth">
+			Time: labels moments, measures intervals, and is the medium through which 
+			we move. S Carroll&#x2000;&#x2000;&#x2000;&#x2000;The eternal silence of 
+			these infinite spaces terrifies me. B Pascal
+		</textPath>
+	</text>
+	<circle cx="156" cy="170" r="95.2" style="stroke:#ff0000; fill:none"/>
+	<circle cx="156" cy="170" r="119" style="stroke:#ff0000; fill:none"/>
+	
+	<path id="holeMars" fill="none"; d="M60,280 A156.5,156.5 0 1,1 61,281" 
+		style="stroke:#ff0000";/>
+	<text x="0" y="100" style="stroke: none; fill: white;">
+    	<textPath alignment-baseline="top" xlink:href="#holeMars">
+			Science seeks the truth about the universe; the spirit seeks the truth 
+			that is greater than the universe. A J Heschel&#x2000;&#x2000;&#x2000;&#x2000;
+			Time is being and being time, it is all one thing, the shining, the seeing, 
+			the dark abounding. UK Le Guin
+		</textPath>
+	</text>
+	<circle cx="171.3" cy="170" r="147" style="stroke:#ff0000; fill:none"/>
+	<circle cx="171.3" cy="170" r="170" style="stroke:#ff0000; fill:none"/>
+
+</svg>
+</div> -->
+
+<p>
+	<img class=inlineConst2 src="images/Rings with Mars.png" alt="4 Rings with quotes" width="1623" height="2137">
+</p>
+
+
+<p class="noprint">
+	The following quotes are those selected from the larger list presented in 
+	<a href="Orrery decoration.html">Orrery Decoration</a>. The quotes not used on the 
+	rings above are in italics.
+</p>
+
+<p class="noprint">
+	<em>Measure for measure, we are to an atom, what a star is to us. PC Davies</em>
+</p>
+
+<p class="noprint">
+	<em>Heaven calls you, and revolves around you, displaying to you its eternal beauties. Dante A</em>
+</p>
+
+<p class="noprint">
+	The stars arise, and the night is holy. HW Longfellow
+</p>
+
+<p class="noprint">
+	Time is being and being time, it is all one thing, the shining, the seeing, the dark abounding. UK Le Guin
+</p>
+
+<p class="noprint">
+	<em>Time is Nature's way of keeping everything from happening at once. JA Wheeler</em>
+</p>
+
+<p class="noprint">
+	The heavenly motions... are nothing but a song... perceived not by the ear, but by the intellect. J Kepler
+</p>
+
+<p class="noprint">
+	The eternal silence of these infinite spaces terrifies me. B Pascal
+</p>
+
+<p class="noprint">
+	Time: labels moments, measures intervals, and is the medium through which we move. S Carroll
+</p>
+
+<p class="noprint">
+	Science seeks the truth about the universe; the spirit seeks the truth that is greater than the universe. A J Heschel
+</p>
+
+
+
+
+
+<p class="noprint">
+	<a href="javascript:window.print()">Print</a>
+</p>
+
+<footer class="noprint">
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>April 16, 2017</p>
+</footer>
+
+</body>
+</html>
