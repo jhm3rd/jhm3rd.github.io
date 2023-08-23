@@ -1,0 +1,1 @@
+A folder created to contain the pictures associated with Router base.html.
