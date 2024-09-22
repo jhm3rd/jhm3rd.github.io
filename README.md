@@ -7,3 +7,6 @@ The webpages need some modifications to be served on GitHub. For instance the im
 Currently there are close to 200 webpages. The pages will be added as I have the time. I would rather focus on new projects. ;)
 The learning curve for GitHub is steep for an elderly man, who knows only enough HTML to compose a simple webpage.
 Wish me luck!
+
+Two files, Workshop Notebook.html and Workshop Notebook IV.html, provide indexes of all of the projects covered here. The latter is 
+graphical.
