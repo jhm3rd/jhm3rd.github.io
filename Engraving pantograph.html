@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Engraving Pantograph</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="metalworking,engraving,pantograph"/>
+	<meta name="description" content="Making a Pantograph for Engraving"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<script type="text/javascript">
+<!--
+	
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>Making a Pantograph for Engraving</h2>
+<h3 class='minor'>August 17, 2024</h3>
+
+<div class=tools>
+	<h2>Calculation Tools</h2>
+	<ul>
+		<li class=indent><a href="Tools/Bolt Hole Circles.html">Bolt Hole Circles</a></li>
+		<li class=indent><a href="Tools/Circle Calculations.html">Circle Calculations</a></li>
+		<li class=indent><a href="Tools/Compound Miter.html">Compound Miter</a></li>
+		<li class=indent><a href="Tools/Countersink Depth.html">Countersink Depth</a></li>
+		<li class=indent><a href="Tools/Ball Cutting.html">Cutting Hemispheres</a></li>
+		<li class=indent><a href="Tools/Keyway.html">Cutting Keyways</a></li>
+		<li class=indent><a href="Tools/Density Data.html">Density Data</a></li>
+		<li class=indent><a href="Tools/Drills and Threads.html">Drills & Threads</a></li>
+		<li class=indent><a href="Tools/Files.html">Files</a></li>
+		<li class=indent><a href="Tools/Flywheel.html">Flywheel</a></li>
+		<li class=indent><a href="Tools/Gear.html">Gears</a></li>
+		<li class=indent><a href="Tools/Gear Cutter Buttons.html">Gear Cutter Buttons</a></li>
+		<li class=indent><a href="Tools/Gearspur.html">Spur Gears</a></li>
+		<li class=indent><a href="Tools/Calc Hex Dimensions.html">Hexagon Dimensions</a></li>
+		<li class=indent><a href="Tools/Hints.html">Hints</a></li>
+		<li class=indent><a href="Tools/Diameter - Speed Calculator.html">Lathe Speeds</a></li>
+		<li class=indent><a href="Tools/Lathe and Mill Speeds.html">Lathe & Mill Speeds</a></li>
+		<li class=indent><a href="Tools/Links.html">Making Links</a></li>
+		<li class=indent><a href="Tools/Osborne.html">Osborne</a></li>
+		<li class=indent><a href="Tools/Protractor.html">Protractor</a></li>
+		<li class=indent><a href="Tools/Polycone.html">Pyramids</a></li>
+		<li class=indent><a href="Tools/Radius.html">Radius</a></li>
+		<li class=indent><a href="Tools/Railroad Gage.html">Railroad Gage</a></li>
+		<li class=indent><a href="Tools/Rattle.html">Rattle</a></li>
+		<li class=indent><a href="Tools/Sun.html">Sun</a></li>
+		<li class=indent><a href="Tools/Tapers.html">Tapers</a></li>
+		<li class=indent><a href="Tools/Taper pins.html">Taper Pins</a></li>
+		<li class=indent><a href="Tools/Temper.html">Temper</a></li>
+		<li class=indent><a href="Tools/Vernier.html">Vernier</a></li>
+		<li class=indent><a href="Tools/Wire Gage.html">Wire Gage</a></li>
+		<li class=indent><a href="Tools/Round groove cutting.html">Lathe Cutting Round Grooves</a></li>
+		<li class=indent><a href="Tools/Bezier groove cutting.html">Lathe Cutting Bezier Grooves</a></li>
+		<li class=indent><a href="Tools/Measuring dovetails.html">Measuring Dovetails</a></li>
+	</ul>
+</div>
+
+
+<p class=first>
+	Looking through my list of potential projects, a pantograph for engraving was 
+	discovered. It is shown below. I have not been able to find any other information 
+	on this photo of Bruce Holmquist's work. The post originally came from Metal Web 
+	News, but the post is no longer  available and Bruce could not be located via a 
+	simple web search. 
+</p>
+
+<img class=inline src="images/PNTG bruce.png" alt="Pantograph by Bruce Holmquist" width="574" height="364">
+
+<p>
+	My first challenge was learning how to design a pantograph from a geometrical 
+	perspective. One <a href="https://www.peter.com.au/articles/pantograph.html">website</a> 
+	was particularly helpful by Peter Lewis of Australia. A key takeaway from the 
+	multiple websites consulted was that three points had to be colinear, the fixed 
+	point, the tracing point, and the drawing point. The scale of transformation is 
+	then the ratio between the fixed and drawing points distance to the drawing and 
+	tracing point distance. (Cringe!!)
+</p>
+
+<p>
+	This pantograph will be used to transfer large designs to smaller engravings on 
+	metal. After deciding to utilize two fixed scales in this pantograph, 2X and 3X a 
+	number of pantograph sizes were explored by the use of a spreadsheet. Key for this 
+	design is locating one of the engraving points (the location of the spinning graver) 
+	on one small arm and the other on the other small arm. This is more easily seen in 
+	the crude sketch below than described. The solid dots are pivots, the open circles 
+	are engraver locations, and the dot in a circle is the tracer location.
+</p>
+
+<img class=inline src="images/PNTG sketch.heic" alt="Rough pantograph sketch" width="2600" height="1780">
+<img class=inline src="images/PNTG spreadsheet.png" alt="A spreadsheet for pantograph calculations" width="2520" height="1106">
+
+<p class = "note">
+	As can be seen in the spreadsheet 12" and 18" lengths for the long legs were 
+	propitious choices!
+</p>
+
+<p>
+	The spreadsheet calculated key dimensions for this pantograph, namely the distances 
+	between pivot points and the distances of the two scribing locations. The material 
+	chosen is 1"&nbsp;X&nbsp;1" aluminum square tube. 47" of the aluminum are required. 
+	Bruce used square tube and I plan to as well. 
+</p>
+
+<p>
+	The next design issue is making the pivots, so they have little give in the x, y, or 
+	z directions, but rotate easily. Reaming the holes in the bars to an exact size and 
+	using drill rod as the pins, threaded on both ends, should be sufficient. Spacers 
+	will be used between bars and washers on the outsides. Something like nyloc nuts 
+	might provide the tight, but not too tight, attachment. The support shaft also 
+	serves as a pivot and will require a base and clamping mechanism of some sort.
+</p>
+
+<p>
+	The other two parts to design are the jigs to hold the scribe and the Dremel 
+	extension shaft. These require consideration of setting the appropriate height for 
+	the cutting tool and thus setting the height at the fixed end and at the scribe. 
+	Ideally all of this would be controlled by a mechanism at the fixed endpoint. More 
+	practically the pantograph will have some inherent flex, so setting the height may 
+	need to be done at both the fixed end, the scribing end, and at the cutting spindle. 
+	Another issue is how is the scribe easily moved between disconnected parts of the 
+	design without upsetting height settings. Maybe a vertical movement of the spindle 
+	accompanied by a stop?
+</p>
+
+<p class = "note">
+	Looking at Bruce's version I noticed the setscrews holding the scribes in position. 
+	These setscrews should be moved to the opposite side, more challenging to adjust, 
+	but out of the way when looking at the scribe on the diagram. Or maybe moved to the 
+	side.
+</p>
+
+<p>
+	My current plan is to explore all of these issues and more with a wooden prototype. 
+	This prototype was my first goal and was a learning experience. Some wood scraps 
+	were located: one was 1/2"&nbsp;X&nbsp;5/8" and the other was 5/8"&nbsp;X&nbsp;5/8". 
+	The following lengths were cut: 19", 13", 9", and 7". Centered holes were marked 
+	with the following separations: 18" on the 19" length, 12" on the 13", 8" on the 9", 
+	and 6" on the 7". A hole was marked at 6" on the long arm and at 8" on the 13" arm. 
+	Two holes were marked for the pencil, one on the 9" arm at 8" and one on the 7" arm 
+	at 4.5". All holes were drilled 1/4" except for the latter two which were drilled 
+	with an L drill, 0.290, to fit the 0.30" pencil. Carriage bolts, washers and screws 
+	were used to assemble the pantograph.
+</p>
+
+<p>
+	A square of particle board had a 1/4" hole drilled in one corner. A 1" length of 
+	1/4" ID brass tube was cut from scrap. A long carriage bolt went through this 
+	board, through the tube and through the fixed hole on the 13" arm. A pencil was 
+	pushed through the larger hole at the ostensible X2 scale position. A punch went 
+	through the 1/4" hole at the scribe end of the 19" arm. With the board and a sheet 
+	of paper clamped to the table saw and a demo engraving set under the scribe, a test 
+	was conducted. The transfer went very well, More care should have been taken to 
+	raise the scribe at the end of each letter, but most were clear as seen in the first 
+	photo below. The second shows the device as used. The scale is clearly not 2:1, but 
+	is 3:1!!!
+</p>
+
+<img class=inline src="images/PNTG first transfer.heic" alt="The first transfer done with the mockup" width="2053" height="1722">
+<img class=inline src="images/PNTG wooden mockup.heic" alt="The wooden mockup as it was set up for a transfer" width="2610" height="3362">
+
+<p class = "note">
+	I clearly misunderstood the relevant dimensions determining magnification. I used a 
+	2:1 dimension of the distance between the pencil and the scribe on the long arm 
+	relative to the distance between the pencil and the fixed point on the shorter arm. 
+	I should have used the distance between the fixed point and the scribe to the 
+	distance of the pencil point from the fixed point, i.e. 2X is a pencil point centered 
+	between the fixed point and the scribe.
+</p>
+
+<p>
+	The spreadsheet was corrected, producing new dimensions. Only one new bar had to be 
+	made, a 9" bar, and a leftover from cutting the first four bars was exactly 9"! 
+	The new dimensions are shown in the rough sketch below (sketch is not dimensionally 
+	accurate).
+</p>
+
+<img class=inline src="images/PNTG rough sketch II.heic" alt="A rough sketch of the corrected pantograph dimensions" width="2782" height="1856">
+
+<p>
+	The pantograph was remade with the new dimensions shown above and produced a two-fold 
+	reduction as expected. Using the pantograph highlighted a number of issues that will 
+	need to be addressed in the final version. First, with the fixed pivot as the main 
+	support, there is a lot of vertical play as the weight of the pantograph is all off 
+	to the same side. Second, rigidity of the scribe and the 
+	pencil, in this case, had a big impact on the ability to accurately follow the 
+	pattern and produce an adequate representation. Third, the ability to lift the 
+	pencil is paramount to transferring anything other than a continuous line, conflicting 
+	with the first issue.
+</p>
+
+<p>
+	Aluminum square tubing, 1" with 1/8" wall thickness, was ordered along with a base 
+	plate, 1/4" aluminum plate.
+</p>
+
+<p>
+	A modification was made to the prototype to see if it could be used for wood 
+	engraving. The Dremel's flex-shaft is 1/2" in diameter with 0.003" increases for the 
+	knurls. The pencil hole was opened to 1/2" after carefully aligning the drill press 
+	spindle with the pencil hole. A scrap of wood was screwed to the side of the cross 
+	piece centered on the 1/2" hole. A cross hole was made with a #29 drill and tapped 
+	8-32. An 8-32 aluminum screw was located and the resulting arm, ready for the Dremel 
+	is seen below.
+</p>
+
+<img class=inline src="images/PNTG large hole.heic" alt="The enlarged hole to fit the Dremel extension" width="2038" height="1630">
+
+<p>
+	Testing the pantograph prototype with the Dremel was explored this morning. The 
+	Dremel was set up with a 0.072" end mill in the flex-shaft. A few "modifications" 
+	were made to the prototype. First, a stack of 1/2" of washers on top of the brass 
+	spacer was used to raise the pantograph. A block of wood was set under the outbound 
+	side of the pantograph for support. A second block of wood, patterned hex in the 
+	photo below, was used to raise the bit off of the wood. The wood to be cut was taped 
+	to the prototype's table with double sided tape. The pattern to be transfered, my 
+	favorite metalworking magazine, was also clamped at an appropriate height for the 
+	transfer, a block of wood rests under the letter "M". The Dremel was switched on and 
+	the "M" was followed slowly with the scribe. With all of the sawdust nothing could 
+	be seen until it was brushed away. Success!! Much better than expected as seen in 
+	the second photo below with fuzzies still attached.
+</p>
+
+<img class=inline src="images/PNTG router setup.heic" alt="The pantograph set up to use the Dremel flex-shaft as a router." width="2705" height="2466">
+<img class=inline src="images/PNTG M.heic" alt="The routed letter M transferred from the magazine" width="1630" height="1474">
+
+<p>
+	 The only real issue is the need for some means of controlling cutting depth. Would 
+	 an inexpensive dial caliper serve this purpose? A lock of some kind would also be 
+	 required. My first thought was to make a split collet to hold the flex-shaft and 
+	 slide through the hole in the arm. The diameter of the split collet would be 
+	 difficult to control giving a poor fit in the arm, so a simpler collet with a set 
+	 screw will be used instead. A sketch of this setup is shown below.
+</p>
+
+<img class=inline src="images/PNTG caliper collet.heic" alt="The routed letter M transferred from the magazine" width="1630" height="1474">
+
+<p class = "note">
+	Note, the caliper needs to be oriented correctly or it will hide the dial behind the 
+	flex-shaft.
+</p>
+
+<p>
+	The selected inexpensive dial caliper jaw was readily marked with a file. A length 
+	of 0.750" round steel rod was located and a 4" length was cut off with the hacksaw. 
+	Both ends were faced using a collet in the South Bend lathe. Made an attempt to 
+	drill the through hole, but the chuck was frozen and would not tighten on a 1/2" 
+	shank center drill. 
+</p>
+	
+<p>
+	A quick check of a drill chuck repair video on YouTube revealed 
+	that the outer ring needs to be pressed off. Purchased a 4"&nbsp;X&nbsp;1&nbsp;1/2" 
+	galvanized pipe nipple. This with a heavy ball peen hammer, a block of wood and 
+	much effort removed the outer ring of the chuck. The "broken" nut was extracted and 
+	the problem became immediately apparent, the threads were broken off as seen in 
+	the photo below. A new chuck was ordered from Shars, they don't carry repair kits 
+	for this brand of chuck, and will arrive in four days!
+</p>
+
+<img class=inline src="images/PNTG chuck threads.heic" alt="The broken nut extracted from the drill chuck showing the damaged threads" width="2112" height="1954">
+
+<p>
+	In the meantime work began on the pantograph arms. The 1" square aluminum tube that 
+	was purchased was cut into four lengths: 20", 14", 10", & 9" with a hacksaw. The 
+	ends were deburred. The locations of the pivot holes were carefully marked out and 
+	punched. One hole was marked at the end of a bar and then the second was carefully 
+	located at the desired distance from the first. All bars were held on a block of wood 
+	on the milling table with two step clamps. The hole was located with a 1/16" drill, 
+	drilled with a #1 drill, then a "T" drill, and finally reamed 3/8". The holes were 
+	deburred. The first photo below shows the pantograph bars cut and the second shows 
+	them at this stage of construction.
+</p>
+
+<img class=inline src="images/PNTG cut bars.heic" alt="The pantograph bars cut from the aluminum stock" width="3001" height="2686">
+<img class=inline src="images/PNTG bars drilled.heic" alt="The pibot holes drilled in the four pantograph bars" width="2776" height="2539">
+
+<p>
+	The spacers, which will reside between the aluminum bars at the four pivot points 
+	were made from a length of 3/4" aluminum rod. This rod was faced and a skim cut was 
+	taken to clean up the outside diameter. A 3/8" hole was drilled and reamed about 3/4" 
+	deep. Four washers were parted off at 1/8". These washers were deburred and are seen 
+	in the photo below. (These won't get much wear, thus the choice of aluminum.)
+</p>
+
+<img class=inline src="images/PNTG washers.heic" alt="The washers or spacers which will separate the bars" width="1689" height="1564">
+
+<p>
+	The axles which will serve as the pivots were made from 3/8" drill rod. Four 
+	2&nbsp;7/8" lengths were cut off with a hacksaw. The rods were faced, 0.40" 
+	reduced to 0.248", and heavily chamfered on the end of the nascent screw. This 
+	same operation was performed on both ends of all four rods, production mode. The 
+	axles are a close fit through the washers and maybe too close of a fit through the 
+	bars. A quick touch-up with a reamer did not help.
+</p>
+
+<img class=inline src="images/PNTG axles sized.heic" alt="The axles without threading the ends" width="1891" height="1499">
+
+<p>
+	Using a reamer in the drill press helped most of the holes accept the axles. One 
+	hole required a 3/8" drill. All of the holes and axles fit better after putting the 
+	axles in and spinning the bars for a bit. Even though I cannot yet start on the 
+	Dremel flex-shaft holder I decided to make it out of brass as it won't require 
+	screwing to the spacer, but can be soldered. Still waiting on the drill chuck, so 
+	the axles were threaded 1/4-20 with a die. The lathe and die holder were not usable 
+	as the chuck could not hold the axle tight enough. All eight ends were threaded by 
+	hand in the vise. Drill rod at this size was at my limit. I need a larger hand die 
+	holder for these small dies.
+</p>
+
+<img class=inline src="images/PNTG axles threaded.heic" alt="The axles threaded and now complete" width="1682" height="1402">
+
+<p>
+	Significant work remains to be done on the bars, but a quick assembly was in order 
+	this morning. Washers will be needed under the to be purchased locknuts. The setup 
+	is quite a bit more rigid than the wooden prototype and yet moves easily.
+</p>
+
+<img class=inline src="images/PNTG first assembly.heic" alt="The bars assembled into a functioning mechanism, though not yet a pantograph" width="2032" height="2565">
+
+<p>
+	With the new drill chuck in hand work commenced on the flex-shaft support tube. A 
+	3&nbsp;1/2" length of 3/4" brass round bar was cut from stock. While held in a 
+	collet on the South Bend lathe, it was faced, center drilled and drilled up to 
+	31/64". The hole was reamed with a 1/2" reamer and then bored until the flex-shaft 
+	was a sliding fit, 0.505". The second end was faced and both ends slightly 
+	chamfered inside and out. The two photos below show the support at this point.
+</p>
+
+<img class=inline src="images/PNTG flex support.heic" alt="The support tube for holding the Dremel flex-shaft" width="1680" height="1400">
+<img class=inline src="images/PNTG flex in support.heic" alt="The support tube holding the Dremel flex-shaft" width="1876" height="1591">
+
+<p>
+	A set screw needs to be installed in the tube. The next part to be made is the spacer 
+	for attaching the top caliper jaw to the just made tube. There are two ways of making 
+	this that come to mind. A block of brass can be line bored to produce the desired 3/8" 
+	radius cutout. Alternatively, a large block of brass can be drilled up to 3/4" and 
+	then cut in half. Drilling two smaller blocks of brass clamped together might also be 
+	a possibility. Of course, boring could replace some of the larger drills. 
+</p>
+
+<p>
+	My brass stock of sufficient size is quite limited so line boring was the chosen 
+	methodology, necessitating making a boring bar. The bar was made from 1/2" hex steel. 
+	A 4" length was held in the three-jaw chuck on the Sherline lathe, faced and center 
+	drilled on both ends. The hex was cross drilled and reamed for a 1/8" hole. The bar 
+	was turned 90&deg; and after making a flat with an end mill a hole was drilled into 
+	the first with a #43 drill and then threaded 4-40 for a set screw. 
+</p>
+
+<p>
+	A 5/8" length of 1/8" drill rod was cut off with a hacksaw. This short rod was 
+	mounted in a collet and the end cut to a 60&deg; included angle. The tip was rounded 
+	with a file. This now pointed rod was held in the milling vise and an end mill was 
+	used to remove half of the point. The cutting tool was heated to cherry red with a 
+	propane torch and quenched in motor oil. The flat face of the tool was honed with a 
+	fine stone. 
+</p>
+
+<p>
+	Meanwhile, a block of scrap brass 1&nbsp;X1/8" square and 1/2" thick was squared up 
+	in the mill. This was mounted on scrap to raise it 3/8" above the lathe cross slide. 
+	The cutting tool made above was mounted in the bar of hex such that it protruded by 
+	1/8" and the entirety was mounted between centers on the lathe. This is shown in the 
+	first photo below. The tool and setup worked perfectly cutting an arc from the brass 
+	in increments of 0.005". The finished brass piece is seen in the second photo. The 
+	third shows the perfect fit between the 3/4" cylinder and the caliper mount. The 
+	fourth photo shows the things completed this morning.
+</p>
+
+<img class=inline src="images/PNTG line boring.heic" alt="The setup for line boring the brass block" width="1514" height="1566">
+<img class=inline src="images/PNTG bored brass.heic" alt="The completed brass block with the cylindrical cutout" width="1085" height="1202">
+<img class=inline src="images/PNTG cylindrical fit.heic" alt="The fit between the brass block and the cylinder" width="1079" height="1454">
+<img class=inline src="images/PNTG boring tool.heic" alt="The boring bar adjacent to its product" width="1775" height="1731">
+
+<p>
+	The width of the top spacer beyond the cylinder is 0.319". The width of the square 
+	tubing beyond the same cylinder is 0.125", so a spacer needs to be made for the 
+	bottom caliper blade, 0.194" thick. The part was quickly made from a scrap of 
+	1/4"&nbsp;X&nbsp;1" brass. It was drilled with 6-32 through holes 5/8" apart centered 
+	across the spacer as seen in the photo below.
+</p>
+
+<img class=inline src="images/PNTG spacer.heic" alt="The spacer for the lower caliper jaw" width="998" height="916">
+
+<p>
+	The caliper was mounted in the vise on the mill in preparation for drilling through 
+	holes for the 6-32 screws. After marking the caliper blades with a punch the center 
+	drill did not touch the steel. The steel of the caliper blades is softer than a file, 
+	but harder than an HSS drill. A carbide spotting drill readily began a hole, but I 
+	have no carbide drills less than 1/4". A quick trip to Menard's where a cobalt 
+	titanium drill was purchased, 7/64", was a waste of time as this drill also didn't 
+	touch the hardened steel. Should a different attachment method be devised or should 
+	a carbide drill, $12, be ordered online?
+</p>
+
+<p>
+	Working on my birthday following a lovely dinner out with the wife last night. After 
+	deciding on the clamp option two clamps were made from 1/8"&nbsp;X&nbsp;3/4" square 
+	aluminum cutoffs. A 1/2" slot was milled down the middle of the clamps about 1/16" 
+	deep. A through hole for a 6-32 screw was drilled just inside the slot. The two 
+	spacers from above were also modified. A 0.02" slot was milled in each and a hole 
+	was drilled and threaded just above this slot. The clamp for the lower jaw still 
+	needs to have the attachment holes countersunk. The third photo below shows the 
+	clamps holding the spacers tightly to the caliper jaws.
+</p>
+
+<img class=inline src="images/PNTG spacer mods.heic" alt="The two spacers modified for the clamps" width="1878" height="1358">
+<img class=inline src="images/PNTG clamps.heic" alt="The clamps for holding the caliper jaws to the spacers" width="1363" height="1170">
+<img class=inline src="images/PNTG clamped.heic" alt="The spacers clamped to the caliper jaws" width="2371" height="2036">
+
+<p>
+	The lower spacer was returned to the mill vise and held on parallels. One hole was 
+	aligned using the through drill and the drill chuck switched to the collet with a 
+	1/4" end mill. This was lowered into the spacer 0.085" producing the countersink. 
+	The table was moved 0.625" and the operation was repeated on the second hole. The 
+	screw heads are 0.259" diameter so the holes were further opened using an H drill. 
+	The screws are a nice fit as seen below.
+</p>
+
+<img class=inline src="images/PNTG spacer recessed.heic" alt="The holes in the spacer recessed for the screws" width="1346" height="1350">
+
+<p>
+	The shorter arms were previously marked for the holes at 6". These were drilled 
+	this morning up to 3/4" through both sides. After some work with a file the flex-shaft 
+	support tube was a reasonable fit in both as seen in the photo below. The less than 
+	perfect fit in a non-reamed hole reminded me that a hole needs to be drilled and tapped 
+	for a set screw.
+</p>
+
+<img class=inline src="images/PNTG drill.heic" alt="The holes in the two short arms drilled to fit the flex-shaft holder" width="3173" height="2262">
+
+<p>
+	Both small arms were marked out for the screws needed to hold the bottom spacer in 
+	place. These holes were then drilled and tapped for 6-32 screws. The outside and 
+	inside were deburred. The opposite sides were marked for set screw holes, which were 
+	drilled and tapped for 8-32 screws. Finally, the bottom of each arm was marked with 
+	an electric engraver. The two photos below show the results of these actions.
+</p>
+
+<img class=inline src="images/PNTG spacer on.heic" alt="The holes drilled and tapped in the bottom arms to hold the bottom spacer" width="1497" height="1487">
+<img class=inline src="images/PNTG set screw.heic" alt="The hole drilled and tapped for the set screw and the bottom marked with a B" width="1484" height="1561">
+
+<p>
+	The upper spacer block was soldered to the flex-shaft support tube. The combination 
+	was cleaned up a bit with 600 grit sandpaper as seen below. The entire apparatus at 
+	this stage of construction was assembled as seen below. It is sturdy as a rock! All 
+	that is left is the back pivot post and the scriber attachment.
+</p>
+
+<img class=inline src="images/PNTG soldered.heic" alt="The spacer block soldered to the support tube" width="1277" height="1539">
+<img class=inline src="images/PNTG assembly.heic" alt="The pantograph assembled though without a scribe or back pivot" width="2338" height="1875">
+
+<p class = "note">
+	In the photo above the short arms are attached incorrectly to the two longer arms.
+</p>
+
+<p>
+	Finishing up the flex-shaft mounting attachment requires a set screw installed in 
+	the tube and fabrication of a stop collar. Then work can begin on the scribe and 
+	its attachment to the longest bar, as well as determining how best to make the main 
+	pivot and base.
+</p>
+
+<p>
+	Two 8-32 set screws were made from 3/8" brass hex. The tube with attached upper 
+	mounting block was held in the milling vise and the spindle centered over the tube.
+	The tube was drilled through with a #29 drill and tapped 8-32. After a bit of 
+	cleanup the set screw was installed as seen below. 
+</p>
+
+<img class=inline src="images/PNTG tube set.heic" alt="The set screw mounted in the flex-shaft support tube" width="1102" height="1038">
+
+<p>
+	A 1&nbsp;1/8" O.D. brass ring magically appeared in my brass scrap box. It was about 
+	3/8" wide. Both ends were faced and the inside bored to fit the flex-shaft support 
+	tube. After chamfering corners and light sanding on the outside it was drilled 
+	on center and tapped 8-32. The stop collar is shown below installed on the tube.
+</p>
+
+<img class=inline src="images/PNTG stop collar.heic" alt="The stop collar mounted on the flex-shaft support tube" width="1195" height="1471">
+
+<p>
+	A support for the scribe was quickly designed and made. A 
+	1/2"&nbsp;X&nbsp;1"&nbsp;X&nbsp;1&nbsp;1/8" block of brass was cut from stock with 
+	the horizontal bandsaw. The two cut ends were squared up in the mill and then two 
+	shoulders were cut on opposite 1" sides. These were cut 0.25" deep and 0.25" wide. 
+	The corners were all deburred. The block at this stage is shown below.
+</p>
+
+<img class=inline src="images/PNTG scribe block.heic" alt="The scribe block cut to size" width="1320" height="1260">
+
+<p>
+	The block was returned to the mill vise and set up for drilling the holes for screws 
+	to attach it to the aluminum square tube. Two holes were drilled as through holes for 
+	6-32 screws. These holes were countersunk with a 1/4" end mill. The block was then 
+	centered in a four-jaw chuck and drilled up to an A drill. It was reamed 1/4" for the 
+	yet to be made scribe.
+</p>
+
+<p>
+	The scribe holder was finished by drilling and tapping a cross hole for an 8-32 screw. 
+	The scribe was made from a 4" length of drill rod. One end was faced and the rod 
+	flipped end for end in the chuck. The opposite end was cut at a 60&deg; internal 
+	angle almost to a point. The point was slightly rounded with a file. After again 
+	flipping the rod in the chuck the non-pointy end was knurled and the end chamfered. 
+	The completed scribe in the scribe holder is shown below.
+</p>
+
+<img class=inline src="images/PNTG scribe.heic" alt="The scribe block completed with the scribe installed" width="1938" height="1512">
+
+<p>
+	A hole was drilled and reamed 1/4" on the long leg of the pantograph 18" from the 
+	hole at its far end. The work had to be done on the drill press as the mill has a 
+	major problem with the z-axis. In any event the work was readily accomplished even 
+	though the table had to be moved between the drill and the reamer. The photo below 
+	shows the scribe temporarily in place.
+</p>
+
+<img class=inline src="images/PNTG scribe in arm.heic" alt="The scribe sitting in the reamed hole in the pantograph arm" width="1475" height="1885">
+
+<p>
+	Finishing the scribe attachment was accomplished by aligning the scribe holder with 
+	the scribe in place on the arm. A punch mark was made in one hole with a transfer 
+	punch. The holder was removed and the punch mark was drilled and tapped for a 6-32 
+	screw. The holder was attached to the arm with scribe and one screw, then punched for 
+	the second hole. This second hole was drilled and tapped. Reattaching the holder to 
+	the arm made for a too tight fit of the scribe, so the 1/4" reamer was used to 
+	"true up" the holes allowing for a tight but sliding fit for the scribe. (Probably 
+	should ream the holder and aluminum bar in one go.)
+</p>
+
+<img class=inline src="images/PNTG scribe holder attached.heic" alt="The scribe and scribe holder attached to the pantograph arm" width="1988" height="1858">
+
+<p>
+	The base and pivot need to be designed. The picture my pantograph is based on, shown 
+	above, has an extension from the base and the pivot is somehow attached to this 
+	extension. The extension sits on top of the base, where the material to be engraved 
+	sits. The pivot shaft could either be attached to the extension by a screw running 
+	through the extension and into the shaft or the pivot shaft could be 
+	threaded, screwed through the extension and secured with a locknut underneath the 
+	extension. In my design the extension will be attached to a corner of the base as 
+	opposed to an edge, providing more room for the piece to be engraved.
+</p>
+
+<p>
+	The arm will be surmounted by brass blocks, above and below, through which the pivot 
+	shaft will run. This will insure the rather heavy and extended pantograph will 
+	not rock on the pivot. Washers will be used to establish the height of the 
+	pantograph above the base. The pantograph was reassembled and measured, the distance 
+	from scribe to pivot is approximately 10" - 27", closed to mostly open, though most 
+	of the time the engraver will be about 7" - 10" from the pivot putting the scribe 14" 
+	away. The diagonal of the 12" square aluminum base is 17", providing plenty of room 
+	to handle even the largest designs, but potentially interfering with the design 
+	location. It might be worthwhile cutting off the bottom corner of the square base. 
+	Plans for the pivot shaft, extension and base are sketched below. The entire apparatus 
+	will be attached to a wooden base. No telling where I will store it when not in use!!
+</p>
+
+<img class=inline src="images/PNTG base plans.heic" alt="The plans for the pivot and base" width="3593" height="3475">
+
+<p>
+	A cutoff of 1/4"&nbsp;X&nbsp;2" aluminum bar was cut to 4" with a hacksaw and the 
+	ends filed smooth. All burrs were removed. The extension was clamped to a corner of 
+	the deburred 12" square aluminum plate and drilled with a F drill The bottom plate 
+	was tapped 5/16-18. The extension holes were opened to 21/64" and deeply chamfered 
+	for two screws. The extension mounted to the square plate is seen below.
+</p>
+
+<img class=inline src="images/PNTG extension.heic" alt="The extension mounted to the base" width="2883" height="2528">
+
+<p>
+	The first attempt to make the support for the pivot from 1" brass was not successful. 
+	The width was sufficient for the screws, but not for the screw heads. A wider piece 
+	of brass, 1&nbsp;1/8", will be used instead. The brass was cut from dwindling stock 
+	and marked for a 1/2" hole 3/8" from one 1" long edge. This hole was drilled and 
+	reamed to 1/2" with the last drilling and reaming done on the South Bend lathe. 
+	Meanwhile a 5" length of drill rod was faced on both ends and one end reduced to 
+	5/16" for 1/2". An undercut was made with a cutoff blade. The end was threaded 5/16-18 
+	with some difficulty. The pivot shaft was inserted through the above drilled hole 
+	and screwed into the aluminum extension. The threads must be crooked in either the 
+	hole or on the shaft as the brass block does not sit straight! Pretty sure it is the 
+	shaft with a slightly bent threaded section!
+</p>
+
+<p>
+	The offending threaded bit was cut off and the shortened shaft was held in the 
+	three jaw chuck on the South Bend lathe. The shaft was faced and 1/2" reduced to 
+	5/16". This reduced section was single point threaded. Setting the gear box to the 
+	correct B2 setting was challenging as the shifters did not want to move, but 
+	eventually they were worried into the correct positions. A new threading tool was 
+	set up and the threads were cut. About halfway through the handle controlling start 
+	and stop came off. Luckily the pin inside did not jump too far away. I struggled 
+	returning it to position so ended up just holding it tightly while turning and 
+	cutting.  In the end threads were turned that nicely fit the hole in the aluminum 
+	plate. The threading setup is shown below.
+</p>
+
+<img class=inline src="images/PNTG threading.heic" alt="The pivot shaft in the lathe with the threaded end screwed into the aluminum plate" width="2461" height="3205">
+
+<p>
+	The bored block of brass was marked, 3/16" in from the corners farthest from the 
+	bored hole. Two through holes were drilled at these marks , 3/16" diameter. The bored 
+	block was mounted on the shaft installed in the aluminum plate. One hole was 
+	transferred, drilled and tapped. After remounting and putting a screw into this newly 
+	tapped hole the second hole was transferred. This hole was also drilled and tapped 
+	8-32. A photo of the mounted shaft is shown below.
+</p>
+
+<img class=inline src="images/PNTG pivot shaft done.heic" alt="The pivot shaft mounted to the aluminum plate with the brass support block" width="1430" height="1655">
+
+<p class = "note">
+	This project has been beset by machine difficulties. First, the mill has problems 
+	with both y- and z-axes. The y-axis moves with a squeal, while the z-axis was 
+	"bumping" when lowered and now the handle turns freely with no movement whatsoever. 
+	The South Bend lathe now has a malfunctioning split nut handle. Projects will need 
+	to be put on hold while I fix these recalcitrant machines.
+</p>
+
+<p>
+	After reading a page in the South Bend lathe rebuild manual, fixing the half nut 
+	cam lever was trivial, as the book pointed out the screw below it. Two hours were 
+	spent repairing the mill z-axis, mostly because it is so difficult to get the mill 
+	positioned for work. The entirety of the z-axis mechanism was removed after removing 
+	the motor. The screw, the saddle nut and the lock were thoroughly cleaned as was the 
+	vertical column and the motor mount. The problem was guessed to be the set screw 
+	holding the screw to the column thrust bearing allowing the z-axis screw to shift 
+	relative to the handle. The part of the screw shaft where this set screw bites is 
+	pretty worn. On the other hand the screw and the saddle nut were in great condition. 
+	All is now good and the reduced backlash was programmed into the DRO. On to the final 
+	part of the pantograph, the arm's brass supports for the pivot shaft.
+</p>
+
+<p>
+	The plan for making these supports, one above and one below the arm, is as follows. 
+	Two 1/4" thick brass blocks will be made with two through holes each. They will 
+	be mounted on the arm. The arm will be held in the milling accessory on the South 
+	Bend lathe. The lathe will be used to drill and ream the 1/2" hole through all three 
+	parts, producing the perfect fit for the pivot shaft.
+</p>
+
+<p>
+	Two 1&nbsp;1/4" lengths of 1/4"&nbsp;X&nbsp;1" brass bar were cut from a scrap. Both 
+	were cleaned up in the mill and deburred. The two blocks were clamped together in 
+	the mill vise with a scrap of paper. They were center drilled and drilled 3/16" in 
+	from two opposite corners with a #29 drill through. One block had the holes opened 
+	to 0.177" and the other had the holes tapped 8-32. 
+</p>
+
+<p>
+	The opened hole block was clamped to the aluminum bar so its center aligned with the 
+	bars 12" mark, 12" from the hole at the opposite end. The two holes from the block 
+	were transferred to the aluminum bar. These two marks were drilled through for the 
+	8-32 screws. The photo below shows the two support blocks screwed to the aluminum 
+	bar.
+</p>
+
+<img class=inline src="images/PNTG pivot support.heic" alt="The pivot support blocks mounted to the aluminum bar" width="2072" height="2402">
+
+<p>
+	With the support blocks in place the center of the support was marked and punched at 
+	12". The bar was held in the South Bend milling accessory with a scrap of wood behind 
+	it. After aligning the headstock with this punched mark the brass was center drilled. 
+	It was then drilled with a 31/64" drill followed by reaming with a 1/2" reamer. The 
+	three photos below document this process as well as a shot of the bar on the pivot 
+	shaft. It spins freely as desired, but with no slop. It is time to take it apart, 
+	clean it up, and assemble the finished pantograph.
+</p>
+
+<img class=inline src="images/PNTG alignment.heic" alt="Aligning the aluminum bar with the headstock" width="1984" height="1863">
+<img class=inline src="images/PNTG drilling.heic" alt="Drilling through brass supports and the aluminum bar" width="1823" height="1909">
+<img class=inline src="images/PNTG bar on pivot.heic" alt="The aluminum bar placed on the pivot shaft" width="2114" height="1721">
+
+<p>
+	The four shafts for bar connection were individually returned to the lathe and 
+	given a quick sanding with 600 grit sandpaper. All 3/8" holes in the bars were 
+	touched up with the reamer. All of the brass and aluminum parts were sanded with 
+	a gray Scotch pad. The parts <em>sans</em> base are shown in the photo below.
+</p>
+
+<img class=inline src="images/PNTG parts.heic" alt="All parts ready to assemble into the finished pantograph" width="3196" height="3224">
+
+<p>
+	That actually is not all of the parts as the bits for holding the calipers are not 
+	included. In any event the pantograph went together reasonably easily. It can be 
+	seen in the photo below. What cannot be seen is the ease and precision of movement. 
+	A wooden base needs to be made for bolting the plate down and the pantograph will 
+	soon be complete. (Also a spacer for holding the pantograph higher on the pivot shaft 
+	needs to be made and an additional set screw needs to be made as one is needed to 
+	lock the flex-shaft holder in place.)
+</p>
+
+<img class=inline src="images/PNTG assembly 1.heic" alt="All parts assembled into the finished pantograph except for the caliper holders" width="2999" height="3243">
+
+<p>
+	On this very hot first day of fall one of the last parts to be made is the wooden 
+	base. An 18"&nbsp;X&nbsp;33&nbsp;1/2" rectangle of 3/4" particle board was cut from 
+	stock with the circular saw. Two 7/8" holes were drilled partway through the 
+	base board with a 7/8" Forstner bit to provide relief for the lock nuts on the 
+	backside of the aluminum. The aluminum was marked for three holes 1" in from each of 
+	the unused corners. These holes were transferred to the base board before deeply 
+	chamfering. The three transfer marks were drilled (3/64" under thread size) for a 
+	threaded insert, which was easily installed. The photo below shows the aluminum 
+	square attached to the wooden base.
+</p>
+
+<img class=inline src="images/PNTG wood base.heic" alt="The wooden base after screwing to the aluminum" width="2702" height="2834">
+
+<p>
+	The last parts, pivot spacers, were quickly made this morning. A 2&nbsp;1/2" length 
+	of 5/8" round brass bar was cut from stock and held a collet in the South Bend lathe. 
+	It was faced on both ends. This was followed by drilling and reaming to 1/2". This 
+	tube was cut into three sections by parting off: 1/2", 3/4", and 1" lengths. The 
+	parts were deburred and are shown below. The second photo shows the completed 
+	pantograph with the 1" spacer installed.
+<p>
+
+<img class=inline src="images/PNTG pivot spacers.heic" alt="The completed pivot spacers" width="1221" height="1150">
+<img class=inline src="images/PNTG pantograph done.heic" alt="The completed pantograph" width="3264" height="2499">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>September 22, 2024</p>
+</footer>
+
+</body>
+</html>
