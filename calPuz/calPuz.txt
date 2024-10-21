@@ -1,0 +1,1 @@
+A folder to hold the image files associated with Calendar puzzle.html
