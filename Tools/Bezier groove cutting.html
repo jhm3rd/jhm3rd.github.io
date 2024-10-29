@@ -81,6 +81,13 @@
 		font-size: 9px;
 		text-align: center;
 	}
+	img.inline {
+		padding-top: 20px;
+		padding-bottom: 20px;
+		margin: 3px 10px 3px 0;
+		height: 35%;
+		width: 60%;
+	}
   	table {
   		border-collapse: collapse; 
   		table-layout: fixed; 
@@ -577,9 +584,9 @@ function makeTable() {
 <p>
 	This calculator produces a table of carriage and cross slide movements. With this 
 	table an operator can use a lathe  equipped with the parting tool of choice to 
-	mimic a radius tool cutting an arbitrarily curved groove in the side of a part. The 
-	calculator will produce this table using the chosen step size for either roughing out 
-	a groove or for producing a groove that requires minimal filing. 
+	mimic a radius or parting tool cutting an arbitrarily curved groove in the side of a 
+	part. The calculator will produce this table using the chosen step size for either 
+	roughing out a groove or for producing a groove that requires minimal filing. 
 </p>
 
 <p>
@@ -587,17 +594,28 @@ function makeTable() {
 	used a French curve stencil to find the cut for the <a href="Picture holders.html">
 	Picture holders</a>. This curve was held against the screen while dragging around 
 	the control points to get a good fit using the site, <a href="https://pomax.github.io/bezierinfo/#aligning">
-	B&eacute;zier curve tutorial</a>. A second way is to use the Grapher application. A saved 
-	B&eacute;zier curve graph, Documents/Bezier curve generator.gcx, can be modified by 
-	altering the four control points. The third way is using a saved file called Bezier 
-	Curves at <a href="https://learn.maplesoft.com/">Learn Maple</a>. Again the control 
+	B&eacute;zier curve tutorial</a>. A second way is to use the Grapher application on 
+	a Mac. A saved B&eacute;zier curve graph can be modified by altering the four control 
+	points. The third way is using a saved file called Bezier Curves at 
+	<a href="https://learn.maplesoft.com/">Learn Maple</a>. Again the control 
 	points have to modified to change the curve.
 </p>
 
+<p>
+	As an example using the B&eacute;zier curve tutorial cited above, drag the colored 
+	dots or handles until you get the desired curve shape. The screen capture below shows 
+	the B&eacute;zier curve after dragging the handles around a bit. The normalized curve 
+	on the right in the screen capture shows the actual curve to be cut into a part on the 
+	lathe. Transfer the four sets of control points to the input form below to get the 
+	desired cutting instructions.
+</p>
+
+<img class=inline src="BC example.png" alt="An example from the Bezier curve tutorial website" width="1120" height="578">
+
 <p class="note">
 	Need to log in to Learn Maple to use the web browser based math program and open the 
-	saved file. Login information is located in 1Password. Google Chrome is the preferred 
-	browser for this application. Safari is prohibitively slow.
+	saved file. Google Chrome is the preferred browser for this application. Safari is 
+	prohibitively slow.
 </p>
 
 <img class=inline src="BC formulas.png" alt="The formulas used in Grapher calculation" width="630" height="156">
@@ -658,7 +676,7 @@ function makeTable() {
 
 <p>
 	The challenge faced when implementing this is finding y from x. Finding the roots of 
-	these cubic equations is non-trivial. Consequently, a different path will be used. 
+	these cubic equations is non-trivial. Consequently, a different path was used. 
 	A table of x values will be generated for a set number of t values in the range 
 	0&hellip;1. A similar table of y values will be generated. A lookup algorithm will 
 	find the closest x&#8209;value in the table and use the corresponding t&#8209;value 
@@ -667,11 +685,12 @@ function makeTable() {
 
 <p class="note">
 	This program only works for "simple" B&eacute;zier curves. That is, there is only one 
-	y&#8209;value for each x&#8209;value.
+	y&#8209;value for each x&#8209;value. That is you can't use this program for cuts 
+	requiring a cutting tool like a boring bar.
 </p>
 
-<p>
-	I found this code in DevonThink under array functions: <em>findLastIndex</em>. It
+<p class="note">
+	I found this code online under array functions: <em>findLastIndex</em>. It
 	returns the index of the last element for which the provided function returns a 
 	truthy value. It uses Array.prototype.map() to map each element to an array with its 
 	index and value. Use Array.prototype.filter() to remove elements for which the fxn 
@@ -698,14 +717,13 @@ function makeTable() {
 </blockquote>
 
 <p>
-	It has been a struggle getting the code to work. I began thinking a simple conversion 
-	of the round curve cutting tool would be sufficient. Consequently, I did not think 
-	the problem through sufficiently. This morning I put some effort into planning the 
-	best approach to realizing this tool.
+	It was a struggle getting the code to work, when starting from a simple conversion 
+	of the round curve cutting tool. After putting some effort into planning the 
+	best approach to realizing this tool all went well.
 </p>
 
 <p>
-	The following assumptions are critical for realizing this tool. You must start with 
+	The following assumptions are critical for utilizing this tool. You must start with 
 	a B&eacute;zier curve. The B&eacute;zier curve must be oriented as if it is on the 
 	part held in the lathe. There is a one-to-one correspondence between x- and 
 	y&#8209;coordinates, e.g. the curve does not turn back toward its starting point. The 
@@ -780,6 +798,6 @@ function makeTable() {
 <footer>
 <p><a href="Workshop Notebook.html">Table of Contents</a></p>
 <p>John H. McDonald, III</p>
-	<p>January 7, 2022</p>
+	<p>October 29, 2024</p>
 </footer>
 </html>
