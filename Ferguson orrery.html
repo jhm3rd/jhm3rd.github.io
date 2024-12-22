@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Ferguson's Orrery</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="metalworking,orrery,Ferguson"/>
+	<meta name="description" content="Making Ferguson's Orrery'"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<script type="text/javascript">
+<!--
+	
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>Making Ferguson's Orrery (or Not)</h2>
+<h2>Orrery Design and Making the Gears</h2>
+<h3 class='minor'>August 16, 2024</h3>
+
+<div class=tools>
+	<h2>Calculation Tools</h2>
+	<ul>
+		<li class=indent><a href="Tools/Bolt Hole Circles.html">Bolt Hole Circles</a></li>
+		<li class=indent><a href="Tools/Circle Calculations.html">Circle Calculations</a></li>
+		<li class=indent><a href="Tools/Compound Miter.html">Compound Miter</a></li>
+		<li class=indent><a href="Tools/Countersink Depth.html">Countersink Depth</a></li>
+		<li class=indent><a href="Tools/Ball Cutting.html">Cutting Hemispheres</a></li>
+		<li class=indent><a href="Tools/Keyway.html">Cutting Keyways</a></li>
+		<li class=indent><a href="Tools/Density Data.html">Density Data</a></li>
+		<li class=indent><a href="Tools/Drills and Threads.html">Drills & Threads</a></li>
+		<li class=indent><a href="Tools/Files.html">Files</a></li>
+		<li class=indent><a href="Tools/Flywheel.html">Flywheel</a></li>
+		<li class=indent><a href="Tools/Gear.html">Gears</a></li>
+		<li class=indent><a href="Tools/Gear Cutter Buttons.html">Gear Cutter Buttons</a></li>
+		<li class=indent><a href="Tools/Gearspur.html">Spur Gears</a></li>
+		<li class=indent><a href="Tools/Calc Hex Dimensions.html">Hexagon Dimensions</a></li>
+		<li class=indent><a href="Tools/Hints.html">Hints</a></li>
+		<li class=indent><a href="Tools/Diameter - Speed Calculator.html">Lathe Speeds</a></li>
+		<li class=indent><a href="Tools/Lathe and Mill Speeds.html">Lathe & Mill Speeds</a></li>
+		<li class=indent><a href="Tools/Links.html">Making Links</a></li>
+		<li class=indent><a href="Tools/Osborne.html">Osborne</a></li>
+		<li class=indent><a href="Tools/Protractor.html">Protractor</a></li>
+		<li class=indent><a href="Tools/Polycone.html">Pyramids</a></li>
+		<li class=indent><a href="Tools/Radius.html">Radius</a></li>
+		<li class=indent><a href="Tools/Railroad Gage.html">Railroad Gage</a></li>
+		<li class=indent><a href="Tools/Rattle.html">Rattle</a></li>
+		<li class=indent><a href="Tools/Sun.html">Sun</a></li>
+		<li class=indent><a href="Tools/Tapers.html">Tapers</a></li>
+		<li class=indent><a href="Tools/Taper pins.html">Taper Pins</a></li>
+		<li class=indent><a href="Tools/Temper.html">Temper</a></li>
+		<li class=indent><a href="Tools/Vernier.html">Vernier</a></li>
+		<li class=indent><a href="Tools/Wire Gage.html">Wire Gage</a></li>
+		<li class=indent><a href="Tools/Round groove cutting.html">Lathe Cutting Round Grooves</a></li>
+		<li class=indent><a href="Tools/Bezier groove cutting.html">Lathe Cutting Bezier Grooves</a></li>
+		<li class=indent><a href="Tools/Measuring dovetails.html">Measuring Dovetails</a></li>
+	</ul>
+</div>
+
+
+<p class=first>
+	It is time to tackle another project, more complex than the recent projects: 
+	Ferguson's Orrery. This project has been in my sights for years, but put off as 
+	the previous orrery has still not been completed. The project entails some gearing 
+	challenges, that I hope to overcome, by slightly modifying a later model of the 
+	orrery. Most of the insights for this project come from 
+	<a href="http://www.horo-logical.co.uk/orrery.html">Ian Coote's</a> excellent 
+	discussion. I doubt I can capture his incredible reproduction, but hope to come close.
+</p>
+
+<img class=inline src="images/FRG Coote repro.png" alt="Ian Cootes reproduction of the Ferguson Orrery" width="1744" height="756">
+
+<p>
+	The gearing challenge presented by the first iteration of Ferguson's orrery is that 
+	three gears with slightly different numbers of teeth are all driven by one thick 
+	gear having the same number of teeth. This demands that the three free gears don't 
+	mesh well or that the teeth are specially cut by hand. A later model of the orrery 
+	by Ferguson used a thick wheel that had slightly different sizes, top, middle, and 
+	bottom, essentially three gears in one. My plan is to just make three gears and 
+	lock them together with a pin as was done on my previous orrery.
+</p>
+
+<p>
+	A brief digression is in order to discuss the purpose of this orrery as I interpret 
+	it. Ferguson's orrery demonstrates the movement of the nodes and apogee of the moon's 
+	orbit relative to the constellations in the night sky. The moon's orbit is tilted 
+	relative to the plane of the ecliptic, or the plane of the earth's orbit around the sun 
+	and the constellations residing in the ecliptic plane, the familiar sign's of the 
+	zodiac. This tilted plane rotates around the earth, but always crosses the ecliptic
+	 plane in two places, called nodes. The apogee is the position of the moon in its 
+	orbit when it is farthest from the earth. The apogee circles the earth due to 
+	precession in the moon's orbit and takes nine years, 8.85, to make a full loop. The 
+	nodes precess around the earth with a period of eighteen and one half years, 18.61. 
+	When one of these nodes aligns with a line from the sun to the earth, and the moon 
+	resides at the aligned node, an eclipse is possible. Another pic from Coote's page 
+	shows these features of the orrery.
+</p>
+
+<img class=inline src="images/FRG moon orbit.png" alt="The Ferguson Orrery showing the details allowing it to demonstrate eclipses" width="2296" height="1606">
+
+<p>
+	The number of gear teeth are the same as used by Ferguson in his model as these do 
+	a great job of accurately demonstrating the nodes of the moon's orbit and the moon's 
+	apogee circling the earth. The table below outlines the parameters of these gears. 
+	The top gear refers to the gear driving the moon's apogee indicator (bottom disk), 
+	the middle gear refers to the gear driving the moon's orbit (middle disk), and the 
+	bottom gear drives the ecliptic constellations ring (top disk). Of course the gears 
+	are connected to their respective disks by concentric tubes.
+</p>
+
+<table>
+	<thead>
+	<tr> <th>Gear</th>	<th>Teeth</th>	<th>Pitch Diam</th>	<th>Total Diam</th>	<th>Whole Depth</th>	<th>Circ. Pitch</th> </tr>
+	</thead>
+	<tbody>
+	<tr> <th>Bottom Driven</th> <td>39</td>	<td>1.300</td>	<td>1.367</td>	<td>0.072</td>	<td>0.105</td> </tr>
+	<tr> <th>Bottom Driver</th> <td>39</td>	<td>1.300</td>	<td>1.367</td>	<td>0.072</td>	<td>0.105</td> </tr>
+	<tr> <th>Middle Driven</th> <td>37</td>	<td>1.233</td>	<td>1.300</td>	<td>0.072</td>	<td>0.105</td> </tr>
+	<tr> <th>Middle Driver</th> <td>39</td>	<td>1.300</td>	<td>1.367</td>	<td>0.072</td>	<td>0.105</td> </tr>
+	<tr> <th>Top Driven</th> <td>44</td>	<td>1.467</td>	<td>1.533</td>	<td>0.072</td>	<td>0.105</td> </tr>
+	<tr> <th>Top Driver</th> <td>39</td>	<td>1.300</td>	<td>1.367</td>	<td>0.072</td>	<td>0.105</td> </tr>
+	<tr> <th>Sun Gear</th> <td>39</td>	<td>1.300</td>	<td>1.367</td>	<td>0.072</td>	<td>0.105</td> </tr>
+	</tbody>
+	<caption>
+		A diametral pitch of 30 was chosen for these gears as I have gear cutters for that pitch.
+	</caption>
+</table>
+
+<p>
+	Now for the challenge! The three driven gears and the their drivers all need to share 
+	the same distance between centers, but their diameters vary. The theoretical center 
+	to center distance of the bottom driven and driver gears, both 39 teeth, (the sum of 
+	their pitch radii) is the same as their pitch diameters, 1.300". For the middle gears 
+	this is 1.267" and for the top gears, 1.383", differences of 1/32" and 5/64" 
+	respectively. In order to accomodate the larger center distance the smaller might not 
+	even mesh. 
+</p>
+
+<p class = "note">
+	All of the numbers in the table came from the "Spur Gear" calculator, while the numbers 
+	below came from the "Gears" calculator, both accessible from the sidebar.
+</p>
+
+<p>
+	To "fix" these differences the driver gears need to start with slightly different 
+	pitch diameters resulting in a diametral pitch different from the 
+	standard 30 used above. For instance a diametral pitch for the middle gears of 29 
+	gives a center to center distance of 1.310", close enough. Similarly, a diametral 
+	pitch of 31.5 for the top gears gives a center to center distance of 1.317". These 
+	changes will require hand adjusting the tooth sizes of the 39/44 and 39/37 gears or 
+	making my own gear cutters.
+</p>
+
+<p>
+	This raises an interesting question. If more teeth are put on the wheel, than the 
+	calculations predict by altering the angle between the teeth, can the teeth just be 
+	made skinnier by cutting a fraction deeper? Similarly, could fewer teeth be put on 
+	a wheel, but cutting not so deeply? The former is less of a problem as the smaller 
+	teeth will be loose, but not bind. The latter may lead to binding. 
+</p>
+
+<p>
+	I am having second thoughts about making this orrery. The most interesting aspect of 
+	this particular orrery was Ferguson's paradox, which I have not discussed. I am not 
+	that interested in his paradox, but in demonstrating the moon, its orbit, and 
+	potential eclipses. I would like this orrery to also show the moon's location as 
+	it revolves around the earth. Consequently, the gear train is being reconsidered.
+	The entire gear discussion above is probably wrong. The sun gear is driving the next 
+	two gears, the middle gear is then an idler gear and the number of its teeth is 
+	irrelevant to the resulting gear ratio. The above discussion only makes sense if the 
+	sun gear tooth number is modified. The idler gears can be any number of teeth and 
+	consequently any size necessary.
+</p>
+
+<p>
+	Of more interest to me is the following table of things to track with this orrery 
+	as well as various parameters that need to be emulated. One further complication of 
+	this orrery as currently arranged is that it depicts a sidereal year, the year as 
+	seen from the stars. The moon makes 13.368 orbits in a sidereal year as it has also 
+	made one loop around the sun. Similarly, Ferguson's orrery and its gear train shows 
+	the sidereal orbits of the nodes and apogee, 1.054 and 1.113.
+</p>
+
+<table>
+	<thead>
+	<tr> <th></th>	<th>Orbital Period (yrs)</th>	<th>Revolutions/Year</th> </tr>
+	</thead>
+	<tbody>
+	<tr> <th>Earth</th> <td>1</td>	<td>1</td> </tr>
+	<tr> <th>Lunar Nodes</th> <td>18.610</td>	<td>0.054</td> </tr>
+	<tr> <th>Lunar Apogee</th> <td>8.885</td> <td>0.113</td> </tr>
+	<tr> <th>Moon</th> <td>0.081</td>	<td>12.368</td>	</tr>
+	</tbody>
+</table>
+
+<p>
+	A spreadsheet was constructed to determine the gear ratios needed for the moon's 
+	orbit around the earth and its results are shown below.
+</p>
+
+<table>
+	<thead>
+	<tr> <th></th>	<th>Gear 1</th>	<th>Gear 2</th>	<th>Gear 3</th>	<th>Gear 4</th>	<th>Revs/Yr</th>	<th>Error</th> </tr>
+	</thead>
+	<tbody>
+	<tr> <th>Earth</th> <td>39</td>	<td>39</td>	<td></td>	<td></td>	<td>1</td>	<td></td> </tr>
+	<tr> <th>Lunar Nodes</th> <td>37</td>	<td>39</td>	<td></td>	<td></td>	<td>0.054</td>	<td>0.59%</td> </tr>
+	<tr> <th>Lunar Apogee</th> <td>47</td>	<td>49</td>	<td></td>	<td></td>	<td>0.114</td>	<td>0.97%</td> </tr>
+	<tr> <th>Moon</th> <td>99</td>	<td>8</td>	<td></td>	<td></td>	<td>12.375</td>	<td>0.0005%</td> </tr>
+	<tr> <th>Moon</th> <td>55</td>	<td>10</td>	<td>18</td>	<td>8</td>	<td>12.375</td>	<td>0.0005%</td> </tr>
+	<tr> <th>Moon (S)</th> <td>107</td>	<td>8</td>	<td></td>	<td></td>	<td>13.375</td>	<td>0.0005%</td> </tr>
+	<tr> <th>Moon (S)</th> <td>63</td>	<td>11</td>	<td>21</td>	<td>9</td>	<td>13.364</td>	<td>0.0004%</td> </tr>
+	</tbody>
+</table>
+
+<p>
+	To further the design of this lunar orrery, distances between gear's centers need to 
+	be determined. The gear pairs for the Earth, nodes, and apogee will be separated by 
+	an idler gear, so their distances are flexible. Ferguson's design had them separated 
+	by approximately two diameters of a 39-tooth wheel or about 3" with my gear cutters. 
+	The maximum size of the four gear train is the sum of the radii of the four gears. 
+	This can be reduced to some extent by offsetting the central gear pair from the line 
+	between the driver and the driven gear. In other words there is a lot of flexibility 
+	to establishing the distance between the sun and the earth.
+</p>
+
+<p>
+	After numerous computations with "Spur Gear" utility listed in the left sidebar, an 
+	appropriate set of gears has been identified. The following table outlines the 
+	results. The initial set of four gears for the moon's orbit produced too small of 
+	a separation between centers to be useful for the other gear sets. Doubling the 
+	last two gears gave an uncannily perfect fit as seen in the table below.
+</p>
+
+<table>
+	<thead>
+	<tr> <th>Astro. Entity</th>	<th>Gear Set</th>	<th>Pitch Diameters</th>	<th>C to C Distance</th>	<th>Idler PD</th>	<th>Idler Teeth</th>	</tr>
+	</thead>
+	<tbody>
+	<tr> <th>Earth</th> <td>39, 39</td>	<td>1.3, 1.3</td>	<td>1.3 + Idler</td>	<td>0.9335</td>	<td>28</td>	</tr>
+	<tr> <th>Nodes</th> <td>39, 37</td>	<td>1.3, 1.233</td>	<td>1.2665 + Idler</td>	<td>0.967</td>	<td>29.01</td>	</tr>
+	<tr> <th>Apogee</th> <td>47, 49</td>	<td>1.567, 1.633</td>	<td>1.6 + Idler</td>	<td>0.6335</td>	<td>19.005</td>	</tr>
+	<tr> <th>Moon</th> <td>63, 11, 21, 9</td>	<td>2.1, 0.367, 0.7, 0.3</td>	<td>1.735</td>	<td></td>	<td></td>	</tr>
+	<tr> <th>Moon</th> <td>63, 11, 42, 18</td>	<td>2.1, 0.367, 1.4, 0.6</td>	<td>2.2335</td>	<td></td>	<td></td>	</tr>
+	</tbody>
+</table>
+
+<p>
+	Well so much for that idea! A sketch quickly revealed the problem, the centers of 
+	the idler gears and the center of the four gear train are not aligned. Even the 
+	centers of the idlers are not aligned. Orrery design is tough! 
+</p>
+
+<img class=inline src="images/FRG gear sketch.heic" alt="A sketch of the proposed gears indicating the problem" width="3690" height="1710">
+
+<p>
+	There is a <a href="https://www.engineeringcommons.org/orrery-design">path forward</a> 
+	with the above design. The gears need to be sufficiently separated to allow passage 
+	of supports between them, almost a ladder of supports in this case can be used to 
+	support the shafts of the central gears. Below is a better sketch of the proposed 
+	gearing setup showing the shelves below the three idler gears.
+</p>
+
+<img class=inline src="images/FRG gear sketch II.png" alt="A sketch of the proposed gears indicating the supports" width="1328" height="1208">
+
+<p>
+	The above sketch implies the idler gears are all on a line between the centers of 
+	the two stacks. This will work, of course, but also leaves one very little flexibility 
+	when depthing the gears, they all have to fit precisely. If the central gears are 
+	set off of this line, the gear stack centers are brought closer together. If they 
+	are a little too close for a central gear it can be moved further out. Alternatively, 
+	if they are a little too far apart the center gear can be moved closer to the line. 
+	This flexibility is important and needs to be baked into the plan. Spacers will also 
+	be required between gears in the two gear stacks.
+</p>
+
+<p>
+	The next design challenge is the configuration of the shelf supports for the center 
+	gears, idlers. Two things need to be considered with this part of the design. First, 
+	the means of attachment to vertical supports on one or both sides as these shelves 
+	should be reasonably thin. Second, is that the supports need to be added with the 
+	two gear stacks in place, so the depthing tool can set the correct location for 
+	the idler gear's axle. From an esthetic perspective the vertical supports should not 
+	be 	a solid rectangle of brass, but something decorative.
+</p>
+
+<p>
+	It is time to purchase brass for this orrery. With the current gear plan, 13 gears, 
+	and the four rotating bases a lot of brass is needed. These parts can be made from 
+	round bar stock or from flat stock. Six parts can be made from 1.5" stock, three from 
+	2" stock, two from 2.5" stock, five from 1" stock and one from 1/2" stock. In addition 
+	the top and bottom bars spanning the gear stacks require 2"&nbsp;X&nbsp;12" bar 
+	stock. The side rails will need about 5" of 1" stock. All of the above can be either 
+	3/16" or 1/4" thick. The support shelves will need 1/8"&nbsp;X&nbsp;1"&nbsp;X&nbsp;6". 
+	The base is approximately a 7" circle. Tubing required is 5/16", 1/4", & 3/16". All 
+	of the axles will use 1/8" round bar stock (on second thought the axle for the driver 
+	gear stack maybe should be 1/4"). Assorted screws and spacers complete the 
+	parts list.
+</p>
+
+<p class="note">
+	With 1/4" thick gears and spacers the total height of the the gears between the top 
+	and bottom bars is 2". Switching to 3/16" thickness material for the gears and 
+	spacers drops this to 1.5", which sounds like a better match for this small orrery.
+</p>
+</br>
+
+<table>
+	<thead>
+		<tr><th>Parts</th><th>Number</th><th>Dimensions</th><th>Inventory</th></tr>
+		<tr><td>Med Gears</td><td>6</td><td>3/16" X 1.5" X 9"</td><td>6" Ordered</td></tr>
+		<tr><td>Lg Gears</td><td>3</td><td>3/16" X 2" X 6"</td><td>Ordered</td></tr>
+		<tr><td>Ex Lg Gears</td><td>2</td><td>3/16" X 2.5" X 5"</td><td>Ordered</td></tr>
+		<tr><td>Sm Gears</td><td>5</td><td>3/16" X 1" X 5"</td><td>1" Rnd"</td></tr>
+		<tr><td>Tiny Gear</td><td>1</td><td>3/16" X 1/2" X 1"</td><td>1/2" Rnd</td></tr>
+		<tr><td>Top & Bottom</td><td>2</td><td>1/4" X 2" X 12"</td><td>Ordered</td></tr>
+		<tr><td>Shelf Supports</td><td>2</td><td>3/16" X 1" X 5"</td><td>Ordered</td></tr>
+		<tr><td>Shelves</td><td>3</td><td>1/8" X 1" X 6"</td><td>1/8" X 2.5" X 12"</td></tr>
+		<tr><td>Base</td><td>1</td><td>1/16" X 7" Rnd</td><td>1/16" X 12" X 12"</td></tr>
+		<tr><td>Tubing</td><td>3</td><td>5/16", 1/4", 3/16"</td><td>5/16", 1/4", 3/16", (1/8" Rod)</td></tr>
+	</thead>
+</table>
+
+<p>
+	After a few weeks to recover from the starvation brought on by taking Rybelsus, it is 
+	time to return to this orrery. The first item on the agenda is a detailed set of 
+	drawings to keep me on the straight and narrow. I plan to utilize FreeCAD, since the 
+	Fusion 360 used in the past is no longer supported on my eight year old MacBook Pro. 
+	FreeCAD still supports Macs with Intel silicon.
+</p>
+
+<p>
+	After spending time with FreeCAD I am not convinced that the time invested will 
+	return the investment for this project. The only important variable is the location 
+	of the centers of the idler wheels. A simpler spreadsheet can probably provide this 
+	information. Alternatively a quick program in JavaScript could provide a list of 
+	possible locations.
+</p>
+
+<p>
+	Some careful work in JohnDraw indicates that a 2" separation between the the two 
+	gear stacks allows room to locate the idlers and the reduction gear pair. The photo 
+	below shows the sketch leading to this conclusion. The drawing also provides the 
+	stack height, 2&nbsp;3/4" using 1/4" thick gears, 3/16" gears reduces the dimension 
+	shown in the drawing by 5/16" to 2&nbsp;7/16".
+</p>
+
+<img class=inline src="images/FRG gear sketch III.heic" alt="A sketch of the proposed gears and possible idler layout" width="4768" height="3961">
+
+<p class="note">
+	The reduction gears need a better way to determine location. The sketch above was 
+	trial and error. Graphically, if the center of the 63 tooth gear is at (0,0) and the 
+	center of the 18 tooth gear is at (2,0), then the center of the reduction gear stack 
+	is at (1.125,0.5). This is the intersection of two circles: the first centered at 
+	(0,0) with radius (2.1 + 0.367)/2 and the second centered at (2,0) with radius 
+	(1.4 + 0.6)/2. A calculation tool of some sort is in order and, of course, <a href="https://planetcalc.com/8098/">one</a> 
+	is available on the web. This calculator gives the coordinates as (1.131,0.494). Who
+	needs a calculator!!!
+</p>
+
+<p>
+	With the brass in hand it is time to get started on the thirteen gears. My plan is 
+	to use a common holding system to cut the outer diameter on the lathe and the teeth 
+	on the mill. This means that all gears will need the same size central hole, 1/4". 
+	The gears attached to smaller tubes will be fitted with a bushing after cutting 
+	their teeth.
+</p>
+
+<p>
+	The pitch diameters were used for the above calculations, but the outer diameters 
+	are needed for making the gears. The table below lists the outer diameters for the 
+	thirteen gears. (30 diametral pitch gear cutters)
+</p>
+
+<table>
+	<thead>
+		<tr><th>Gear Teeth</th><th>Number</th><th>Outer Diameter</th><th>Whole Depth</th></tr>
+		<tr><td>39</td><td>3</td><td>1.367</td><td>0.072</td></tr>
+		<tr><td>37</td><td>1</td><td>1.300</td><td>0.072</td></tr>
+		<tr><td>47</td><td>1</td><td>1.633</td><td>0.072</td></tr>
+		<tr><td>49</td><td>1</td><td>1.700</td><td>0.072</td></tr>
+		<tr><td>63</td><td>1</td><td>2.167</td><td>0.072</td></tr>
+		<tr><td>42</td><td>1</td><td>1.467</td><td>0.072</td></tr>
+		<tr><td>18</td><td>1</td><td>0.667</td><td>0.072</td></tr>
+		<tr><td>11</td><td>1</td><td>0.433</td><td>0.072</td></tr>
+		<tr><td>28</td><td>1</td><td>1.000</td><td>0.072</td></tr>
+		<tr><td>29</td><td>1</td><td>1.033</td><td>0.072</td></tr>
+		<tr><td>19</td><td>1</td><td>0.700</td><td>0.072</td></tr>
+	</thead>
+</table>
+
+<p>
+	It is Pearl Harbor Day, which happened about fifteen years before my birth. So long 
+	ago that we have forgotten the lessons learned from countries with populist leaders. 
+	Five 1&nbsp;1/2" long gear blanks were cut from the 1&nbsp;1/2" flat brass stock with 
+	a hack saw. Each square was marked with diagonals and drilled and reamed 1/4" on 
+	center. The blanks were mounted on a mandrel and turned to 1.367". The chuck holding 
+	the mandrel was moved to the Sherline gear cutting attachment mounted on the mill.
+</p>
+
+<p>
+	Of course a problem was discovered, luckily before cutting teeth, the gear cutter 
+	mandrel needed major repairs as the gear cutter did not run true. This mandrel was 
+	moved to the lathe held in the milling collet. It was faced cleaning up the two 
+	surfaces holding the cutter. The biggest issue was the 1/4" square steel key. It was 
+	not on center! A new key slot was milled 0.28" deep on center. The new mandrel with 
+	gear cutter inserted runs reasonably true now and is ready to cut the 460 teeth for 
+	this project. The mandrel with the three gear blanks was returned to the Sherline 
+	gear cutting attachment. Teeth (or gaps) were cut to depth in six passes. The two 
+	photos below show the reduction of squares to circles and cutting the gears. Burrs 
+	were removed in the lathe with a file, producing the three 39 tooth gears seen in 
+	the fourth photo.
+</p>
+
+<img class=inline src="images/FRG blank cutting.heic" alt="Three square blanks begin reduced to circles" width="1969" height="1610">
+<img class=inline src="images/FRG gear cutting.heic" alt="Cutting the three 39 tooth gears" width="2123" height="1905">
+<img class=inline src="images/FRG gear deburring.heic" alt="Deburring the three 39 tooth gears in the lathe" width="1268" height="1290">
+<img class=inline src="images/FRG gear done.heic" alt="Completed three 39 tooth gears" width="1532" height="1226">
+
+<p>
+	The 37 tooth gear was next on the agenda. It was cut from a 3/16" thick bar 1&nbsp;1/2" 
+	wide. The corners were removed before turning with the collet in the lathe to 1.300" 
+	diameter. The teeth were cut in two tranches as it is a little mind numbing. The gear 
+	was deburred with a file and is shown below. The perfect mesh with a 39 tooth gear 
+	in the <a href="Depthing Tool.html">depthing tool</a> is also seen below.
+</p>
+
+<img class=inline src="images/FRG gear 37.heic" alt="Completed 37 tooth gear" width="1448" height="1484">
+<img class=inline src="images/FRG 37 & 39.heic" alt="Completed 37 tooth gear in the depthing tool with a 39 tooth gear" width="1755" height="1506">
+
+<p>
+	The 42 tooth gear was then cut. Its manufacture was straightforward, if tedious. The 
+	blanks were hacksawed from stock for the remaining eight gears as seen in the photo 
+	below. As shown the centers were marked, then punched and all drilled and reamed to 
+	1/4".
+</p>
+
+<img class=inline src="images/FRG rough blanks.heic" alt="The rough blanks for the remaining eight gears" width="2026" height="1919">
+
+<p>
+	The eighteen tooth gear blank was reduced to 0.667" diameter. At this point it was 
+	realized that the 1/4" washers used for spacing from the nut were almost at the same 
+	diameter, so these were reduced to 0.144" less diameter than the blank. The part was 
+	transfered to the mill for cutting the teeth. The second limitation of this setup 
+	with this blank was revealed. The gear is too close to the steel backing of the 
+	mandrel. The mandrel was cut into slightly to insure the teeth were cut all the 
+	way through. The final cut revealed the third problem the first tooth was cut too 
+	thin resulting in the last tooth being cut too thick! This is seen below along with 
+	the cuts into the mandrel. Arrgh! At least it was a quick gear to cut! The process 
+	was repeated for this gear after cutting a 0.75" square of 3/16" brass. The second 
+	photo below shows the completed 18 tooth gear.
+</p>
+
+<img class=inline src="images/FRG eighteen failure.heic" alt="The failed eighteen tooth gear" width="1066" height="1331">
+<img class=inline src="images/FRG eighteen good.heic" alt="The good eighteen tooth gear" width="1398" height="1561">
+
+<p>
+	The nineteen tooth gear was completed this morning. One tooth was a little fat but 
+	was indistinguishable from the rest after a bit of filing. Maybe that was due to the 
+	Friday the 13th gremlin. The forty-seven tooth gear was prepped next. Since the center 
+	hole was already cut the approximate radius was marked in the corners so they could 
+	be removed before cutting the blank to 1.633" diameter. The first dozen teeth were 
+	cut before stopping for lunch and to let the back and shoulders relax. The forty-seven 
+	teeth were finished the following morning. It and the nineteen tooth gear are seen 
+	below.
+</p>
+
+<img class=inline src="images/FRG 19 & 47.heic" alt="The nineteen and forty-seven tooth gears" width="1421" height="1393">
+
+<p>
+	Swapping time with the Dovetail Puzzle Boxes and found some time for another gear, 
+	the 63 tooth gear, figuring I might as well get the most difficult out of the way. 
+	(Difficult only in so far as managing the tedium of cutting that many teeth.) The 
+	corners were removed from the square blank and the octagon was turned to a circle of 
+	2.167" diameter. About one third of the teeth were cut when I noticed a problem. 
+	The gear cutting blade was not on center!! I had entered a wrong number in the 
+	calculator. The resulting teeth are not pointing directly out from center but are 
+	all canted as seen in the photo below. These teeth demand the services of a 
+	qualified orthodontist.
+</p>
+
+<img class=inline src="images/FRG 63 oops.heic" alt="These crooked teeth demand the services of a qualified orthodontist" width="1633" height="1624">
+
+<p>
+	The forty-nine tooth blank was available, so it was cut into an octagon and reduced 
+	to a circle with a diameter of 1.700". This was set up in the gear cutting accessory 
+	on the milling table with the gear cutting blade on center. All teeth were cut in one 
+	sitting, quite the arbeit. The photo below shows the forty-nine well-formed teeth.
+</p>
+
+<img class=inline src="images/FRG 49.heic" alt="The completed 49 tooth gear" width="1501" height="1534">
+
+<p>
+	The blank for the 63 tooth gear was remade and reduced in diameter to 2.167" as 
+	before. The teeth were cut over the course of a day as I can only cut many teeth when 
+	the wife is out of the house as the intermittent cutting makes a lot of noise. Two 
+	hours of cutting and the gear is complete as seen below. This leaves the 11, 28, and 
+	29 tooth gears.
+</p>
+
+<img class=inline src="images/FRG 63.heic" alt="The completed 63 tooth gear" width="1888" height="1984">
+
+<p>
+	The blank for the 29 tooth gear was reduced to 1.033" and the teeth were cut. The 
+	same for the 28 tooth gear after reducing to 1.000".
+</p>
+
+<img class=inline src="images/FRG 29.heic" alt="The completed 29 tooth gear" width="1370" height="1300">
+<img class=inline src="images/FRG 28.heic" alt="The completed 28 tooth gear" width="1389" height="1279">
+
+<p>
+	The final 11 tooth gear was made from a 1/2" brass round bar. A piece was cut off, 
+	drilled and reamed to 0.125", reduced to 0.433" and then faced to 3/16" long. A 
+	mandrel was made from 1/4"&nbsp;X&nbsp;1" brass round bar. About 1/2" was reduced 
+	to 0.125". The first 3/8" was further reduced to 0.112" and threaded 4-40. The 
+	mandrel when held in the chuck with the gear blank in place was not long enough, 
+	the gear tooth cutter would hit the chuck. An extension was made from 1/2" aluminum 
+	round bar by facing, drilling, and reaming to 1/4". After a drop of Loctite was put 
+	into the hole the brass mandrel was pushed in, allowing the air to escape. The photo 
+	shows this setup ready for cutting teeth.
+</p>
+
+<img class=inline src="images/FRG small mandrel.heic" alt="The small mandrel in the aluminum extension with the gear blank in place" width="1672" height="1748">
+
+<p>
+	The small mandrel was quickly discovered to have a problem, the tailstock in the 
+	gear cutting attachment was too close and wide hindering access of the cutter to the 
+	workpiece. The tailstock from the lathe was switched and with a drill chuck 
+	installed along with a small center worked somewhat. The second issue was that there 
+	was such a small hole in the end of the mandrel that the center provided minimal 
+	support resulting in  a lot of chatter, which caused other things to come loose 
+	during the cut. Even with these issues the cutting was forced to completion and the 
+	460th tooth was cut (not counting the two failed gears). The photo below shows all of 
+	the gears made with the latest on top. The second photo below shows the thirteen 
+	gears laid out on the diagram from above with all gears mated with their partners.
+</p>
+
+<img class=inline src="images/FRG all gears.heic" alt="A stack of the thirteen completed gears" width="1588" height="1791">
+<img class=inline src="images/FRG gears matched.heic" alt="The thirteen completed gears shown aligned with their eventual orrery partners" width="3593" height="2533">
+
+<p>
+	The construction of the frame will be covered in the next installment.
+</p>
+
+
+
+
+
+
+
+
+
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>December 22, 2024</p>
+</footer>
+
+</body>
+</html>
