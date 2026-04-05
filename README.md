@@ -9,4 +9,4 @@ The learning curve for GitHub is steep for an elderly man, who knows only enough
 Wish me luck!
 
 Two files, Workshop Notebook.html and Workshop Notebook IV.html, provide indexes of all of the projects covered here. The latter is 
-graphical.
+pictorial.
