@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Cut Knurling Tool</title>
+	<meta charset="utf-8">
+	<meta name="keywords" content="metalworking,cut knurl,tool"/>
+	<meta name="description" content="Making a Cut Knurling Tool"/>
+
+<link href="Notebook.css" rel="stylesheet">
+
+<script type="text/javascript">
+<!--
+	
+
+// -->
+
+</script>
+
+</head>
+<body>
+
+<div class="bkgnd"><h1>John </hi><h1>McDonald's </h1><h1>Project </h1><h1>Cornucopia</h1></div>
+<br/>
+
+<h2>Making a Cut Knurling Tool: Part 1</h2>
+<h3 class='minor'>October 10, 2025</h3>
+
+<div class=tools>
+	<h2>Calculation Tools</h2>
+	<ul>
+		<li class=indent><a href="Tools/Bolt Hole Circles.html">Bolt Hole Circles</a></li>
+		<li class=indent><a href="Tools/Circle Calculations.html">Circle Calculations</a></li>
+		<li class=indent><a href="Tools/Compound Miter.html">Compound Miter</a></li>
+		<li class=indent><a href="Tools/Countersink Depth.html">Countersink Depth</a></li>
+		<li class=indent><a href="Tools/Ball Cutting.html">Cutting Hemispheres</a></li>
+		<li class=indent><a href="Tools/Keyway.html">Cutting Keyways</a></li>
+		<li class=indent><a href="Tools/Density Data.html">Density Data</a></li>
+		<li class=indent><a href="Tools/Drills and Threads.html">Drills & Threads</a></li>
+		<li class=indent><a href="Tools/Files.html">Files</a></li>
+		<li class=indent><a href="Tools/Flywheel.html">Flywheel</a></li>
+		<li class=indent><a href="Tools/Gear.html">Gears</a></li>
+		<li class=indent><a href="Tools/Gear Cutter Buttons.html">Gear Cutter Buttons</a></li>
+		<li class=indent><a href="Tools/Gearspur.html">Spur Gears</a></li>
+		<li class=indent><a href="Tools/Calc Hex Dimensions.html">Hexagon Dimensions</a></li>
+		<li class=indent><a href="Tools/Hints.html">Hints</a></li>
+		<li class=indent><a href="Tools/Diameter - Speed Calculator.html">Lathe Speeds</a></li>
+		<li class=indent><a href="Tools/Lathe and Mill Speeds.html">Lathe & Mill Speeds</a></li>
+		<li class=indent><a href="Tools/Links.html">Making Links</a></li>
+		<li class=indent><a href="Tools/Osborne.html">Osborne</a></li>
+		<li class=indent><a href="Tools/Protractor.html">Protractor</a></li>
+		<li class=indent><a href="Tools/Polycone.html">Pyramids</a></li>
+		<li class=indent><a href="Tools/Radius.html">Radius</a></li>
+		<li class=indent><a href="Tools/Railroad Gage.html">Railroad Gage</a></li>
+		<li class=indent><a href="Tools/Rattle.html">Rattle</a></li>
+		<li class=indent><a href="Tools/Sun.html">Sun</a></li>
+		<li class=indent><a href="Tools/Tapers.html">Tapers</a></li>
+		<li class=indent><a href="Tools/Taper pins.html">Taper Pins</a></li>
+		<li class=indent><a href="Tools/Temper.html">Temper</a></li>
+		<li class=indent><a href="Tools/Vernier.html">Vernier</a></li>
+		<li class=indent><a href="Tools/Wire Gage.html">Wire Gage</a></li>
+		<li class=indent><a href="Tools/Round groove cutting.html">Lathe Cutting Round Grooves</a></li>
+		<li class=indent><a href="Tools/Bezier groove cutting.html">Lathe Cutting Bezier Grooves</a></li>
+		<li class=indent><a href="Tools/Measuring dovetails.html">Measuring Dovetails</a></li>
+	</ul>
+</div>
+
+
+<p class='first'>
+	Knurling. A skill that I have needed on many occasions, but one that still eludes me. 
+	Part of the problem is using the Sherline lathe to knurl anything beyond aluminum 
+	puts tremendous stress on the system. Even using my homemade scissors knurling tool
+	(have never written up the construction of this tool, but it is similar to many other 
+	such tools on the web), the Sherline just has too much flex. The South Bend lathe has 
+	the solidity for me to feel more comfortable knurling with it, but brass and steel 
+	are both difficult with the standard push knurling tool I have. 
+</p>
+
+<img class=inline src="images/CKT fidgit.heic" alt="Knurled fidgit toy" width="1403" height="1517">
+
+<p>
+	Another driver for this project is a fidgit toy, seen above, 3D-printed by my son. I 
+	would like to replicate this toy  in metal and see cut knurling as a possibility on 
+	the curved surfaces. The toy presents many other challenges for knurling, but I can't 
+	even imagine using a deforming type knurling tool to get the job done.
+</p>
+
+<p>
+	Cut knurls are readily available, but a tool to present them properly to the work 
+	is not something readily purchased for the funds available. 
+	<a href="https://homeshopmachinist.net/">The Home Shop Machinist</a> magazine came to 
+	the rescue. In 2010 a series of 
+	<a href="https://secure.villagepress.com/store/items/detail/item/2053">five articles</a> 
+	were published by Michael Ward in which he describes a complex tool of his own design. 
+	The tool, from the cover of HSM shown below, will be a challenge to make, but is 
+	within my skill level, plus Michael's instructions are clear and detailed.
+</p>
+
+<img class=inline src="images/CKT cover.heic" alt="The cut knurling tool on the cover of Home Shop Machinist" width="2303" height="2187">
+
+<p>
+	Based on Michael's thorough list of parts, both metal required and purchased parts, 
+	I will only need to purchase ball bearings, cut knurls and 5/8" drill rod. Metal from 
+	my storage and cutoffs boxes will be used for just about everything else. One purchased 
+	part, a #3-48 screw, will also need to be purchased along with a matching tap, unless 
+	the plans can be changed and a #2 or #4 screw substituted.
+</p>
+
+<p>
+	The first step in Michael's process is making the spindle housings. To make these a 
+	fixture is advised, so that is where I will begin. A cutoff of 1.5"&nbsp;X&nbsp;1.5" 
+	aluminum bar was located and 1&nbsp;1/8" was cut off with the horizontal bandsaw. The 
+	aluminum was first clamped to the angle plate with a large C-clamp as seen below. The 
+	four narrow sides were fly cut with this setup. The block was moved to the vice and again 
+	using the fly cutter the two large and most crooked faces were cut. The block that 
+	was left is 1.502"&nbsp;X&nbsp;1.486"&nbsp;X&nbsp;1.043" also seen below.
+</p>
+
+<img class=inline src="images/CKT fixture setup.heic" alt="The setup for squaring up the fixture block" width="2253" height="2208">
+<img class=inline src="images/CKT fixture blank.heic" alt="The squared up aluminum fixture block" width="1716" height="2100">
+
+<p>
+	Some time was spent deciding on the best setup for drilling the fixture. The part 
+	was marked out on a large face to provide some indication of what needed to happen. 
+	A line was scribed across the to be drilled face and its center located. A tiny prick 
+	punch mark was made at the intersection of the two lines.
+</p>
+
+<p>
+	The part was not held at 60&deg; in the vise as suggested as this leaves too little 
+	meat in the Sherline vise. Instead the vise was set up on an angle plate raised to 
+	30&deg; and the block set in the vise on parallels. The spindle was then centered over 
+	the punch mark and the x- and y-axes on the DRO were zeroed. A two insert cutter (3/4") 
+	diameter was used to cut a flat on the angled face, a slow process taking 10-15 thou 
+	passes. A fast feed rate, low speed and 10 thousandths cutting depth eliminated the 
+	squealing chatter as the cutter neared the back wall of the groove.
+</p>
+
+<img class=inline src="images/CKT fixture flat.heic" alt="The flat cut into the fixture for eventual drilling" width="2777" height="2855">
+
+<p>
+	Drilling presented another challenge. With the angle plate mounted there is minimal 
+	room with the large drill chuck in the spindle. The largest drill I could fit into 
+	the chuck with the head raised to the top of its travel was a #7, 0.201", drill. After 
+	spot drilling the #7 drill was used to drill completely through the block. With this 
+	hole in place the #7 drill will be used to align the vice, still on the angle plate, 
+	in the drill press in order to open and ream the through hole to 1/2".
+</p>
+
+<p>
+	Unfortunately, there is not enough headroom in the drill press to handle the vise on 
+	the angle plate and the long 1/2" reamer. A lathe needs to be used to provide the 
+	room. The South Bend can handle the large drills and the reamer. Its chuck is also 
+	large enough to hold the fixture securely, rather than the small chuck on the 
+	Sherline, a precarious option at best.
+</p>
+
+<p>
+	Two different indicators were used to align the hole and the inserted drill, when 
+	the part was held in the four jaw chuck. Then the nightmare began, drilling aluminum!
+	Drilling was started with a sharp 11/32" drill. It immediately seemed to work harden 
+	the metal and drilling could not proceed. Smaller drills were then used to power 
+	through the aluminum, advancing 1/32" with each size increase. The aluminum seemed 
+	almost undrillable, but with sufficient cutting fluid I could force the drills through. 
+	The final drill, 31/64", was a challenge, but eventually worked its way through. 
+	Reaming out the last 1/64" was extremely difficult and the reamer froze up halfway 
+	into the hole. So far I have been unable to get the reamer out. The reamer can be 
+	turned back and forth with a wrench on the four-jaw chuck and the vice grips on the 
+	reamer shaft, but I can't get enough outward pressure on the vice grips to pull the 
+	reamer free.
+</p>
+
+<img class=inline src="images/CKT fixture allign.heic" alt="Aligning the fixture in the four-jaw chuck" width="2716" height="2726">
+<img class=inline src="images/CKT stuck reamer.heic" alt="The reamer stuck in the aluminum fixture" width="2644" height="2670">
+
+<p>
+	A little research indicates aluminum work hardens just like brass and copper. Learn 
+	something new everyday. Heating the aluminum to about 600&deg; should temper it and 
+	return its machinability. First, the reamer was removed by holding the reamer with 
+	pliers and heating the aluminum block with a torch. The block was easily slid free. 
+	The block was set on fire brick and heated for a prolonged period with the butane 
+	torch. It never turned color beyond the gray of aluminum oxide. After four or five 
+	minutes of heating the aluminum was allowed to cool to ambient temperature.
+</p>
+
+<img class=inline src="images/CKT tempering.heic" alt="The aluminum fixture after heating with a torch" width="2525" height="2638">
+
+<p>
+	The fixture was returned to the four-jaw chuck and set up as before with the same 
+	bit of shim. The reamer easily completed the job. As the photo below shows a lot of 
+	deburring was required. With this completed the fixture is now ready for completion.
+</p>
+
+<img class=inline src="images/CKT huge burr.heic" alt="The aluminum fixture showing the burr created during drilling" width="1577" height="1872">
+<img class=inline src="images/CKT fixture partial.heic" alt="The aluminum fixture all cleaned up" width="1587" height="1862">
+
+<p>
+	The block was returned to the lathe and once again the hole aligned within 0.001". 
+	The hole was bored to 0.626" for a depth of 0.375". The finish was less than desired. 
+	The block was set up in the vise on the angle plate set to 60&deg;, precariously 
+	high, but sturdy enough to cut a flat with a 1/4" end mill. A hole was drilled in this 
+	flat with a #25 drill and tapped #10-24. After a bit of cleanup a set screw was 
+	installed completing the spindle housing fixture.
+</p>
+
+<img class=inline src="images/CKT fixture.heic" alt="The aluminum fixture after boring and cross drilling for a set screw" width="1404" height="1469">
+
+<p>
+	Two spindle housing blanks were turned from mild steel. Both had a 1/2" section 0.751" 
+	long and a 5/8" section >0.75" long. The latter gets faced at an angle in the first 
+	operation. The two blanks were made from different steel rounds, with the second part 
+	coming from much more machinable steel. This part is seen on the right below.
+</p>
+
+<img class=inline src="images/CKT housing blanks.heic" alt="The spindle housing blanks, one in the fixture" width="1839" height="1745">
+
+<p>
+	A spindle housing blank was inserted into the fixture and the set screw tightened. 
+	This set screw shouldn't be loosened until all work has been completed on the 
+	exposed end of the housing. The block was held in the four-jaw chuck on the South 
+	Bend lathe and the end of the housing faced. The photo below shows the part almost 
+	completely faced.
+</p>
+
+<img class=inline src="images/CKT facing housing.heic" alt="The spindle housing in the fixture and partially faced" width="1599" height="1803">
+
+<p>
+	The part was faced to within 0.020" of the fixture. After marking out the desired 
+	hole center the fixture was aligned in the four-jaw chuck to put this center in line 
+	with the spindle center. Drilling began and ended with a center drill, whose tip 
+	broke off in the part, even though there was cutting fluid and I was carefully peck 
+	drilling!!! Maybe I'm not supposed to make this tool? I walked away and will tackle 
+	the broken drill and potentially ruined part tomorrow.
+</p>
+
+<p>
+	A quick inspection revealed that the drill fragment was completely buried in the 
+	part and nothing could be grabbed by needle-nose pliers. The part was judged a loss. 
+	The steel of unknown provenance used to make this spindle housing was very gummy, 
+	resulting in a poor finish (as seen in the above photo), even with care to speed and 
+	depth of cut. The center drill was also old and one cutting tip was already broken off. 
+</p>
+
+<p>
+	Unfortunately, I don't have any mild steel of the correct size to remake the part. 
+	Off to my favorite metal supplier, <a href="https://www.speedymetals.com/">Speedy Metals</a>, 
+	for some mild steel, 12L14, in a variety of sizes. 12L14 is one of the most 
+	machinable steels, and finishes nicely, thus my choice. It is not a great steel to 
+	use if hardening is required. 12L14 has added sulfur, phosphorus and lead, so it is 
+	probably advisable to utilize cutting fluid liberally and minimize high temperatures 
+	during cutting. Steel is so cheap and so heavy that shipping is almost as much as the 
+	price!
+</p>
+
+<p>
+	While waiting for the steel to arrive, the second housing blank was put into the 
+	fixture and faced to about 0.040" above the fixture. The fixture and housing were 
+	removed from the chuck and the hole center was marked out as before using the 
+	Starrett height gauge, what a nice tool. The center location was punched and returned 
+	to the chuck, where the divot was centered with the spindle. The photo shows the 
+	marked and punched hole location.
+</p>
+
+<img class=inline src="images/CKT marked housing.heic" alt="The spindle housing in the fixture marked for drilling" width="1501" height="1538">
+
+<p>
+	I don't have a way to bore small holes, so the blank was drilled with a 0-2 center 
+	drill and then drilled with a 1/4" drill. This drilling went into the aluminum of the 
+	fixture to make sure the hole was through the part. The hole was enlarged to 19/64" 
+	and then reamed 5/16". To accomodate my smallest boring bar the hole was opened to 
+	3/8" for 3/16" with a drill. The bearing seat was bored to 0.500" diameter and a 
+	depth of 0.196". The spindle housing was then faced so it sits 0.027" proud of the 
+	fixture. (This number is important as the second spindle housing needs to be finished 
+	to the same length.) The photos below show the makeshift boring setup, which is why 
+	the South Bend tool posts are being made, and the completed spindle housing.
+</p>
+
+<img class=inline src="images/CKT boring housing.heic" alt="Boring the spindle housing in the fixture" width="2836" height="3422">
+<img class=inline src="images/CKT first housing 1.heic" alt="The first spindle housing" width="934" height="1058">
+<img class=inline src="images/CKT first housing 2.heic" alt="The first spindle housing" width="1100" height="1324">
+
+<p>
+	After an eight month delay the cut knurling tool is back in focus. Today a spindle 
+	housing blank was made from 3/4" round steel. A 1&nbsp;3/4" length was cut from 
+	stock and held in the three jaw chuck on the South Bend lathe. One end was faced 
+	and then this same end was reduced to 1/2" for 0.750". This reduced end was held in 
+	a collet and the opposite end was faced to about 0.80". The diameter of this end 
+	was reduced to 0.625". The part was a tight fit in the aluminum fixture, requiring 
+	light tapping with a hammer to seat it. The set screw was then tightened.
+</p>
+
+<p>
+	With the part in the fixture it was placed in the four jaw chuck and the angled face 
+	was cut until it was completely parallel to the face of the fixture and then 
+	further such that 0.027" remained proud of the aluminum. The fixture 
+	was removed and the center of the just cut face was marked out as above. The fixture, 
+	returned to the four jaw, was adjusted until the center divot was centered relative 
+	to the spindle. At least that was the plan. No matter how I adjusted the fixture in 
+	the four jaw, it refused to be centered relative to the tailstock.
+</p>
+
+<p class="note">
+	I finally realized the tailstock must be the problem after repeatedly moving the 
+	fixture on center from one direction, rotating 180&deg;, and seeing the point off 
+	by the same amount just moved. A scrap of steel was held in a collet and machined to 
+	a point. This point when next to a pointed tailstock center revealed the tailstock 
+	was not centered. This was quickly remedied with the two tailstock adjustment screws. 
+	Returning the four jaw chuck to the spindle with the fixture still in place allowed 
+	for a quick alignment with the same tailstock center.
+</p>
+
+<p>
+	The part in the fixture was then center drilled, drilled through with a 1/4" drill 
+	(of which many were found to be quite dull!), drilled 19/64" and then reamed 5/16" 
+	as done with the first spindle housing. The housing was drilled with a 3/8" 
+	drill about 3/8" deep. It was then bored to 0.500" to a depth of 0.196". After a 
+	bit of deburring the part was compared to the first. Very similar, but too tall! I 
+	assume the first housing was not seated as deep as the second in the fixture 
+	because the bottom sections are 0.750" for both parts. I will return it to the 
+	fixture and pick up the bore with an indicator. Then bore it a bit deeper and face a 
+	little more off. All of this will be done after carefully determining the excess 
+	relative to the first spindle housing.
+</p>
+
+<img class=inline src="images/CKT housings.heic" alt="The second spindle housing compared to the first spindle housing" width="1526" height="1799">
+
+<p class="note">
+	Comparing the two spindle housings to the plan indicates that the first spindle 
+	housing needs to be remade. It is about 1/16" too short compared to plan. It must 
+	have been a tight fit in the fixture and not inserted deeply enough. Oy! Let's hope 
+	the rest of the parts in this project are simpler to make.
+</p>
+
+<p>
+	Yet another spindle housing was made following the same procedures used above. This 
+	one is very similar to the last, but it is still a bit shorter (1/16"!) as seen in 
+	the photo below. I will attempt to bring them both to spec as opposed to making 
+	another. The shorter spindle implies the spindle was not completely buried in the 
+	fixture, though it had been tapped into place with a hammer until it "rang true".
+</p>
+
+<img class=inline src="images/CKT housings 2.heic" alt="The third spindle housing compared to the second spindle housing" width="1407" height="1508">
+
+<p>
+	The longer spindle housing was returned to the fixture, where it was faced closer to 
+	the length of the shorter version. The bore was centered crudely with the use of a 
+	tailstock center and then completely with a dial gauge. The bore was extended the 
+	same amount as was removed when facing. The two spindle housings are shown below.
+</p>
+
+<img class=inline src="images/CKT housings 3.heic" alt="The third spindle housing compared to the second spindle housing after shortening the longer" width="1646" height="1711">
+
+<p>
+	To finish these two parts they need a bore and threaded hole in the 1/2" end. To this 
+	end the first spindle housing was placed in the four jaw chuck in the Sherline and 
+	dialed in. The end was centered drilled and drilled with a #38 drill for a 5-40 
+	thread to 0.75" depth. The hole was then opened with successive drills to 0.25". From 
+	there it was bored to 0.355"producing a straight and centered hole. The depth of the 
+	bore was 0.375". The hole was then reamed 0.375". This left a rounded corner on the 
+	bore, so the boring bar was reinserted and the corner squared up.
+</p>
+
+<img class=inline src="images/CKT boring narrow.heic" alt="Boring the narrow end of the spindle housing" width="1738" height="1867">
+
+<p>
+	The final operation was to thread the hole behind the bore. Unfortunately, a 6-40 
+	tap was selected instead of the 5-40. Tapping was a challenge, but eventually 
+	succeeded! I will need to adjust the mating part accordingly. This part was labelled 
+	with a "6".
+</p>
+
+<p>
+	The matching spindle housing was treated similarly to the above producing a 0.375" 
+	hole, 0.375" deep with a threaded, 5-40, hole behind it.
+</p>
+
+<img class=inline src="images/CKT completed housings.heic" alt="The two completed spindle housings" width="1139" height="1021">
+
+<p>
+	The next pair of parts to make are the spindles. The first spindle began with a 1" 
+	length of 3/8" O-1 steel in the four jaw chuck. The steel was centered with the 
+	dial indicator, seen below. The dial indicator holder is a budgie job and should 
+	be replaced with a fixture that has builtin handles, omitting the need for a 
+	screwdriver and wrench. The rod was faced.
+</p>
+
+<img class=inline src="images/CKT indicating.heic" alt="The dial indicator fixture used for centering the part in the four jaw chuck" width="1379" height="1629">
+
+<p>
+	The four jaw chuck was removed from the lathe spindle and attached to the hexagonal 
+	indexing block held in the vise. The block sat on two parallels and the back of the 
+	chuck was firmly pressed against the side of the vise, locating from three directions. 
+	A 1/8" end mill was used to cut each face of the hexagonal stub after locating the 
+	end of the work piece with an edge finder and locating the top of the rod with the 
+	end mill. The cuts taken were light, 0.010". Cutting 0.125" deep into the rod for 
+	each of the six faces. The first photo shows the setup and the second the completed 
+	hexagon. Distances between opposite faces were measured: two were spot on and one 
+	dimension was 0.004" shy of 0.125", good enough for a screw head.
+</p>
+
+<img class=inline src="images/CKT hex setup.heic" alt="The setup for milling the hex on the spindle end" width="1613" height="1162">
+<img class=inline src="images/CKT milled hex.heic" alt="The hexagonal stub milled on the spindle end" width="1274" height="1435">
+
+<p>
+	After a break to forge a knife this project has returned to the top of the list. 
+	Happy Independence Day to all. The rod with a hex end was checked to make sure it 
+	was still centered. The end with the hex was turned down to 0.1875" for a length of 
+	0.462". After deburring the opposite end was faced so the 3/8" part was 0.435". The 
+	process was repeated on a second 1" length of 3/8" drill rod. The photo below shows 
+	the two partly complete spindles resulting from this work.
+</p>
+
+<img class=inline src="images/CKT rough spindles.heic" alt="The spindles, each with one end completed" width="1375" height="1506">
+
+<p>
+	A spindle was held in a 3/16" collet in the Sherline lathe. The wide end was reduced 
+	to 0.313". The terminal 0.375" was reduced to 0.250" for threading. After repeating 
+	and removing the burrs the parts at this stage are shown below.
+</p>
+
+<img class=inline src="images/CKT spindles to thread.heic" alt="The spindles, ready for threading" width="1085" height="1173">
+
+<p>
+	The spindles were threaded. The part was held in a collet and the Sherline was set up 
+	for threading a 28 TPI thread. The end of the part was blued and a line was marked 
+	with calipers at 0.156", the limit of threading. A thread was cut to the line. Testing 
+	was done with a purchased 1/4"-28 nut and the nut fit long before reaching the 
+	theoretical 0,049" thread depth. Both spindles were threaded and quickly deburred. 
+	The completed spindles are shown below.
+</p>
+
+<img class=inline src="images/CKT spindles threaded.heic" alt="The spindles after threading" width="1380" height="1666">
+
+<p>
+	The spindles were finished by heat treating. A scrap of steel round was held in the 
+	lathe and drilled 1/4" for a depth of 1/2" to serve as a heat sink for the threaded 
+	end of the spindles. A spindle was placed in this heat sink and set on firebrick. 
+	The small end was heated to cherry red for thirty seconds and quenched in motor oil. 
+	The second spindle was treated similarly. After cooling the bearing end of the 
+	spindles was sanded lightly to reveal the metal under the scale, seen below. The two 
+	spindles were then tempered. The grill was heated to 425&deg; and the spindles set 
+	on a metal plate in the grill. They were tempered for 15 minutes and are shown in 
+	the second photo below.
+</p>
+
+<img class=inline src="images/CKT spindles hard.heic" alt="The spindles after heating, quenching and sanding" width="1229" height="1436">
+<img class=inline src="images/CKT spindles tempered.heic" alt="The spindles after tempering" width="1736" height="1986">
+
+<p>
+	After two days of having fun with the oldest grandson bearings were made. One inch of 
+	1/2" bronze round bar was cut from stock. Held in a three jaw chuck it was faced and 
+	the diameter carefully reduced to 0.32125" a bit under the desired 0.3125" but close 
+	enough with the planned use of retaining compound. The rod was center drilled, 
+	drilled with a #18 drill and reamed 0.1875" to about 0.35". The end was chamfered 
+	and a 1/8" length was parted off. The parting off was stopped about halfway through to 
+	chamfer the new corner. This was repeated producing the two bearings seen below.
+</p>
+
+<img class=inline src="images/CKT bearings.heic" alt="Two bronze bearings" width="1085" height="1016">
+
+<p>
+	The spindles vary by a quarter of a thousandth from 0.1875" with one nearly spot on. 
+	Chamfering both sides of the bearing holes allowed the spindles to slip in. The 
+	reamer probably produces a slightly oversized hole, but the fit is good.
+</p>
+
+<p>
+	Two nuts were made next from 3/8" steel hex. A 1" bar was faced, center drilled and 
+	drilled with a #3 drill to about 1/2". The hole was tapped 1/4"-28. The nuts were 
+	parted off and after some clean up are shown below. Both nuts fit nicely on the 
+	spindles, also shown below.
+</p>
+
+<img class=inline src="images/CKT nuts.heic" alt="Two steel nuts threaded 1/4-28" width="1169" height="1181">
+<img class=inline src="images/CKT nuts on.heic" alt="Two steel nuts threaded onto the spindles" width="1085" height="885">
+
+<p class="note">
+	Spent 1.5 hours seeking the desired cut knurls: 5/8" OD, 1/4" ID, and 40 TPI. They 
+	were nowhere to be found. Looking closely at a photo in the article the letters, G, 
+	K, & S, could be discerned. Seeking GKS cut knurls successfully pulled up 
+	<a href="https://accu-trak.com/gks-128.html/?SID=6tmprvf24ri3d2sel1j6t3ud71">these</a> 
+	and two were immediately ordered. I was almost ready to abandon the project!
+</p>
+
+<br/>
+
+<p class="note">
+	Not until the knurls were installed did I realize that 128 TPI wheels were purchased! 
+	<a href="https://accu-trak.com/gks-240.html">These</a> are the correct 40 TPI knurls.
+</p>
+
+
+<p>
+	While waiting for an empty house to complete the noisy milling (described in Part 2 
+	of this series), the spindles were 
+	tackled. The spindles were a press fit into the bearings. A bronze tube was used along 
+	with the vise to press the bearings onto the spindle ends. A drop of Loctite 648 was 
+	used to insure a permanent bond. The bearing seats are spot on 0.500" as measured by 
+	a hole gauge, so a press fit is in order here as well. The bearings were pressed into 
+	the spindle housing using the vise and the original fixture for their manufacture. 
+	One spins freely and the other is tight. Possibly the bronze bearing was not quite 
+	straight. The spindle housing was returned to the fixture and held in a four jaw 
+	chuck. Oil was applied to the bronze bearing prior to putting all in place. With the 
+	spindle somewhat centered, its end, wrapped in aluminum, was held by a Jacobs chuck 
+	in the tailstock. The lathe was turned on and left spinning for ten minutes in hopes 
+	this would loosen things up a bit. It is easier to turn, but not free spinning like 
+	its partner. Test assembly with the two, too fine knurls is the last photo below.
+</p>
+
+<img class=inline src="images/CKT press fit.heic" alt="The bearing pressed onto the spindle" width="1100" height="975">
+<img class=inline src="images/CKT press fit 2.heic" alt="The bearing pressed into the spindle housing" width="2071" height="2051">
+<img class=inline src="images/CKT stuck.heic" alt="The spindle rotated by the lathe to loosen the fit in the bronze bearing" width="2309" height="2196">
+<img class=inline src="images/CKT spindles.heic" alt="The spindles with the bronze bearings all pressed into position" width="1437" height="1242">
+<img class=inline src="images/CKT spindles assembled.heic" alt="The spindles assembled with knurls in place" width="1626" height="1366">
+
+<p>
+	Part 2 of this series begins with the manufacture of the holder arm.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<footer>
+<p><a href="Workshop Notebook.html">Table of Contents</a></p>
+<p>John H. McDonald, III</p>
+<p>July 26, 2025</p>
+</footer>
+
+</body>
+</html>
